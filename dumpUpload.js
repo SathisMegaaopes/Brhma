@@ -1,4 +1,5 @@
 import { rejects } from "assert";
+import { ca } from "date-fns/locale";
 import e from "express";
 import mysql from "mysql"
 import { resolve } from "path";
@@ -113,21 +114,21 @@ export function updateTeams(conn, data) {
 }
 
 
-export function updateNametoId(){
-  return new Promise((resolve,reject)=>{
+export function updateNametoId() {
+  return new Promise((resolve, reject) => {
     const query1 = "SELECT * FROM `dump`"
 
-    conn.query(query1,(err,results)=>{
-      if(err){
+    conn.query(query1, (err, results) => {
+      if (err) {
         return reject(err)
       }
 
       const alldump = results;
 
-      const query2 =  'SELECT `emp_id`,`emp_name` FROM `employee_master`' ;
+      const query2 = 'SELECT `emp_id`,`emp_name` FROM `employee_master`';
 
-      conn.query(query2,(err,results)=>{
-        if(err){
+      conn.query(query2, (err, results) => {
+        if (err) {
           return reject(err);
         }
 
@@ -136,36 +137,42 @@ export function updateNametoId(){
         // console.log(employeemaster)
 
         function getEmpIdByName(name) {
-          if(!name){
-            console.log(name , 'name inside the getname')
-            return null;
-          }else{
+          console.log(name, 'name')
+          if (!name) {
+            return name;
+          } else {
+
             const employee = results.find(emp => emp.emp_name.toLowerCase().includes(name.toLowerCase()));
-            return employee ? employee.emp_id : null;
+            // return employee ? employee.emp_id : null;
+            return employee ? employee.emp_id : name;
           }
         }
-        
 
-        for(let i=1;i<alldump.length;i++){
-          
+
+        for (let i = 0; i < alldump.length; i++) {
+
           const emplyeeid = alldump[i]['Emp ID']
 
           // console.log(emplyeeid,'emplyeeid')
 
           const reportingTeamLead = alldump[i]["Reporting Team Lead"];
 
+          const reportinManager = alldump[i]["Reporting Manager"];
+
           // console.log(reportingTeamLead,'reportingTeamLead')
 
           const teamleadID = getEmpIdByName(reportingTeamLead)
 
-          // console.log(teamleadID,'teamleadID')
+          const managerID = getEmpIdByName(reportinManager)
 
+          console.log(teamleadID, 'teamleadID')
 
-          // const query3 ='UPDATE `dump` SET `Reporting Team Lead` = ? WHERE `Emp ID` = ?'
-          const query3 =' UPDATE `dump` SET `Reporting Team Lead` = ?,`Reporting Manager` = ? WHERE `Emp ID` = ? '
+          console.log(managerID, 'managerID')
 
-          conn.query(query3,[teamleadID,teamleadID,emplyeeid],(err,results)=>{
-            if(err){
+          const query3 = ' UPDATE `dump` SET `Reporting Team Lead` = ?,`Reporting Manager` = ? WHERE `Emp ID` = ? '
+
+          conn.query(query3, [teamleadID, managerID, emplyeeid], (err, results) => {
+            if (err) {
               return reject(err)
             }
             console.log(results)
@@ -178,18 +185,6 @@ export function updateNametoId(){
 
         conn.end()
       })
-
-      // for(let i=0;i<emplyoeeid.length;i++){
-      //   conn.query(query2,emplyoeeid[i],(err,results)=>{
-      //     if(err){
-      //       console.log(err);
-      //     }
-      //     // console.log(results)
-
-      //     const query3 = 'UPDATE `dump` SET `name` = ? WHERE `Emp ID` = ?';
-
-      //   })
-      // }
     })
   })
 }
@@ -197,24 +192,109 @@ export function updateNametoId(){
 
 
 
+export function DepartmentoId() {
+  return new Promise((resolve, reject) => {
+    const query1 = "SELECT * FROM `dump`"
+
+    conn.query(query1, (err, results) => {
+      if (err) {
+        return reject(err)
+      }
 
 
-(async () => {
-  try {
-    updateNametoId()
-  } catch (err) {
-    console.log(err);
+      const alldump = results;
+
+      const query2 = 'SELECT `id`,`name` FROM `dept_master`';
+
+      conn.query(query2, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+
+        const employeemaster = results;
+
+        console.log(employeemaster)
+
+        // function getEmpIdByName(name) {
+        //   console.log(name, 'name')
+        //   if (!name) {
+        //     return name;
+        //   } else {
+
+        //     const employee = results.find(emp => emp.emp_name.toLowerCase().includes(name.toLowerCase()));
+        //     return employee ? employee.emp_id : name;
+        //   }
+        // }
+
+
+        // for (let i = 0; i < alldump.length; i++) {
+
+        //   const emplyeeid = alldump[i]['Emp ID']
+
+        //   // console.log(emplyeeid,'emplyeeid')
+
+        //   const reportingTeamLead = alldump[i]["Reporting Team Lead"];
+
+        //   const reportinManager = alldump[i]["Reporting Manager"];
+
+        //   // console.log(reportingTeamLead,'reportingTeamLead')
+
+        //   const teamleadID = getEmpIdByName(reportingTeamLead)
+
+        //   const managerID = getEmpIdByName(reportinManager)
+
+        //   console.log(teamleadID, 'teamleadID')
+
+        //   console.log(managerID, 'managerID')
+
+        //   const query3 = ' UPDATE `dump` SET `Reporting Team Lead` = ?,`Reporting Manager` = ? WHERE `Emp ID` = ? '
+
+        //   conn.query(query3, [teamleadID, managerID, emplyeeid], (err, results) => {
+        //     if (err) {
+        //       return reject(err)
+        //     }
+        //     console.log(results)
+
+
+        //   })
+
+
+        // }
+
+        conn.end()
+      })
+    })
+  })
+}
+
+
+(async()=>{
+  try{
+    DepartmentoId()
+  }catch(err){
+    console.log(err)
   }
-  // finally {
-  //   conn.end((err) => {
-  //     if (err) {
-  //       console.log('Error ending the conn :' + err.stack);
-  //       return;
-  //     }
-  //     console.log('Connection closed');
-  //   })
-  // }
 })()
+
+
+
+
+// (async () => {
+//   try {
+//     updateNametoId()
+//   } catch (err) {
+//     console.log(err);
+//   }``
+//   // finally {
+//   //   conn.end((err) => {
+//   //     if (err) {
+//   //       console.log('Error ending the conn :' + err.stack);
+//   //       return;
+//   //     }
+//   //     console.log('Connection closed');
+//   //   })
+//   // }
+// })()
 
 
 // (async () => {
@@ -265,3 +345,9 @@ export function updateNametoId(){
 // })();
 
 
+
+// UPDATE `dump` 
+// SET `Reporting Team Lead` = ELT(FLOOR(1 + (RAND() * 4)), 'Kannan R', 'Shamala Srinivas', 'Manoj Kumar G', 'Sathish Kumar') 
+// WHERE `Emp ID` != 18001;
+
+// UPDATE `dump` SET `Reporting Team Lead` = 'Shamala Nagaveni S' WHERE `Reporting Team Lead` = 'Shamala Srinivas';

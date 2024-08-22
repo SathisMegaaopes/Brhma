@@ -195,28 +195,10 @@ const fileUpload = (req, res, next) => {
 
 }
 
-// router.post('/', upload.single('file'), fileUpload, (req, res) => {
-//     try {
-//         res.status(200).send(`File uploaded successfully ${req.file.originalname}`);
-//         console.log(`File uploaded successfully ${req.file.originalname}`);
-//     }
-//     catch (err) {
-//         console.error(err);
-//         res.status(500).send(err);
-//     }
-// });
+
 
 router.post('/', upload.single('file'), fileUpload)
-//  (req, res) => {
-//     try {
-//         res.status(200).send(`File uploaded successfully ${req.file.originalname}`);
-//         console.log(`File uploaded successfully ${req.file.originalname}`);
-//     }
-//     catch (err) {
-//         console.error(err);
-//         res.status(500).send(err);
-//     }
-// });
+
 
 router.use((err, req, res, next) => {
     console.error(err.stack);
@@ -270,3 +252,29 @@ router.get('/:id', (req, res) => {
 //     return res.status(400).json({ error: 'User ID is required' });
 // }
 export default router;
+
+
+
+
+
+
+// router.post('/', upload.single('file'), fileUpload, (req, res) => {
+//     try {
+//         res.status(200).send(`File uploaded successfully ${req.file.originalname}`);
+//         console.log(`File uploaded successfully ${req.file.originalname}`);
+//     }
+//     catch (err) {
+//         console.error(err);
+//         res.status(500).send(err);
+//     }
+// });
+//  (req, res) => {
+//     try {
+//         res.status(200).send(`File uploaded successfully ${req.file.originalname}`);
+//         console.log(`File uploaded successfully ${req.file.originalname}`);
+//     }
+//     catch (err) {
+//         console.error(err);
+//         res.status(500).send(err);
+//     }
+// });
