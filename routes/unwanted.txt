@@ -1,0 +1,505 @@
+  // const __filename = fileURLToPath(import.meta.url);
+    // const __dirname = path.dirname(__filename);
+
+    // const baseDir = path.join(__dirname, 'megaaopes_api');
+
+    // const currentDate = new Date();
+    // const currentYear = currentDate.getFullYear().toString();
+    // const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+    // const yearFolder = path.join(__dirname, currentYear)
+    // console.log(yearFolder,'this is year folder')
+    // const monthFolder = path.join(yearFolder, currentMonth)
+    // const fileFolder = path.join(monthFolder, 'filesFolder')
+    // const imagesFolder = path.join(monthFolder, 'imagesFolder')
+
+    // if (!file) {
+    //     return res.send(400).send('No file is received')
+    // }
+
+    // let targetDirectory;
+
+
+    // fs.access(yearFolder, fs.constants.F_OK, (yearErr) => {
+    //     if (yearErr) {
+    //         fs.mkdir(yearFolder, { recursive: true }, (err) => {
+    //             if (err) {
+    //                 return res.status(500).json({ error: `Failed to create year folder ${currentYear}.` });
+    //             }
+    //         });
+    //     }
+    //     fs.access(monthFolder, fs.constants.F_OK, (monthErr) => {
+    //         if (monthErr) {
+    //             fs.mkdir(monthFolder, { recursive: true }, (err) => {
+    //                 if (err) {
+    //                     return res.status(500).json({ error: `Failed to create month folder ${currentMonth}.` });
+    //                 }
+    //             });
+    //         }
+    //         if (type === 'file') {
+    //             fs.access(fileFolder, fs.constants.F_OK, (folderErr) => {
+    //                 if (folderErr) {
+    //                     fs.mkdir(fileFolder, { recursive: true }, (err) => {
+    //                         if (err) {
+    //                             return res.status(500).json({ error: 'Failed to create file folder.' });
+    //                         }
+
+    //                         const yearMonthImagePath = path.join(fileFolder);
+    //                         targetDirectory = yearMonthImagePath
+    //                         console.log(targetDirectory,'this is the target directory sathis')
+    //                         fileUploading()
+    //                     });
+    //                 } else {
+    //                     const yearMonthImagePath = path.join(fileFolder);
+    //                     targetDirectory = yearMonthImagePath
+    //                     fileUploading()
+    //                 }
+    //             });
+    //         } else if (type === 'image') {
+    //             fs.access(imagesFolder, fs.constants.F_OK, (folderErr) => {
+    //                 if (folderErr) {
+    //                     fs.mkdir(imagesFolder, { recursive: true }, (err) => {
+    //                         if (err) {
+    //                             return res.status(500).json({ error: 'Failed to create image folder.' });
+    //                         }
+
+    //                         const yearMonthImagePath = path.join(imagesFolder);
+    //                         targetDirectory = yearMonthImagePath
+    //                         fileUploading()
+    //                     });
+    //                 } else {
+    //                     const yearMonthImagePath = path.join(imagesFolder);
+    //                     targetDirectory = yearMonthImagePath
+    //                     fileUploading()
+    //                 }
+    //             });
+    //         } else {
+    //             res.status(400).json({ error: 'The file format is not acceptable.' });
+    //         }
+    //     });
+    // });
+
+    
+
+
+    // function fileUploading() {
+    //     const targetPath = path.join(targetDirectory, `${file.originalname}`);
+    //     // const targetPath = require(path.join(__dirname, 'megaaopes_api', 'routes', 'Employee', 'uploads'));
+    //     // ;
+    //     fs.writeFile(targetPath, file.buffer, (err) => {
+    //         if (err) {
+    //             return next(err);
+    //         }
+
+    //         next();
+    //     });
+    // }
+
+
+
+    // router.post('/', upload.single('file'), fileUpload, (req, res) => {
+//     try {
+//         res.status(200).send(`File uploaded successfully ${req.file.originalname}`);
+//     }
+//     catch (err) {
+//         console.error(err);
+//         res.status(500).send(err);
+//     }
+// });
+
+
+
+
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
+
+
+
+const fileUpload = (req, res, next) => {
+    const type = req.body.type;
+    const file = req.file;
+
+
+}
+
+
+
+// const uploadDirectory = path.join(__dirname, 'Uploads', '2024', '7', 'files');
+
+
+
+// try {
+//     fs.mkdirSync(uploadDirectory, { recursive: true });
+//     // console.log(`Upload directory created or already exists: ${uploadDirectory}`);
+// } catch (error) {
+//     console.error(`Error creating upload directory: ${error.message}`);
+// }
+
+
+
+    // console.log(sessionStorage)
+    // console.log(props)
+    // const [file, setfile] = useState('')
+
+    // const handleFileUpload = async (event) => {
+
+    //     const selectedFile = event.target.files[0];
+
+    //     const formData = new FormData;
+    //     formData.append('file', selectedFile)
+    //     formData.append('type', type)
+
+    //     let personal_url = URL + "candidateupload";
+
+
+    //     try {
+    //         const response = await axios.post(personal_url, formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data'
+    //             }
+    //         })
+    //             .then(response => {
+    //                 console.log(response.data);
+    //             })
+    //             .catch(error => {
+    //                 console.error(error);
+    //             });
+    //     }
+    //     catch (error) {
+    //         console.error('An error occurred:', error.message);
+    //     }
+
+
+    // };
+
+
+
+    // if (links.a !== '' && links.b !== '') {
+        //     conn.query(sql_query, ([id,links.a, links.b]),
+        //         (err, rows) => {
+        //             let response = { status: 0, data: [], message: "" };
+        //             if (!err) {
+        //                 response.message = "Resume Details Updated!!!";
+        //                 // res.send(response);
+        //                 console.log(response)
+
+        //             }
+        //             else {
+        //                 response.status = 1;
+        //                 response.message = "Something Went Wrong!!! " + JSON.stringify(err);
+        //                 // res.send(response);
+        //                 console.log(response)
+
+        //             }
+        //         }
+        //     )
+        //     console.log(links, 'Before')
+        //     links.a= '';
+        //     links.b='';
+        //     console.log(links, 'After')
+
+
+        // } else {
+        //     console.log('One or both properties are empty');
+        // }
+
+
+
+                {/* <Grid item xs={12}>
+                    <Stack
+                        sx={{ width: '30%', margin: 'auto auto' }}
+                        spacing={2}
+                        alignItems="center"
+                    >
+                        {alertMessage && (
+                            <Alert
+                                severity={alertSeverity}
+                                sx={{
+                                    width: '100%',
+                                    fontSize: '1.5rem',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                {alertMessage}
+                            </Alert>
+                        )}
+                    </Stack>
+                    
+                </Grid> */}
+
+
+
+                  {/* <Grid item xs={12} marginTop={2}>
+                    <Stack sx={{ width: '50%' }} spacing={2}>
+                        {alertMessage && (
+                            <Alert severity={alertSeverity}>{alertMessage}</Alert>
+                        )}
+                    </Stack>
+                </Grid> */}
+
+                {/* <Grid item xs={12} marginTop={2}>
+                    <Stack
+                        sx={{ width: '50%', margin: '0 auto' }}  // Center Stack
+                        spacing={2}
+                        alignItems="center"  // Center items in the Stack
+                    >
+                        {alertMessage && (
+                            <Alert severity={alertSeverity}>{alertMessage}</Alert>
+                        )}
+                    </Stack>
+                </Grid> */}
+
+
+
+        // <Container >
+        //     <Grid container spacing={2} marginTop={5} alignItems={'center'} justifyContent={'center'} xs={12} sm={12} md={12}>
+        //         <Grid>
+        //             <label htmlFor="file-upload">
+        //                 <Input
+        //                     // accept="application/pdf,application/vnd.ms-excel,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        //                     id="file-upload"
+        //                     type="file"
+        //                     onChange={handleFileUpload}
+        //                 />
+
+        //                 <Button
+        //                     variant="contained"
+        //                     component="span"
+        //                     startIcon={<UploadFileIcon />}
+        //                     sx={{ marginRight: 2 }}
+        //                     onClick={() => setType('file')}
+        //                 >
+        //                     Upload Resume
+        //                 </Button>
+        //             </label>
+
+        //             <label htmlFor="image-upload">
+        //                 <Input
+        //                     // accept="image/*"
+        //                     accept="image/jpeg,image/png"
+        //                     id="image-upload"
+        //                     type="file"
+        //                     onChange={handleFileUpload}
+        //                 />
+
+        //                 <Button
+        //                     variant="contained"
+        //                     component="span"
+        //                     startIcon={<ImageIcon />}
+        //                     onClick={() => setType('image')}
+        //                 >
+        //                     Upload Profile
+        //                 </Button>
+        //             </label>
+        //         </Grid>
+
+        //         <Stack sx={{ width: '50%' }} spacing={5}>
+        //             <Alert severity="success">This is a success Alert.</Alert>
+
+        //         </Stack>
+        //         <Grid item marginTop={5} xs={12} sm={12} md={12}>
+        //             <Button variant='contained'
+        //                 color='success'
+        //                 disableElevation
+        //                 fullWidth
+        //                 onClick={handleClick}
+        //                 disabled={!uploadStatus.resumeUploaded || !uploadStatus.profileUploaded}
+        //             >
+        //                 NEXT
+        //             </Button>
+        //         </Grid>
+        //     </Grid>
+        // </Container>
+
+
+
+    // React.useEffect(() => {
+    //     if (mobile === "" || first_name === "" || email === "" || gender === "" || referred === "" || designation === "" || checkMobile || checkMobile === null || address === "" || years === "" || months === ""|| empWalkIn ? hrBy === "" : "" || others ? othersVal === "" : "") {
+    //         setdisableNext(true);
+    //     }
+    //     else {
+    //         setdisableNext(false);
+    //     }
+
+    // }, [mobile, first_name, email, gender, referred, designation, checkMobile, years,others ? othersVal : "", empWalkIn ? hrBy : ""]);
+
+
+
+
+
+     {/* <CardMedia
+                    component="img"
+                    height="230"
+                    image={imagePathUrl === '' || imagePathUrl === null ?
+                        <IconButton>
+                            <AccountBoxIcon /> 
+                        </IconButton>
+                         : imageUrl}
+                    alt="Candidate Photo"
+                    sx={{ width: '200px', objectFit: 'cover' }}
+
+                /> */}
+
+
+
+                                    {/* <Grid item>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Box sx={{ width: '100%', maxWidth: '180px', marginLeft: '' }}>
+                                <DatePicker label="from Date"
+                                    slotProps={{ textField: { size: 'small' } }}
+                                    onChange={(e) => setnewstartdate(e)}
+                                />
+                            </Box>
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Box sx={{ width: '100%', maxWidth: '180px' }}>
+                                <DatePicker label="To Date"
+                                    slotProps={{ textField: { size: 'small', marginLeft: '' } }}
+                                    onChange={(e) => setnewenddate(e)}
+                                />
+                            </Box>
+                        </LocalizationProvider>
+                    </Grid> */}
+
+
+
+                        // setCandidates(response.data.data);
+
+    // if (employeeid) {
+    // let filteredCandidtes = response.data.data.filter(item => item.updated_by === employeeid)
+    // console.log(filteredCandidtes,'Filtered Canidates')
+    // setCandidates(filteredCandidtes)
+    // setEmp(response.data.emp_details);
+    // console.log(employeeid, 'Yes the employee id is present')
+    // } else {
+    // console.log(employeeid, 'sorry the emloyee id is not available in this one')
+    // }
+
+
+
+
+
+
+ const [results, setResults] = React.useState([]);
+
+    React.useEffect(() => {
+        const round = [1, 2, 3, 4, 5, 6];
+        const resultsArray = [];
+
+        let completedRequests = 0;
+
+        round.forEach((item, index) => {
+            const request_url = URL + "interviewevaluation/getresult/" + record_id + "/" + item;
+
+            axios.get(request_url)
+                .then((res) => {
+                    if (res.data.status === 0 && res.data.data.length > 0) {
+                        resultsArray[index] = res.data.data[0];
+                    } else {
+                        resultsArray[index] = null;
+                    }
+                })
+                .catch((err) => {
+                    console.log(JSON.stringify(err));
+                    resultsArray[index] = null;
+                })
+                .finally(() => {
+                    completedRequests += 1;
+                    if (completedRequests === round.length) {
+                        setResults(resultsArray);
+                    }
+                });
+        });
+    }, [record_id]);
+
+    console.log(results[0].final_total);
+
+
+
+    // const [results, setResults] = React.useState([]);
+
+    // React.useEffect(() => {
+    //     const round = [1, 2, 3, 4, 5, 6];
+
+    //     const fetchResults = async () => {
+    //         const promises = round.map(async (item) => {
+    //             const request_url = URL + "interviewevaluation/getresult/" + record_id + "/" + item;
+    //             try {
+    //                 const res = await axios.get(request_url);
+    //                 if (res.data.status === 0 && res.data.data.length > 0) {
+    //                     return res.data.data[0];
+    //                 } else {
+    //                     return null;
+    //                 }
+    //             } catch (err) {
+    //                 console.log(JSON.stringify(err));
+    //                 return null;
+    //             }
+    //         });
+
+    //         const resultsArray = await Promise.all(promises);
+    //         setResults(resultsArray);
+    //     };
+
+    //     fetchResults();
+    // }, [record_id]);
+
+    // console.log(results);
+
+
+
+    // React.useEffect(() => {
+    //     const round = [1, 2, 3, 4, 5, 6];
+
+    //     round.forEach((item) => {
+    //         const request_url = URL + "interviewevaluation/getresult/" + record_id + "/" + item;
+
+    //         axios.get(request_url)
+    //             .then((res) => {
+    //                 if (res.data.status === 0 && res.data.data.length > 0) {
+    //                     console.log(res)
+    //                     setResults(prevResults => [...prevResults, res.data.data[0]]);
+    //                 } else {
+    //                     setResults(prevResults => [...prevResults, null]);
+    //                 }
+    //             })
+    //             .catch((err) => {
+    //                 console.log(JSON.stringify(err));
+    //             });
+    //     });
+    // }, [record_id]);
+
+    // console.log(results)
+
+
+
+
+
+
+
+
+
+
+
+            if (emp_id) {   //new
+            let url = URL + "candidates/searchByDate/" + fromDate + "/" + toDate;
+
+            axios.get(url)
+                .then((response) => {
+                    if (response.data.status === 0) {
+                        setCandidates(response.data.data)
+                        setEmp(response.data.emp_details)
+                    } else {
+                        console.log("ERROR :", JSON.stringify(response.data));
+                    }
+                })
+                .catch()
+                .finally(() => {
+                    setLoader(false)
+                })
+            } else {
+                
+            }

@@ -1,0 +1,16 @@
+Packges :
+  xlsx  :  "^0.18.5"
+  file-saver : "^2.0.5"
+  react-date-range  : "^2.0.1",
+  
+  
+  
+  
+ empid   name
+ 19932 - Puja Chetry
+ 19877 - Dilip S
+ 19875  - Sapna Mani
+ 18734  - Seema 
+
+ 
+
