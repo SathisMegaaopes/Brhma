@@ -24,11 +24,11 @@ router.get('/', (req, res) => {
         params.push(fromdate, todate);
     }
 
-    query += " ORDER BY id DESC";   
+    query += " ORDER BY id DESC";
 
     // conn.query("SELECT * FROM candidate_master ORDER BY id DESC", (err, rows) => {
 
-    conn.query(query,params,(err, rows) => {
+    conn.query(query, params, (err, rows) => {
 
         let response = { status: 0, data: [], message: "" };
         if (!err) {
@@ -243,7 +243,7 @@ router.post('/', (req, res) => {
         });
 
 });
-    
+
 
 /* insert data to candidate education 
 
@@ -294,9 +294,71 @@ router.post('/education', (req, res) => {
 });
 
 
+router.delete('/', (req, res) => {
 
+    const { candidateid } = req.body;
+
+    const query1 = "SELECT * FROM `candidate_master` WHERE `candidate_id` = ? "
+
+    conn.query(query1, [candidateid], (err, rows) => {
+        if (err) {
+            res.send(err)
+        }
+
+        const candidateid = rows.map((item) => {
+            return item.id
+        })
+
+        const candidateDeleteid = candidateid[0]
+
+        const query2 = "DELETE FROM `candidate_master` WHERE `id`= ? ";
+
+        conn.query(query2, [candidateDeleteid], (err, rows) => {
+            // if (err) {
+            //     res.send(err)
+            // }
+
+            let response = { status: 0, data: [], message: "" };
+            if (err) {
+                response.message = err;
+                res.send(response)
+            }
+            else {
+                response.status = 1;
+                response.message = "The Candidate deleted successfully...";
+                res.send(response)
+                console.log(rows, 'this is the row , Getting to deleted ')
+            }
+
+
+            // const query3 = " DELETE FROM `candidate_edu_master` WHERE `candidate_id`= ? "
+
+            // conn.query(query3, [candidateDeleteid], (err, rows) => {
+
+            // console.log(rows,'this after delteting the from the candidate_edu_master')
+
+            // let response = { status: 0, data: [], message: "" };
+            // if (err) {
+            //     response.message = err;
+            //     res.send(response)
+            // }
+            // else {
+            //     response.status = 1;
+            //     response.message = "The Candidate deleted successfully...";
+            //     res.send(response)
+            // }
+            // })
+        })
+    })
+
+})
 
 
 
 
 export default router;
+
+
+
+// const query3 = "DELETE FROM `candidate_edu_master` WHERE `candidate_id`= ?; DELETE FROM `candidate_personal`  WHERE `candidate_id`= ? ; DELETE FROM `candidate_reference_master` WHERE `candidate_id` = ? ; "
+// conn.query(query3, [candidateDeleteid, candidateDeleteid, candidateDeleteid], (err, row) => {

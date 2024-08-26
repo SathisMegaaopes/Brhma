@@ -1,8 +1,7 @@
-import { rejects } from "assert";
-import { ca } from "date-fns/locale";
-import e from "express";
+
+import { all } from "axios";
 import mysql from "mysql"
-import { resolve } from "path";
+``
 
 const conn = mysql.createConnection({
   host: "localhost",
@@ -194,13 +193,12 @@ export function updateNametoId() {
 
 export function DepartmentoId() {
   return new Promise((resolve, reject) => {
-    const query1 = "SELECT * FROM `dump`"
+    const query1 = "SELECT `Department` FROM `dump`"
 
     conn.query(query1, (err, results) => {
       if (err) {
         return reject(err)
       }
-
 
       const alldump = results;
 
@@ -211,70 +209,139 @@ export function DepartmentoId() {
           return reject(err);
         }
 
-        const employeemaster = results;
+        const departmentmaster = results;
 
-        console.log(employeemaster)
-
-        // function getEmpIdByName(name) {
-        //   console.log(name, 'name')
-        //   if (!name) {
-        //     return name;
-        //   } else {
-
-        //     const employee = results.find(emp => emp.emp_name.toLowerCase().includes(name.toLowerCase()));
-        //     return employee ? employee.emp_id : name;
-        //   }
-        // }
+        const departmentIdMap = departmentmaster.reduce((acc, department) => {
+          acc[department.name] = department.id;
+          return acc;
+        }, {});
 
 
-        // for (let i = 0; i < alldump.length; i++) {
+        const departmentsWithId = alldump.map(department => {
+          const id = departmentIdMap[department.Department];
+          return id ? { Department : id } : department;
+        });
 
-        //   const emplyeeid = alldump[i]['Emp ID']
+        // const ids = departmentsWithId.map((item) => item.id)
 
-        //   // console.log(emplyeeid,'emplyeeid')
+        const query3 = 'SELECT * FROM `dump`';
 
-        //   const reportingTeamLead = alldump[i]["Reporting Team Lead"];
+        conn.query(query3, (err, results) => {
+          if (err) {
+            return reject(err);
 
-        //   const reportinManager = alldump[i]["Reporting Manager"];
+          }
 
-        //   // console.log(reportingTeamLead,'reportingTeamLead')
+          for (let i = 0; i < results.length; i++) {
+            const rowid = results[i]["Emp ID"]
 
-        //   const teamleadID = getEmpIdByName(reportingTeamLead)
+            const departID = departmentsWithId[i].Department
 
-        //   const managerID = getEmpIdByName(reportinManager)
+            const query4 = 'UPDATE `dump` SET `Department` = ? WHERE `Emp ID` = ?'
 
-        //   console.log(teamleadID, 'teamleadID')
+            conn.query(query4, [departID, rowid], (err, results) => {
+              if (err) {
+                return reject(err);
+              }
 
-        //   console.log(managerID, 'managerID')
+              console.log('Successfully updated Department name to ID')
+            })
+          }
 
-        //   const query3 = ' UPDATE `dump` SET `Reporting Team Lead` = ?,`Reporting Manager` = ? WHERE `Emp ID` = ? '
+          conn.end()
+        })
 
-        //   conn.query(query3, [teamleadID, managerID, emplyeeid], (err, results) => {
-        //     if (err) {
-        //       return reject(err)
-        //     }
-        //     console.log(results)
-
-
-        //   })
-
-
-        // }
-
-        conn.end()
       })
     })
   })
 }
 
 
-(async()=>{
-  try{
-    DepartmentoId()
-  }catch(err){
+export function TeamtoId() {
+  return new Promise((resolve, reject) => {
+    const query1 = "SELECT `Team` FROM `dump`"
+
+    conn.query(query1, (err, results) => {
+      if (err) {
+        return reject(err)
+      }
+
+      const alldump = results;
+
+
+      const query2 = 'SELECT `id`,`name` FROM `team_master`';
+
+      conn.query(query2, (err, results) => {
+        if (err) {
+          return reject(err);
+        }
+
+        const departmentmaster = results;
+
+
+        const departmentIdMap = departmentmaster.reduce((acc, department) => {
+          acc[department.name] = department.id;
+          return acc;
+        }, {});
+
+        const departmentsWithId = alldump.map(department => {
+          const id = departmentIdMap[department.Team];
+          return id ? { Team : id} : department;
+        });
+        
+
+        const query3 = 'SELECT * FROM `dump`';
+
+        conn.query(query3, (err, results) => {
+          if (err) {
+            return reject(err);
+
+          }
+
+          for (let i = 0; i < results.length; i++) {
+
+            const rowid = results[i]["Emp ID"]
+
+            const departID = departmentsWithId[i].Team
+
+            const query4 = 'UPDATE `dump` SET `Team` = ? WHERE `Emp ID` = ?'
+
+            conn.query(query4, [departID, rowid], (err, results) => {
+              if (err) {
+                return reject(err);
+              }
+
+              console.log('Successfully updated TeamName to ID')
+            })
+          }
+
+          conn.end()
+        })
+
+      })
+    })
+  })
+}
+
+
+
+(async () => {
+  try {
+    TeamtoId()
+  } catch (err) {
     console.log(err)
   }
 })()
+
+
+
+// (async () => {
+//   try {
+//     DepartmentoId()
+//   } catch (err) {
+//     console.log(err)
+//   }
+// })()
 
 
 
