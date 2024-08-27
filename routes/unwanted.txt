@@ -503,3 +503,364 @@ const fileUpload = (req, res, next) => {
             } else {
                 
             }
+
+
+
+
+
+
+
+            {/* <Container
+                                                sx={{
+                                                    flex: 2,
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    gap: 1
+                                                }}
+                                            >
+                                                {/* <Typography variant="subtitle2">
+                                                    Department: {todo.department}
+                                                </Typography> */}
+{/* <Typography variant="subtitle2">
+                                                    Assigned To: {todo.Asignee}
+                                                </Typography> */}
+{/* <Typography variant="subtitle2" color={color}>
+                                                    Time Left: {formatTime(timeLeft)}
+                                                </Typography> */}
+{/* </Container> */ }
+
+{/* <TableCell align="right">
+                                <IconButton color="primary">
+                                    <EditIcon />
+                                </IconButton>
+                                <IconButton color="error">
+                                    <DeleteIcon />
+                                </IconButton>
+                            </TableCell> */}
+
+
+
+//             <TableContainer component={Paper} sx={{ maxWidth: 600, margin: '10px auto', maxHeight: 600 }} >
+//     <Table stickyHeader >
+//         <TableHead >
+//             <TableRow>
+//                 <TableCell align="center" colSpan={2}>
+//                     <Box display="flex" justifyContent="space-between" alignItems="center">
+//                         <Typography variant="body1" sx={{ fontWeight: 'bold', color: '#1F3F49' }}>
+//                             My Tasks
+//                         </Typography>
+//                         {/* <Button variant="contained" color="primary" size="small">
+//                     Add Task
+//                 </Button> */}
+//                         <AddTodo />
+//                     </Box>
+//                 </TableCell>
+//             </TableRow>
+//         </TableHead>
+//         <TableBody>
+//             {myallTasks.map((todo) => (
+//                 <TableRow
+//                     key={todo.id}
+//                     sx={{
+//                         '&:nth-of-type(even)': { backgroundColor: '#f5f5f5' },
+//                         '&:hover': { backgroundColor: '#e0f7fa' },
+//                     }}
+//                 >
+//                     <TableCell>
+//                         <Paper
+//                             sx={{
+//                                 padding: 0.1,
+//                                 display: 'flex',
+//                                 flexDirection: 'row',
+//                                 alignItems: 'center',
+//                                 justifyContent: 'space-between',
+//                                 gap: 2,
+//                                 boxShadow: 1,
+//                                 borderRadius: 1
+//                             }}
+//                         >
+//                             <Container sx={{ flex: 2 }} >
+//                                 <Typography
+//                                     variant="subtitle2"
+//                                     sx={{
+//                                         fontWeight: 'normal',
+//                                         color: '#3f51b5'
+//                                     }}
+//                                 >
+//                                     {todo.task}
+//                                 </Typography>
+//                             </Container>
+
+//                             <Container
+//                                 sx={{
+//                                     flex: 2,
+//                                     display: 'flex',
+//                                     flexDirection: 'column',
+//                                     gap: 1
+//                                 }}
+//                             >
+//                                 <Typography variant="subtitle2">
+//                                     Department: {todo.department}
+//                                 </Typography>
+//                                 <Typography variant="subtitle2">
+//                                     Assigned To: {todo.Asignee}
+//                                 </Typography>
+//                                 <Typography variant="subtitle2" color={color}>
+//                                     {/* TAT: {todo.Tat} */}
+//                                     Time Left: {formatTime(timeLeft)}
+//                                 </Typography>
+//                             </Container>
+
+//                             <Container
+//                                 sx={{
+//                                     flex: 0,
+//                                     display: 'flex',
+//                                     alignItems: 'center',
+//                                 }}
+//                             >
+//                                 <FormControl variant="outlined" sx={{ minWidth: 120 }}>
+//                                     <InputLabel>Status</InputLabel>
+//                                     <Select
+//                                         label="Status"
+//                                         defaultValue="open"
+//                                         sx={{
+//                                             width: 120,
+//                                             fontSize: '0.75rem',
+//                                             padding: '0rem',
+//                                             height: '40px',
+//                                         }}
+//                                     >
+//                                         <MenuItem value="open">Open</MenuItem>
+//                                         <MenuItem value="in-progress">In Progress</MenuItem>
+//                                         <MenuItem value="completed">Completed</MenuItem>
+//                                         {userinfo.user_role === 1 ? <MenuItem value="done">Done</MenuItem> : ''}
+//                                     </Select>
+//                                 </FormControl>
+//                             </Container>
+//                         </Paper>
+//                     </TableCell>
+//                 </TableRow>
+//             ))}
+//         </TableBody>
+//     </Table>
+// </TableContainer>
+
+
+
+// <FormControl variant="outlined" sx={{ minWidth: 100 }}>
+//     <InputLabel>Status</InputLabel>
+//     <Select
+//         label="Status"
+//         value={select}
+//         onChange={(e) => handleChange(e, todo.id)}
+//         sx={{
+//             width: 120,
+//             fontSize: '0.75rem',
+//             padding: '0rem',
+//             height: '30px',
+//         }}
+//     >
+//         {
+//             select === 'open' ?
+//                 <MenuItem value="open">open</MenuItem>
+//                 : ''
+//         }
+//         {userinfo.user_role === 1 ? <MenuItem value="pending">Pending</MenuItem> : ''}
+//         {userinfo.user_role === 1 ? <MenuItem value="done">Done</MenuItem> : ''}
+//         {userinfo.user_role !== 1 ? <MenuItem value="in-progress">In Progress</MenuItem> : ''}
+//         {userinfo.user_role !== 1 ? <MenuItem value="completed">Completed</MenuItem> : ''}
+
+
+//     </Select>
+// </FormControl>
+
+
+
+        // let url = `${URL}todolist/employee`;
+        // axios.get(url, {
+        //     params: {
+        //         id: teamID
+        //     }
+        // })
+        //     .then((response) => {
+
+        //         setEmployee(response.data.data)
+        //         console.log(employee)
+        //         if (importantValue === '1') {
+        //             const getLoggedUserDetails = employee.filter((item) => item["Emp ID"] === userinfo.user_details.emp_id)
+        //             console.log('this is executed')
+        //             setdepartid(getLoggedUserDetails.Department);
+        //             setteamID(getLoggedUserDetails.Team);
+        //             setEmployeeID(getLoggedUserDetails["Emp ID"]);
+
+        //             setFormState((prevState) => ({
+        //                 ...prevState,
+        //                 department: getLoggedUserDetails.Department,
+        //                 team: getLoggedUserDetails.Team,
+        //                 assignee: getLoggedUserDetails["Emp ID"]
+        //             }));
+        //         }
+
+        //         console.log(formState)
+        //     })
+        //     .catch();
+
+
+    // department: value === '1' ? userinfo.user_role : '',
+    // team: value === '1' ? userinfo.user_role : '',
+    // assignee: value === '1' ? userinfo.user_name : '',
+
+
+
+
+
+    // if (importantValue === '1') {
+
+    //     const getLoggedUserDetails = employee.filter((item) => item["Emp ID"] === userinfo.user_details.emp_id)
+    //     console.log(getLoggedUserDetails)
+
+    //     console.log('this is executed')
+    //     setdepartid(getLoggedUserDetails.Department);
+    //     setteamID(getLoggedUserDetails.Team);
+    //     setEmployeeID(getLoggedUserDetails["Emp ID"]);
+
+    //     console.log(departid)
+    //     console.log(teamID)
+    //     console.log(employeeID)
+    // }
+
+
+
+        // if (response.status === 200) {
+        //     setFormState({
+        //         name: '',
+        //         description: '',
+        //         department: '',
+        //         team: '',
+        //         assignee: '',
+        //         tat: '',
+        //     });
+        //     toggleDrawer();
+        // } else {
+        //     console.error('Failed to save data');
+        // }
+
+
+
+ {/* {employee.map((item) => (
+    <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
+))} */}
+
+
+
+    // return (
+    //     <>
+    //         <Button variant="contained" onClick={toggleDrawer}>Add Todo</Button>
+    //         <Drawer
+    //             anchor="right"
+    //             open={open}
+    //             onClose={toggleDrawer}
+    //             sx={{ width: drawerWidth, flexShrink: 0 }}
+    //         >
+    //             <Box
+    //                 sx={{ width: drawerWidth, p: 5, marginTop: 4 }}
+    //                 role="presentation"
+    //             >
+    //                 <Typography variant="h6" gutterBottom>
+    //                     Task
+    //                 </Typography>
+    //                 <TextField
+    //                     fullWidth
+    //                     label="Name"
+    //                     name="name"
+    //                     value={formState.name}
+    //                     onChange={handleChange}
+    //                     margin="normal"
+    //                 />
+    //                 <TextField
+    //                     fullWidth
+    //                     label="Description"
+    //                     name="description"
+    //                     value={formState.description}
+    //                     onChange={handleChange}
+    //                     multiline
+    //                     rows={4}
+    //                     margin="normal"
+    //                 />
+    //                 <FormControl fullWidth margin="normal">
+    //                     <InputLabel>Department</InputLabel>
+    //                     <Select
+    //                         name="department"
+    //                         value={formState.department}
+    //                         onChange={handleChange}
+    //                         label="Department"
+    //                     >
+    //                         {Department.map((item) => (
+
+    //                             <MenuItem value={item.name}>{item.name}</MenuItem>
+    //                         ))}
+    //                     </Select>
+    //                 </FormControl>
+    //                 <FormControl fullWidth margin="normal">
+    //                     <InputLabel>Team</InputLabel>
+    //                     <Select
+    //                         name="team"
+    //                         value={formState.team}
+    //                         onChange={handleChange}
+    //                         label="Team" Department
+    //                     >
+    //                         {
+    //                             Teams.map((items) => (
+    //                                 <MenuItem value={items.name}>{items.name}</MenuItem>
+    //                             ))
+    //                         }
+
+    //                     </Select>
+    //                 </FormControl>
+    //                 <FormControl fullWidth margin="normal">
+    //                     <InputLabel>Assignee</InputLabel>
+    //                     <Select
+    //                         name="assignee"
+    //                         value={formState.assignee}
+    //                         onChange={handleChange}
+    //                         label="Assignee"
+    //                     >
+
+    //                         {Assgine.map((item) => (
+    //                             <MenuItem value={item.name}>{item.name}</MenuItem>
+    //                         ))}
+
+    //                     </Select>
+    //                 </FormControl>
+
+    //                 <LocalizationProvider dateAdapter={AdapterDayjs}>
+    //                     <Box sx={{ padding: 2,display:'flex',flexDirection:'row',justifyContent:'space-between' }}>
+    //                         <DateTimePicker
+    //                             label="Start Date & Time"
+    //                             value={startDateTime}
+    //                             onChange={(newValue) => setStartDateTime(newValue)}
+    //                             renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2 }} />}
+    //                         />
+    //                         <DateTimePicker
+    //                             label="End Date & Time"
+    //                             value={endDateTime}
+    //                             onChange={(newValue) => setEndDateTime(newValue)}
+    //                             renderInput={(params) => <TextField  {...params} sx={{ marginBottom: 2 }} />}
+    //                         />
+
+    //                     </Box>
+    //                 </LocalizationProvider>
+
+    //                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+    //                     <Button variant="outlined" onClick={toggleDrawer}>
+    //                         Cancel
+    //                     </Button>
+    //                     <Button variant="contained" onClick={handleSend}>
+    //                         Send
+    //                     </Button>
+    //                 </Box>
+    //             </Box>
+    //         </Drawer>
+    //     </>
+    // );
+
