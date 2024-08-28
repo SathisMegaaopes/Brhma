@@ -1,6 +1,8 @@
 import express from "express";
 import conn from "../../sql.js";
 import e from "express";
+import { stat } from "fs";
+import cron from 'node-cron';
 
 const router = express.Router();
 
@@ -27,48 +29,51 @@ router.get('/', (req, res) => {
                 const otherTasks = role === '1' ? rows.filter(task => String(task.task_assignee).trim() !== String(id).trim() && String(task.created_by).trim() === String(id).trim()) :
                     rows.filter(task => String(task.task_assignee).trim() === String(id).trim() && String(task.created_by).trim() !== String(id).trim());
 
+                // const secondQuery = "SELECT `Emp ID`,`f_name` FROM `dump` WHERE`Emp ID`= ? "
 
                 const assigneeIds = [...new Set(otherTasks.map(task => task.task_assignee))];
 
-                // if(assigneeIds.length === 0) //This is the new Feature that will be added soon
+                if (assigneeIds.length === 0) {
+                    response.data.assignedToMe = assignedToMe;
+                    response.data.otherTasks = otherTasks;
+                    response.status = 1;
+                    response.message = 'Todo list fetched from the database';
+                    res.send(response);
+                } else {
+                    const placeholders = assigneeIds.map(() => '?').join(', ');
 
-                // const secondQuery = "SELECT `Emp ID`,`f_name` FROM `dump` WHERE`Emp ID`= ? "
-
-
-                const placeholders = assigneeIds.map(() => '?').join(', ');
-                const sqlQuery = `SELECT \`Emp ID\`, \`f_name\` FROM \`dump\` WHERE \`Emp ID\` IN (${placeholders})`;
-
-
-                conn.query(sqlQuery, assigneeIds, (err, rows) => {
-                    if (err) {
-                        console.log(' it showing errr', err)
-
-                    } else {
-
-                        const assigneeMap = {};
-                        rows.forEach(row => {
-                            assigneeMap[row["Emp ID"]] = row.f_name;
-                        });
-
-                        const updatedAssignedToMe = otherTasks.map(task => ({
-                            ...task,
-                            task_assignee: assigneeMap[String(task.task_assignee)] || task.task_assignee
-                        }));
-
-                        console.log(updatedAssignedToMe, 'updatedAssignedToMe')
-
-                        response.data.assignedToMe = assignedToMe;
-                        response.data.otherTasks = updatedAssignedToMe;
-                        response.status = 1;
-                        response.message = 'Todo list fetched from the database';
-                        res.send(response);
-
-                    }
-                })
+                    const sqlQuery = `SELECT \`Emp ID\`, \`f_name\` FROM \`dump\` WHERE \`Emp ID\` IN (${placeholders})`;
 
 
+                    conn.query(sqlQuery, assigneeIds, (err, rows) => {
+                        if (err) {
+                            console.log(' it showing errr', err)
 
 
+                        } else {
+
+                            const assigneeMap = {};
+                            rows.forEach(row => {
+                                assigneeMap[row["Emp ID"]] = row.f_name;
+                            });
+
+                            const updatedAssignedToMe = otherTasks.map(task => ({
+                                ...task,
+                                task_assignee: assigneeMap[String(task.task_assignee)] || task.task_assignee
+                            }));
+
+                            // console.log(updatedAssignedToMe, 'updatedAssignedToMe')
+
+                            response.data.assignedToMe = assignedToMe;
+                            response.data.otherTasks = updatedAssignedToMe;
+                            response.status = 1;
+                            response.message = 'Todo list fetched from the database';
+                            res.send(response);
+
+                        }
+                    })
+
+                }
 
             } else {
 
@@ -152,6 +157,8 @@ router.get('/employee', (req, res) => {
 router.post('/', (req, res) => {
 
     const { taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID } = req.body;
+    
+    console.log(tatValue,'this is the TatValue')
 
     // console.log(taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID)
 
@@ -171,18 +178,46 @@ router.post('/', (req, res) => {
     })
 })
 
+cron.schedule('* * * * * *', () => {
 
+    const query = 'UPDATE `to_do_list` SET `tat` = `tat`- 1 WHERE `tat` > 0';
+
+    conn.query(query, (err, result) => {
+        if (err) throw err;
+        // console.log(`Updated ${result.affectedRows} tasks`);
+    });
+
+});
 
 router.put('/', (req, res) => {
 
-    const { id, status } = req.body
+    const { id, status, username } = req.body
 
-    // console.log(id, status)
+    let query;
+    let data;
 
+    if (status === 1) {
 
-    const query = "UPDATE `to_do_list` SET `status`= ?  WHERE `id`= ? ";
+        query = "UPDATE `to_do_list`SET `status`= ? ,`accepted_by`= ? ,`accepted_at`= CURRENT_TIMESTAMP  WHERE `id`= ? ";
+        data = [status, username, id]
 
-    conn.query(query, [status, id], (err, rows) => {
+    } else if (status === 2) {
+
+        query = "UPDATE `to_do_list` SET `status`= ? ,`complete_at`= CURRENT_TIMESTAMP  WHERE `id`= ? ";
+        data = [status, id]
+
+    } else if (status === 3) {
+
+        query = "UPDATE `to_do_list` SET `status`= ? ,`reopen_by` = ? , `reopen_at`= CURRENT_TIMESTAMP   WHERE `id`= ? ";
+        data = [status, username, id]
+
+    } else if (status === 4) {
+
+        query = "UPDATE `to_do_list` SET `status`= ? ,`done_by` = ? , `done_at`= CURRENT_TIMESTAMP   WHERE `id`= ? ";
+        data = [status, username, id]
+    }
+
+    conn.query(query, data, (err, rows) => {
         let response = { status: 0, data: {}, message: '' }
         if (err) {
             response.message = " Something went wrong at the updating the task status" + err;
