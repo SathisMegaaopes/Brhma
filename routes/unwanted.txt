@@ -864,3 +864,140 @@ const fileUpload = (req, res, next) => {
     //     </>
     // );
 
+                                        {/* {userinfo.user_role === 1 && <MenuItem value="onhold">On hold</MenuItem>}
+                                        {userinfo.user_role === 1 && <MenuItem value="done">Done</MenuItem>}
+                                        {userinfo.user_role !== 1 && <MenuItem value="in-progress">In Progress</MenuItem>}
+                                        {userinfo.user_role !== 1 && <MenuItem value="completed">Completed</MenuItem>} */}
+
+
+
+
+
+
+
+  {selectedTask.task_assignee.toString() === userinfo.user_name && selectedTask.created_by.toString() === userinfo.user_name ? (
+                                    <FormControl variant="outlined" size="small">
+                                        <InputLabel>Status</InputLabel>
+                                        <Select
+                                            label="Status"
+                                            value={select}
+                                            onChange={(e) => handleChange(e, selectedTask.id)}
+                                            style={{
+                                                width: '150px',
+                                                fontSize: '0.875rem',
+                                                height: '35px',
+                                                backgroundColor: '#ffffff',
+                                            }}
+                                        >
+                                            {select === 'open' && <MenuItem value="open">Open</MenuItem>}
+                                            <MenuItem value="in-progress">In Progress</MenuItem>
+                                            <MenuItem value="completed">Completed</MenuItem>
+                                            <MenuItem value="onhold">On hold</MenuItem>
+                                            <MenuItem value="done">Done</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                )
+                                    :
+                                    (
+                                        selectedTask.task_assignee.toString() !== userinfo.user_name && selectedTask.created_by.toString() === userinfo.user_name && (
+                                            <FormControl variant="outlined" size="small">
+                                                <InputLabel>Status</InputLabel>
+                                                <Select
+                                                    label="Status"
+                                                    value={select}
+                                                    onChange={(e) => handleChange(e, selectedTask.id)}
+                                                    style={{
+                                                        width: '150px',
+                                                        fontSize: '0.875rem',
+                                                        height: '35px',
+                                                        backgroundColor: '#ffffff',
+                                                    }}
+                                                >
+                                                    {/* {select === 'open' && <MenuItem value="open">Open</MenuItem>} */}
+                                                    <MenuItem value="onhold">On hold</MenuItem>
+                                                    <MenuItem value="done">Done</MenuItem>
+                                                </Select>
+                                            </FormControl>
+                                        )
+                                    )}
+
+                                                                    {/* <FormControl variant="outlined" size="small">
+                                    <InputLabel>Status</InputLabel>
+                                    <Select
+                                        label="Status"
+                                        value={select}
+                                        onChange={(e) => handleChange(e, selectedTask.id)}
+                                        style={{
+                                            width: '150px',
+                                            fontSize: '0.875rem',
+                                            height: '35px',
+                                            backgroundColor: '#ffffff',
+                                        }}
+                                    >
+                                        {selectedTask.task_assignee.toString() === userinfo.user_name && selectedTask.created_by.toString() === userinfo.user_name
+                                            ?
+                                            <>
+                                                {select === 'open' && <MenuItem value="open">Open</MenuItem>}
+                                                <MenuItem value="in-progress">In Progress</MenuItem>
+                                                <MenuItem value="completed">Completed</MenuItem>
+                                                <MenuItem value="onhold">On hold</MenuItem>
+                                                <MenuItem value="done">Done</MenuItem>
+                                            </>
+                                            : (userinfo.user_role === 1 && selectedTask.task_assignee.toString() !== userinfo.user_name && selectedTask.created_by.toString() === userinfo.user_name)
+                                                ?
+                                                <>
+                                                    {select === 'open' && <MenuItem value="open">Open</MenuItem>}
+                                                    <MenuItem value="onhold">On hold</MenuItem>
+                                                    <MenuItem value="done">Done</MenuItem>
+                                                </>
+                                                :
+                                                <>
+                                                    {select === 'open' && <MenuItem value="open">Open</MenuItem>}
+                                                    <MenuItem value="in-progress">In Progress</MenuItem>
+                                                    <MenuItem value="completed">Completed</MenuItem>
+                                                </>
+
+                                        }
+
+                                    </Select>
+                                </FormControl> */}
+
+
+
+
+
+
+
+
+
+
+
+
+///important  candidtte Evaluation and Candidate Database Removed button ..................
+
+
+                                {/* <Grid container spacing={4}>
+                    <Grid item xs={4} md={3} lg={7}>
+                        <Card
+                            variant="outlined"
+                            onClick={(e) => handleNavigate(1)}
+                            sx={{ cursor: "pointer", background: "#FEFAE0" }}
+                        >
+                            <CardHeader title="Candidate Evaluation" />
+                        </Card>
+                    </Grid>
+
+                    <Grid item xs={4} md={3} lg={6} >
+                        {userinfo?.user_role === 1 ? (
+                            <Card
+                                variant="outlined"
+                                onClick={(e) => handleNavigate(2)}
+                                sx={{ cursor: "pointer", background: "#FEFAE0" }}
+                            >
+                                <CardHeader title="Candidate Database"  />
+                            </Card>
+                        ) : (
+                            ""
+                        )}
+                    </Grid>
+                </Grid> */}

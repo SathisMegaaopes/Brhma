@@ -184,14 +184,14 @@ cron.schedule('* * * * * *', () => {
 
     conn.query(query, (err, result) => {
         if (err) throw err;
-        // console.log(`Updated ${result.affectedRows} tasks`);
+        // console.log(`Updated ${result.affectedRows} tasks`); 
     });
 
 });
 
 router.put('/', (req, res) => {
 
-    const { id, status, username } = req.body
+    const { id, status, username , comment } = req.body
 
     let query;
     let data;
@@ -203,18 +203,24 @@ router.put('/', (req, res) => {
 
     } else if (status === 2) {
 
-        query = "UPDATE `to_do_list` SET `status`= ? ,`complete_at`= CURRENT_TIMESTAMP  WHERE `id`= ? ";
-        data = [status, id]
+        query = "UPDATE `to_do_list` SET `status`= ? ,`complete_at`= CURRENT_TIMESTAMP , `complete_comments` = ?   WHERE `id`= ? ";
+        data = [status, comment , id]
+
+        ///here I have comments
 
     } else if (status === 3) {
 
-        query = "UPDATE `to_do_list` SET `status`= ? ,`reopen_by` = ? , `reopen_at`= CURRENT_TIMESTAMP   WHERE `id`= ? ";
-        data = [status, username, id]
+        query = "UPDATE `to_do_list` SET `status`= ? ,`reopen_by` = ? , `reopen_at`= CURRENT_TIMESTAMP  , `reopen_comments` = ?  WHERE `id`= ? ";
+        data = [status, username, comment ,id] 
+
+        /// Here I have comments 
 
     } else if (status === 4) {
 
-        query = "UPDATE `to_do_list` SET `status`= ? ,`done_by` = ? , `done_at`= CURRENT_TIMESTAMP   WHERE `id`= ? ";
-        data = [status, username, id]
+        query = "UPDATE `to_do_list` SET `status`= ? ,`done_by` = ? , `done_at`= CURRENT_TIMESTAMP , `done_comments` = ?  WHERE `id`= ? ";
+        data = [status, username, comment , id]
+
+        //Here also I have comments 
     }
 
     conn.query(query, data, (err, rows) => {
