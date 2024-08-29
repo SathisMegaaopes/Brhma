@@ -19,11 +19,11 @@ import address from "./routes/candidates/address.js"
 // import fileUpload from "express-fileupload";
 import employeeList from "./routes/Employee/employeeList.js";
 import Login from "./routes/Login/login.js";
-
-import todolist from "./routes/candidates/todolist.js"
+import todolist from "./routes/todolist/todolist.js"
 
 import { fileURLToPath } from 'url';
 import path from 'path';
+
 
 
 
@@ -62,7 +62,7 @@ app.use('/login', Login);
 app.use('/candidateupload', candidateUploads)
 app.use('/address', address)
 
-app.use('/todolist', todolist)
+app.use('/todolist',todolist)
 
 //my code 
 app.get('/', (req, res) => {

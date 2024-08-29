@@ -1001,3 +1001,122 @@ const fileUpload = (req, res, next) => {
                         )}
                     </Grid>
                 </Grid> */}
+
+
+
+
+
+
+
+
+
+
+
+                            {/* <Drawer
+                anchor="right"
+                open={open}
+                onClose={toggleDrawer}
+                sx={{ width: drawerWidth, flexShrink: 0 }}
+            >
+                <Box
+                    sx={{ width: drawerWidth, p: 5, marginTop: 4 }}
+                    role="presentation"
+                >
+                    <Typography variant="h6" gutterBottom sx={{ textAlign: 'center' }}>
+                        Task
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        label="Name"
+                        name="name"
+                        value={formState.name}
+                        onChange={handleChange}
+                        margin="normal"
+                    />
+                    <TextField
+                        fullWidth
+                        label="Description"
+                        name="description"
+                        value={formState.description}
+                        onChange={handleChange}
+                        multiline
+                        rows={4}
+                        margin="normal"
+                    />
+                    {AuthorizedPerson === 1 && value === '2' ?
+                        <>
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Department</InputLabel>
+                                <Select
+                                    name="department"
+                                    value={formState.department}
+                                    onChange={handleChange}
+                                    label="Department"
+                                >
+                                    {departments.map((item) => (
+                                        <MenuItem key={item.id} value={item.name}>{item.name}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Team</InputLabel>
+                                <Select
+                                    name="team"
+                                    value={formState.team}
+                                    onChange={handleChange}
+                                    label="Team"
+                                >
+                                    {Teams.map((items) => (
+                                        <MenuItem key={items.id} value={items.name}>{items.name}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Assignee</InputLabel>
+                                <Select
+                                    name="assignee"
+                                    value={formState.assignee}
+                                    onChange={handleChange}
+                                    label="Assignee"
+                                >
+                                    {employee.length > 0 ? (
+                                        employee.map((item) => (
+                                            <MenuItem key={item.id} value={item.f_name}>{item.f_name}</MenuItem>
+                                        ))
+                                    ) : (
+                                        <MenuItem disabled>No employees available</MenuItem>
+                                    )}
+                                </Select>
+                            </FormControl>
+                        </>
+                        : ' '}
+
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Box sx={{ padding: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 4 }}>
+                            <DateTimePicker
+                                label="Start Date & Time"
+                                value={formState.startDateTime}
+                                onChange={(newValue) => handleDateChange('startDateTime', newValue)}
+                                renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2 }} />}
+                            />
+                            <DateTimePicker
+                                label="End Date & Time"
+                                value={formState.endDateTime}
+                                onChange={(newValue) => handleDateChange('endDateTime', newValue)}
+                                renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2 }} />}
+                            />
+                        </Box>
+                    </LocalizationProvider>
+
+                    <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
+                        <Button variant="outlined" onClick={toggleDrawer}>
+                            Cancel
+                        </Button>
+                        <Button variant="contained" onClick={handleSend} disabled={isFormIncomplete()}>
+                            Submit
+                        </Button>
+                    </Box>
+                </Box>
+            </Drawer> */}
