@@ -24,12 +24,10 @@ router.get('/', (req, res) => {
                 const assignedToMe = role === '1' ? rows.filter(task => String(task.task_assignee).trim() === String(id).trim()) :
                     rows.filter(task => String(task.task_assignee).trim() === String(id).trim() && String(task.created_by).trim() === String(id).trim());
 
-                // const otherTasks = rows.filter(task => String(task.created_by).trim() === String(id).trim());
 
                 const otherTasks = role === '1' ? rows.filter(task => String(task.task_assignee).trim() !== String(id).trim() && String(task.created_by).trim() === String(id).trim()) :
                     rows.filter(task => String(task.task_assignee).trim() === String(id).trim() && String(task.created_by).trim() !== String(id).trim());
 
-                // const secondQuery = "SELECT `Emp ID`,`f_name` FROM `dump` WHERE`Emp ID`= ? "
 
                 const assigneeIds = [...new Set(otherTasks.map(task => task.task_assignee))];
 
@@ -93,7 +91,7 @@ router.get('/department', (req, res) => {
     const query1 = "SELECT * FROM `dept_master`";
 
     conn.query(query1, (err, rows) => {
-
+ 
         let response = { status: 0, data: [], message: '' }
         if (err) {
             response.message = "Something went wrong! Please check !" + err;
@@ -156,15 +154,15 @@ router.get('/employee', (req, res) => {
 
 router.post('/', (req, res) => {
 
-    const { taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID } = req.body;
+    const { taskname, taskdes, departid, teamID, employeeID, status,  startDate , endDate , userID } = req.body;
     
-    console.log(tatValue,'this is the TatValue')
+    // console.log(tatValue,'this is the TatValue')
 
     // console.log(taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID)
 
-    const sql_query = "INSERT INTO `to_do_list` ( task_name , task_description , task_dept , task_team , task_assignee , status , tat , created_by )  VALUES (?,?,?,?,?,?,?,?)"
+    const sql_query = "INSERT INTO `to_do_list` ( task_name , task_description , task_dept , task_team , task_assignee , status , start_dateTime , end_dateTime , created_by )  VALUES (?,?,?,?,?,?,?,?,?)"
 
-    conn.query(sql_query, [taskname, taskdes, departid, teamID, employeeID, status, tatValue, userID], (err, rows) => {
+    conn.query(sql_query, [taskname, taskdes, departid, teamID, employeeID, status,  startDate , endDate , userID], (err, rows) => {
         // conn.query(sql_query, [taskname, taskdes, departid, teamID, employeeID, status, tatValue], (err, rows) => {
         let response = { status: 0, data: {}, message: '' }
         if (err) {
@@ -178,16 +176,16 @@ router.post('/', (req, res) => {
     })
 })
 
-cron.schedule('* * * * * *', () => {
+// cron.schedule('* * * * * *', () => {
 
-    const query = 'UPDATE `to_do_list` SET `tat` = `tat`- 1 WHERE `tat` > 0';
+//     const query = 'UPDATE `to_do_list` SET `tat` = `tat`- 1 WHERE `tat` > 0';
 
-    conn.query(query, (err, result) => {
-        if (err) throw err;
-        // console.log(`Updated ${result.affectedRows} tasks`); 
-    });
+//     conn.query(query, (err, result) => {
+//         if (err) throw err;
+//         // console.log(`Updated ${result.affectedRows} tasks`); 
+//     });
 
-});
+// });
 
 router.put('/', (req, res) => {
 
