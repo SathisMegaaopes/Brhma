@@ -325,6 +325,17 @@ export function TeamtoId() {
 
 
 
+// export default function foreignKeyVerify () {
+//       return new Promise((resolve,reject)=>{
+//         const query = 
+            // "DELETE parent_table, child_table1, child_table2 +
+            //     USING parent_table
+            //     JOIN child_table1 ON child_table1.parent_id = parent_table.id
+            //     JOIN child_table2 ON child_table2.parent_id = parent_table.id
+            //     WHERE parent_table.id = ? ";
+//       })
+// }
+
 
 // Changing Teamname into ID
 
@@ -422,3 +433,7 @@ export function TeamtoId() {
 // WHERE `Emp ID` != 18001;
 
 // UPDATE `dump` SET `Reporting Team Lead` = 'Shamala Nagaveni S' WHERE `Reporting Team Lead` = 'Shamala Srinivas';
+
+
+
+

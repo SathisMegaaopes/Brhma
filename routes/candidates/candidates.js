@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
 
     const { employid, fromdate, todate } = req.query;
 
-    console.log(employid,fromdate,todate)
+    console.log(employid, fromdate, todate)
 
     let query = "SELECT * FROM candidate_master";
     let params = [];
@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
     query += " ORDER BY id DESC";
 
     // conn.query("SELECT * FROM candidate_master ORDER BY id DESC", (err, rows) => {
-    console.log('This is the api hitted for the form and to date with emplyod id',query)
+    console.log('This is the api hitted for the form and to date with emplyod id', query)
 
     conn.query(query, params, (err, rows) => {
 
@@ -304,6 +304,7 @@ router.delete('/', (req, res) => {
     const query1 = "SELECT * FROM `candidate_master` WHERE `candidate_id` = ? "
 
     conn.query(query1, [candidateid], (err, rows) => {
+        let response = { status: 0, data: [], message: "" };
         if (err) {
             res.send(err)
         }
@@ -312,45 +313,167 @@ router.delete('/', (req, res) => {
             return item.id
         })
 
+        // const candidateDeleteid = candidateid[0]
         const candidateDeleteid = candidateid[0]
 
-        const query2 = "DELETE FROM `candidate_master` WHERE `id`= ? ";
+
+        console.log(typeof(candidateDeleteid))
+
+        // const query = "DELETE FROM `candidate_master` WHERE `id`= ? "
+
+        // conn.query(query,[candidateDeleteid],(err,rows)=>{
+        //     if(err){
+        //         res.send(err)
+        //     }
+        //     res.status(200).send("Successfully deleted")
+        // })
+
+        const query2 = "DELETE FROM `interview_writing` WHERE `candidate_id`= ? "
 
         conn.query(query2, [candidateDeleteid], (err, rows) => {
-            // if (err) {
-            //     res.send(err)
-            // }
-
-            let response = { status: 0, data: [], message: "" };
             if (err) {
-                response.message = err;
-                res.send(response)
-            }
-            else {
-                response.status = 1;
-                response.message = "The Candidate deleted successfully...";
-                res.send(response)
-                console.log(rows, 'this is the row , Getting to deleted ')
+                response.message = "Something went Wrong ! " + err;
             }
 
+            console.log("Query 2 successfully executed ")
 
-            // const query3 = " DELETE FROM `candidate_edu_master` WHERE `candidate_id`= ? "
+            const query3 = "DELETE FROM `interview_typing` WHERE `candidate_id`= ? "
 
-            // conn.query(query3, [candidateDeleteid], (err, rows) => {
+            conn.query(query3, [candidateDeleteid], (err, rows) => {
+                if (err) {
+                    response.message = "Something went Wrong ! " + err;
+                }
 
-            // console.log(rows,'this after delteting the from the candidate_edu_master')
+                console.log("Query 3 successfully executed ")
 
-            // let response = { status: 0, data: [], message: "" };
-            // if (err) {
-            //     response.message = err;
-            //     res.send(response)
-            // }
-            // else {
-            //     response.status = 1;
-            //     response.message = "The Candidate deleted successfully...";
-            //     res.send(response)
-            // }
-            // })
+                const query4 = "DELETE FROM `interview_shortlist` WHERE `candidate_id`= ? "
+
+                conn.query(query4, [candidateDeleteid], (err, rows) => {
+                    if (err) {
+                        response.message = "Something went Wrong ! " + err;
+                    }
+
+                    console.log("Query 4 successfully executed ")
+
+                    const query5 = "DELETE FROM `interview_selected` WHERE `candidate_id`= ? "
+
+                    conn.query(query5, [candidateDeleteid], (err, rows) => {
+                        if (err) {
+                            response.message = "Something went Wrong ! " + err;
+                        }
+
+                        console.log("Query 5 successfully executed ")
+
+                        const query6 = "DELETE FROM `interview_rejected` WHERE `candidate_id`= ? "
+
+                        conn.query(query6, [candidateDeleteid], (err, rows) => {
+                            if (err) {
+                                response.message = "Something went Wrong ! " + err;
+                            }
+
+                            console.log("Query 6 successfully executed ")
+
+
+                            const query7 = "DELETE FROM `interview_hold` WHERE `candidate_id`= ? "
+
+                            conn.query(query7, [candidateDeleteid], (err, rows) => {
+                                if (err) {
+                                    response.message = "Something went Wrong ! " + err;
+                                }
+                                console.log("Query 7 successfully executed ")
+
+                                const query8 = "DELETE FROM `interview_evaluation` WHERE `candidate_id`= ? "
+
+                                conn.query(query8, [candidateDeleteid], (err, rows) => {
+                                    if (err) {
+                                        response.message = "Something went Wrong ! " + err;
+                                    }
+                                    console.log("Query 8 successfully executed ")
+
+                                    const query9 = "DELETE FROM `cnadidate_uploads` WHERE `candidate_id`= ? "
+
+                                    conn.query(query9, [candidateDeleteid], (err, rows) => {
+                                        if (err) {
+                                            response.message = "Something went Wrong ! " + err;
+                                        }
+                                        console.log("Query 9 successfully executed ")
+
+                                        const query10 = "DELETE FROM `candidate_work` WHERE `candidate_id`= ? "
+
+                                        conn.query(query10, [candidateDeleteid], (err, rows) => {
+                                            if (err) {
+                                                response.message = "Something went Wrong ! " + err;
+                                            }
+                                            console.log("Query 10 successfully executed ")
+
+                                            const query11 = "DELETE FROM `candidate_reference_master` WHERE `candidate_id`= ? "
+
+                                            console.log("Query 10 successfully executed ")
+
+                                            conn.query(query11, [candidateDeleteid], (err, rows) => {
+                                                if (err) {
+                                                    response.message = "Something went Wrong ! " + err;
+                                                }
+                                                console.log("Query 11 successfully executed ")
+
+                                                const query12 = "DELETE FROM `candidate_personal` WHERE `candidate_id`= ? "
+
+                                                conn.query(query12, [candidateDeleteid], (err, rows) => {
+                                                    if (err) {
+                                                        response.message = "Something went Wrong ! " + err;
+                                                    }
+                                                    console.log("Query 12 successfully executed ")
+
+                                                    const query13 = "DELETE FROM `candidate_edu_master` WHERE `candidate_id`= ? "
+
+                                                    conn.query(query13, [candidateDeleteid], (err, rows) => {
+                                                        if (err) {
+                                                            response.message = "Something went Wrong ! " + err;
+                                                        }
+                                                        console.log("Query 13 successfully executed ")
+
+
+                                                        const query14 = "DELETE FROM `candidate_master` WHERE `id`= ? "
+
+                                                        conn.query(query14, [candidateDeleteid], (err, rows) => {
+                                                            if (err) {
+                                                                response.message = "Something went Wrong ! " + err;
+                                                            }
+                                                            console.log("Query 14 successfully executed ")
+
+                                                            response.status = 1;
+                                                            response.message = "The Candidate deleted successfully...";
+                                                            res.send(response)
+                                                            console.log(rows, 'this is the row , Getting to deleted ')
+
+                                                        })
+
+                                                    })
+
+
+                                                })
+
+
+                                            })
+
+
+                                        })
+
+
+                                    })
+
+
+                                })
+
+
+                            })
+
+                        })
+
+                    })
+                })
+            })
+
         })
     })
 
@@ -363,5 +486,28 @@ export default router;
 
 
 
+        // const query2 = "DELETE FROM `candidate_master` WHERE `id`= ? ";
+
+        // conn.query(query2, [candidateDeleteid], (err, rows) => {
+        //     // if (err) {
+        //     //     res.send(err)
+        //     // }
+
+        //     let response = { status: 0, data: [], message: "" };
+        //     if (err) {
+        //         response.message = err;
+        //         res.send(response)
+        //     }
+        //     else {
+        //         response.status = 1;
+        //         response.message = "The Candidate deleted successfully...";
+        //         res.send(response)
+        //         console.log(rows, 'this is the row , Getting to deleted ')
+        //     }
+
+        // })
+
+
+        
 // const query3 = "DELETE FROM `candidate_edu_master` WHERE `candidate_id`= ?; DELETE FROM `candidate_personal`  WHERE `candidate_id`= ? ; DELETE FROM `candidate_reference_master` WHERE `candidate_id` = ? ; "
 // conn.query(query3, [candidateDeleteid, candidateDeleteid, candidateDeleteid], (err, row) => {

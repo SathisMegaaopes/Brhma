@@ -16,7 +16,6 @@ import selected from "./routes/interview/hr_round.js";
 
 import address from "./routes/candidates/address.js"
 
-// import fileUpload from "express-fileupload";
 import employeeList from "./routes/Employee/employeeList.js";
 import Login from "./routes/Login/login.js";
 import todolist from "./routes/todolist/todolist.js"
@@ -57,14 +56,13 @@ app.use('/writingtest', writingTest);
 app.use('/hrround', selected);
 app.use('/employeelist', employeeList);
 app.use('/login', Login);
-// app.use('/image',imageUrl)
 
 app.use('/candidateupload', candidateUploads)
 app.use('/address', address)
 
 app.use('/todolist',todolist)
 
-//my code 
+
 app.get('/', (req, res) => {
   res.send(`This is the Bramha portal running on this server ${PORT}`)
 })
