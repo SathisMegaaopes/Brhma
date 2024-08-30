@@ -72,32 +72,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => { console.log(`Server is running at the port number ${PORT}`) });
 
 
-
-
-
-
-//my dataChanging code 
-
-// (async () => {
-//   try {
-//     const selectedData = await selectData(conn);
-//     console.log('Data selected:', selectedData);
-
-//     if (selectedData.length > 0) {
-//       const dataToUpdate = selectedData; // Assuming you only want to update with the first result
-//       const updateResult = await updateTable(conn, dataToUpdate);
-//       console.log(updateResult);
-//     }
-//   } catch (err) {
-//     console.error(err);
-//   } finally {
-//     connection.end((err) => {
-//       if (err) {
-//         console.error('Error ending the connection: ' + err.stack);
-//         return;
-//       }
-//       console.log('Connection closed');
-//     });
-//   }
-// })();
-

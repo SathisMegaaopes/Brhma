@@ -325,15 +325,20 @@ export function TeamtoId() {
 
 
 
-(async () => {
-  try {
-    TeamtoId()
-  } catch (err) {
-    console.log(err)
-  }
-})()
+
+// Changing Teamname into ID
+
+// (async () => {
+//   try {
+//     TeamtoId()
+//   } catch (err) {
+//     console.log(err)
+//   }
+// })()
 
 
+
+//Changing department to ID
 
 // (async () => {
 //   try {
@@ -345,6 +350,8 @@ export function TeamtoId() {
 
 
 
+// updaete the name into id 
+
 
 // (async () => {
 //   try {
@@ -352,18 +359,12 @@ export function TeamtoId() {
 //   } catch (err) {
 //     console.log(err);
 //   }``
-//   // finally {
-//   //   conn.end((err) => {
-//   //     if (err) {
-//   //       console.log('Error ending the conn :' + err.stack);
-//   //       return;
-//   //     }
-//   //     console.log('Connection closed');
-//   //   })
-//   // }
 // })()
 
 
+
+//This is the first one ( Dump Department to department_master )
+ 
 // (async () => {
 //   try {
 //     const selectedData = await gettingDepartment(conn);
@@ -387,6 +388,9 @@ export function TeamtoId() {
 //   }
 // })();
 
+
+
+// this is the second one ( Dump Team to Team_master )
 
 // (async () => {
 //   try {

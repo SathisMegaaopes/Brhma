@@ -9,6 +9,8 @@ router.get('/', (req, res) => {
 
     const { employid, fromdate, todate } = req.query;
 
+    console.log(employid,fromdate,todate)
+
     let query = "SELECT * FROM candidate_master";
     let params = [];
 
@@ -27,6 +29,7 @@ router.get('/', (req, res) => {
     query += " ORDER BY id DESC";
 
     // conn.query("SELECT * FROM candidate_master ORDER BY id DESC", (err, rows) => {
+    console.log('This is the api hitted for the form and to date with emplyod id',query)
 
     conn.query(query, params, (err, rows) => {
 

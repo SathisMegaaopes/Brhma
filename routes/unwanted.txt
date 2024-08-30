@@ -1120,3 +1120,249 @@ const fileUpload = (req, res, next) => {
                     </Box>
                 </Box>
             </Drawer> */}
+
+
+
+
+
+
+
+
+            // import React, { useEffect } from 'react';
+// import { Modal, Box, Typography, Button, IconButton } from '@mui/material';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import ErrorIcon from '@mui/icons-material/Error';
+// import CloseIcon from '@mui/icons-material/Close';
+
+// const SuccessFailureModal = ({ open, handleClose, status, successmsg, errormsg }) => {
+
+//     useEffect(() => {
+//         if (open) {
+//             const timer = setTimeout(() => {
+//                 handleClose();
+//             }, 5000);
+
+//             return () => clearTimeout(timer);
+//         }
+//     }, [open, handleClose]);
+
+//     return (
+//         <Modal
+//             open={open}
+//             onClose={handleClose}
+//             aria-labelledby="modal-title"
+//             aria-describedby="modal-description"
+//             sx={{
+//                 display: 'flex',
+//                 alignItems: 'center',
+//                 justifyContent: 'center',
+//                 backdropFilter: 'blur(3px)', // Adds a blur effect to the background
+//             }}
+//         >
+//             <Box
+//                 sx={{
+//                     position: 'relative',
+//                     width: 400,
+//                     bgcolor: status === 1 ? 'success.main' : 'error.main',
+//                     color: 'white',
+//                     borderRadius: '10px',
+//                     p: 3,
+//                     textAlign: 'center',
+//                     boxShadow: '0px 5px 15px rgba(0, 0, 0, 0.3)',
+//                     animation: 'fadeIn 0.5s ease-out', // Fade in effect
+//                     '@keyframes fadeIn': {
+//                         from: { opacity: 0, transform: 'scale(0.9)' },
+//                         to: { opacity: 1, transform: 'scale(1)' },
+//                     },
+//                 }}
+//             >
+//                 <IconButton
+//                     sx={{
+//                         position: 'absolute',
+//                         top: 8,
+//                         right: 8,
+//                         color: 'white',
+//                     }}
+//                     onClick={handleClose}
+//                 >
+//                     <CloseIcon />
+//                 </IconButton>
+//                 {status === 1 ? (
+//                     <CheckCircleIcon sx={{ fontSize: 60, mb: 2 }} />
+//                 ) : (
+//                     <ErrorIcon sx={{ fontSize: 60, mb: 2 }} />
+//                 )}
+//                 <Typography id="modal-title" variant="h5" component="h2">
+//                     {status === 1 ? 'Success' : 'Failure'}
+//                 </Typography>
+//                 <Typography id="modal-description" sx={{ mt: 2, fontSize: 16 }}>
+//                     {status === 1 ? successmsg : errormsg }
+//                 </Typography>
+//                 <Button
+//                     onClick={handleClose}
+//                     variant="contained"
+//                     sx={{
+//                         mt: 3,
+//                         backgroundColor: 'rgba(255, 255, 255, 0.2)',
+//                         color: 'white',
+//                         '&:hover': {
+//                             backgroundColor: 'rgba(255, 255, 255, 0.4)',
+//                         },
+//                     }}
+//                 >
+//                     OK
+//                 </Button>
+//             </Box>
+//         </Modal>
+//     );
+// };
+
+// export default SuccessFailureModal;
+
+
+// import React, { useEffect } from 'react';
+// import { Modal, Box, Typography, Button, IconButton } from '@mui/material';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import ErrorIcon from '@mui/icons-material/Error';
+// import CloseIcon from '@mui/icons-material/Close';
+
+// const SuccessFailureModal = ({ open, handleClose, status, successmsg, errormsg }) => {
+//     useEffect(() => {
+//         if (open) {
+//             const timer = setTimeout(() => {
+//                 handleClose();
+//             }, 5000);
+
+//             return () => clearTimeout(timer);
+//         }
+//     }, [open, handleClose]);
+
+//     return (
+//         <Modal
+//             open={open}
+//             onClose={handleClose}
+//             aria-labelledby="modal-title"
+//             aria-describedby="modal-description"
+//             sx={{
+//                 display: 'flex',
+//                 alignItems: 'center',
+//                 justifyContent: 'center',
+//                 backdropFilter: 'blur(5px)', // Stronger blur for a more dramatic effect
+//             }}
+//         >
+//             <Box
+//                 sx={{
+//                     position: 'relative',
+//                     width: 400,
+//                     height: 300,
+//                     background: status === 1
+//                         ? 'radial-gradient(circle, rgba(34,193,195,1) 0%, rgba(253,187,45,1) 100%)'
+//                         : 'radial-gradient(circle, rgba(255,0,84,1) 0%, rgba(251,212,0,1) 100%)',
+//                     color: 'white',
+//                     borderRadius: '15px',
+//                     p: 4,
+//                     textAlign: 'center',
+//                     boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.4)',
+//                     animation: 'slideIn 0.5s ease-out', // Slide-in effect
+//                     '@keyframes slideIn': {
+//                         from: { opacity: 0, transform: 'translateY(-20px)' },
+//                         to: { opacity: 1, transform: 'translateY(0)' },
+//                     },
+//                 }}
+//             >
+//                 <IconButton
+//                     sx={{
+//                         position: 'absolute',
+//                         top: 8,
+//                         right: 8,
+//                         color: 'white',
+//                     }}
+//                     onClick={handleClose}
+//                 >
+//                     <CloseIcon />
+//                 </IconButton>
+
+//                 {status === 1 ? (
+//                     <CheckCircleIcon
+//                         sx={{
+//                             fontSize: 80,
+//                             mb: 2,
+//                             animation: 'pulse 1.5s infinite',
+//                             '@keyframes pulse': {
+//                                 '0%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(0, 255, 0, 0.7)' },
+//                                 '50%': { transform: 'scale(1.1)', boxShadow: '0 0 20px rgba(0, 255, 0, 1)' },
+//                                 '100%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(0, 255, 0, 0.7)' },
+//                             },
+//                         }}
+//                     />
+//                 ) : (
+//                     <ErrorIcon
+//                         sx={{
+//                             fontSize: 80,
+//                             mb: 2,
+//                             animation: 'pulse 1.5s infinite',
+//                             '@keyframes pulse': {
+//                                 '0%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(255, 0, 0, 0.7)' },
+//                                 '50%': { transform: 'scale(1.1)', boxShadow: '0 0 20px rgba(255, 0, 0, 1)' },
+//                                 '100%': { transform: 'scale(1)', boxShadow: '0 0 10px rgba(255, 0, 0, 0.7)' },
+//                             },
+//                         }}
+//                     />
+//                 )}
+
+//                 <Typography id="modal-title" variant="h4" component="h2" sx={{ fontWeight: 'bold' }}>
+//                     {status === 1 ? 'Success' : 'Failure'}
+//                 </Typography>
+//                 <Typography id="modal-description" sx={{ mt: 2, fontSize: 18, fontStyle: 'italic' }}>
+//                     {status === 1 ? successmsg : errormsg }
+//                 </Typography>
+//                 <Button
+//                     onClick={handleClose}
+//                     variant="contained"
+//                     sx={{
+//                         mt: 4,
+//                         px: 4,
+//                         py: 1,
+//                         fontSize: '16px',
+//                         borderRadius: '25px',
+//                         backgroundColor: 'rgba(255, 255, 255, 0.2)',
+//                         color: 'white',
+//                         boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.3)',
+//                         transition: 'all 0.3s ease',
+//                         '&:hover': {
+//                             backgroundColor: 'rgba(255, 255, 255, 0.4)',
+//                             boxShadow: '0px 6px 20px rgba(0, 0, 0, 0.4)',
+//                         },
+//                     }}
+//                 >
+//                     OK
+//                 </Button>
+//             </Box>
+//         </Modal>
+//     );
+// };
+
+// export default SuccessFailureModal;
+
+
+{/* <DateTimePicker
+                                    label={<span>End Date & Time<span style={{ color: 'red' }}> *</span></span>}
+                                    value={formState.endDateTime}
+                                    onChange={(newValue) => handleDateChange('endDateTime', newValue)}
+                                    renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
+                                    minDate={formState.startDateTime ? formState.startDateTime : dayjs()}
+                                    minTime={formState.startDateTime && dayjs(formState.startDateTime).isSame(dayjs(), 'day') ? formState.startDateTime : null}
+                                    sx={{ marginRight: '-15px' }}
+                                /> */}
+
+
+
+                                {/* <DateTimePicker
+                                    label={<span>Start Date & Time<span style={{ color: 'red' }}> *</span></span>}
+                                    value={formState.startDateTime}
+                                    onChange={(newValue) => handleDateChange('startDateTime', newValue)}
+                                    renderInput={(params) => <TextField {...params} sx={{ marginBottom: 2, flex: 1 }} />}
+                                    minDate={dayjs()}
+                                    minTime={formState.startDateTime ? formState.startDateTime : dayjs()}
+                                    sx={{ marginLeft: '-15px' }}
+                                /> */}
