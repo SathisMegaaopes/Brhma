@@ -1,14 +1,10 @@
-
-import { all } from "axios";
 import mysql from "mysql"
-``
 
 const conn = mysql.createConnection({
   host: "localhost",
   port: "3306",
   user: "root",
   password: "",
-  // database:"megaaopes"
   database: "sathis_megaaopes"
 });
 
@@ -133,8 +129,6 @@ export function updateNametoId() {
 
         const employeemaster = results;
 
-        // console.log(employeemaster)
-
         function getEmpIdByName(name) {
           console.log(name, 'name')
           if (!name) {
@@ -142,7 +136,6 @@ export function updateNametoId() {
           } else {
 
             const employee = results.find(emp => emp.emp_name.toLowerCase().includes(name.toLowerCase()));
-            // return employee ? employee.emp_id : null;
             return employee ? employee.emp_id : name;
           }
         }
@@ -152,13 +145,9 @@ export function updateNametoId() {
 
           const emplyeeid = alldump[i]['Emp ID']
 
-          // console.log(emplyeeid,'emplyeeid')
-
           const reportingTeamLead = alldump[i]["Reporting Team Lead"];
 
           const reportinManager = alldump[i]["Reporting Manager"];
-
-          // console.log(reportingTeamLead,'reportingTeamLead')
 
           const teamleadID = getEmpIdByName(reportingTeamLead)
 
@@ -222,7 +211,6 @@ export function DepartmentoId() {
           return id ? { Department : id } : department;
         });
 
-        // const ids = departmentsWithId.map((item) => item.id)
 
         const query3 = 'SELECT * FROM `dump`';
 
@@ -322,19 +310,6 @@ export function TeamtoId() {
     })
   })
 }
-
-
-
-// export default function foreignKeyVerify () {
-//       return new Promise((resolve,reject)=>{
-//         const query = 
-            // "DELETE parent_table, child_table1, child_table2 +
-            //     USING parent_table
-            //     JOIN child_table1 ON child_table1.parent_id = parent_table.id
-            //     JOIN child_table2 ON child_table2.parent_id = parent_table.id
-            //     WHERE parent_table.id = ? ";
-//       })
-// }
 
 
 // Changing Teamname into ID
