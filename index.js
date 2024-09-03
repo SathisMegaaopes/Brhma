@@ -14,17 +14,12 @@ import typingTest from "./routes/interview/typingTest.js";
 import writingTest from "./routes/interview/writingTest.js";
 import selected from "./routes/interview/hr_round.js";
 
-import address from "./routes/candidates/address.js"
-
 import employeeList from "./routes/Employee/employeeList.js";
 import Login from "./routes/Login/login.js";
 import todolist from "./routes/todolist/todolist.js"
 
 import { fileURLToPath } from 'url';
 import path from 'path';
-
-
-
 
 
 
@@ -58,7 +53,6 @@ app.use('/employeelist', employeeList);
 app.use('/login', Login);
 
 app.use('/candidateupload', candidateUploads)
-app.use('/address', address)
 
 app.use('/todolist',todolist)
 
