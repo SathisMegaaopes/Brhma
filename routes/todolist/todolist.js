@@ -7,14 +7,15 @@ const router = express.Router();
 router.get('/', (req, res) => {
 
     const { id, role } = req.query;
-
-    const sql_query = "SELECT * FROM `to_do_list` "
+    
+    const sql_query = "SELECT * FROM `to_do_list` ORDER BY `id` DESC"
 
     conn.query(sql_query, [id],
         (err, rows) => {
             let response = { status: 0, data: { assignedToMe: [], otherTasks: [] }, message: '' };
 
             if (!err) {
+
 
                 const assignedToMe = role === '1' ? rows.filter(task => String(task.task_assignee).trim() === String(id).trim()) :
                     rows.filter(task => String(task.task_assignee).trim() === String(id).trim() && String(task.created_by).trim() === String(id).trim());
@@ -26,6 +27,10 @@ router.get('/', (req, res) => {
 
                 const assigneeIds = [...new Set(otherTasks.map(task => task.task_assignee))];
 
+                const assignedbyIds = [...new Set(otherTasks.map(task=>task.created_by))]
+
+                const allAssignIds = [...assigneeIds,...assignedbyIds]
+
                 if (assigneeIds.length === 0) {
                     response.data.assignedToMe = assignedToMe;
                     response.data.otherTasks = otherTasks;
@@ -33,12 +38,11 @@ router.get('/', (req, res) => {
                     response.message = 'Todo list fetched from the database';
                     res.send(response);
                 } else {
-                    const placeholders = assigneeIds.map(() => '?').join(', ');
+                    const placeholders = allAssignIds.map(() => '?').join(', ');
 
-                    const sqlQuery = `SELECT \`Emp ID\`, \`f_name\` FROM \`dump\` WHERE \`Emp ID\` IN (${placeholders})`;
+                    const sqlQuery = `SELECT \`emp_id\`, \`f_name\`, \`l_name\` FROM \`emp_master\` WHERE \`emp_id\` IN (${placeholders})`;
 
-
-                    conn.query(sqlQuery, assigneeIds, (err, rows) => {
+                    conn.query(sqlQuery, allAssignIds, (err, rows) => {
                         if (err) {
                             response.message = " Something wentwrong ! " + err;
                             res.send(response);
@@ -46,14 +50,17 @@ router.get('/', (req, res) => {
                         } else {
 
                             const assigneeMap = {};
-                            rows.forEach(row => {
-                                assigneeMap[row["Emp ID"]] = row.f_name;
-                            });
 
+                            rows.forEach(row => {
+                                assigneeMap[String(row["emp_id"])] = row.f_name + " " + row.l_name;
+                            });
+                            
                             const updatedAssignedToMe = otherTasks.map(task => ({
                                 ...task,
-                                task_assignee: assigneeMap[String(task.task_assignee)] || task.task_assignee
+                                task_assignee: assigneeMap[String(task.task_assignee)] || task.task_assignee,
+                                created_by: assigneeMap[String(task.created_by)] || task.created_by
                             }));
+                            
 
                             response.data.assignedToMe = assignedToMe;
                             response.data.otherTasks = updatedAssignedToMe;
@@ -126,7 +133,7 @@ router.get('/employee', (req, res) => {
 
     const { id } = req.query;
 
-    const query1 = id ? 'SELECT * FROM `dump` WHERE `Team`= ? ' : 'SELECT * FROM `dump` ';
+    const query1 = id ? 'SELECT * FROM `emp_master` WHERE `team`= ? ' : 'SELECT * FROM `emp_master` ';
 
     conn.query(query1, [id], (err, rows) => {
         let response = { status: 0, data: [], message: '' }
@@ -163,49 +170,79 @@ router.post('/', (req, res) => {
 })
 
 
+
 router.put('/', (req, res) => {
 
-    const { id, status, username, comment } = req.body
+    const { id, status, username, comment } = req.body;
 
-    let query;
-    let data;
+    let selectQuery, updateQuery, data;
 
     if (status === 1) {
-
-        query = "UPDATE `to_do_list`SET `status`= ? ,`accepted_by`= ? ,`accepted_at`= CURRENT_TIMESTAMP  WHERE `id`= ? ";
-        data = [status, username, id]
-
+        updateQuery = "UPDATE `to_do_list` SET `status`= ?, `accepted_by`= ?, `accepted_at`= CURRENT_TIMESTAMP WHERE `id`= ?";
+        data = [status, username, id];
     } else if (status === 2) {
-
-        query = "UPDATE `to_do_list` SET `status`= ? ,`complete_at`= CURRENT_TIMESTAMP , `complete_comments` = ?   WHERE `id`= ? ";
-        data = [status, comment, id]
-
+        selectQuery = "SELECT `complete_comments` FROM `to_do_list` WHERE `id`= ?";
+        updateQuery = "UPDATE `to_do_list` SET `status`= ?, `complete_at`= CURRENT_TIMESTAMP, `complete_comments` = ? WHERE `id`= ?";
+        data = [status, comment, id];
     } else if (status === 3) {
-
-        query = "UPDATE `to_do_list` SET `status`= ? ,`reopen_by` = ? , `reopen_at`= CURRENT_TIMESTAMP  , `reopen_comments` = ?  WHERE `id`= ? ";
-        data = [status, username, comment, id]
-
-
+        selectQuery = "SELECT `reopen_comments` FROM `to_do_list` WHERE `id`= ?";
+        updateQuery = "UPDATE `to_do_list` SET `status`= ?, `reopen_by`= ?, `reopen_at`= CURRENT_TIMESTAMP, `reopen_comments` = ? WHERE `id`= ?";
+        data = [status, username, comment, id];
     } else if (status === 4) {
-
-        query = "UPDATE `to_do_list` SET `status`= ? ,`done_by` = ? , `done_at`= CURRENT_TIMESTAMP , `done_comments` = ?  WHERE `id`= ? ";
-        data = [status, username, comment, id]
-
+        selectQuery = "SELECT `done_comments` FROM `to_do_list` WHERE `id`= ?";
+        updateQuery = "UPDATE `to_do_list` SET `status`= ?, `done_by`= ?, `done_at`= CURRENT_TIMESTAMP, `done_comments` = ? WHERE `id`= ?";
+        data = [status, username, comment, id];
     }
 
-    conn.query(query, data, (err, rows) => {
-        let response = { status: 0, data: {}, message: '' }
-        if (err) {
-            response.message = " Something went wrong at the updating the task status" + err;
-            res.send(response)
-        } else {
-            response.status = 1;
-            response.message = "Updated the task successfully"
-            res.send(response)
-        }
-    })
+    if (status === 1) {
+        conn.query(updateQuery, data, (err, result) => {
+            let response = { status: 0, data: {}, message: '' };
+            if (err) {
+                response.message = "Something went wrong while updating the task: " + err;
+                return res.send(response);
+            }
 
-})
+            response.status = 1;
+            response.message = "Task updated successfully";
+            res.send(response);
+        });
+    } else {
+
+        conn.query(selectQuery, [id], (err, rows) => {
+            let response = { status: 0, data: {}, message: '' };
+            if (err) {
+                response.message = "Something went wrong while fetching the task data: " + err;
+                return res.send(response);
+            }
+            let existingData = rows[0] ? Object.values(rows[0])[0] : '';
+
+
+            let newData;
+
+            if (status === 2) {
+                newData = existingData ? `${existingData} ---  ${comment}` : comment;
+                data[1] = newData;
+            }
+
+            if (status === 3 || status === 4) {
+                newData = existingData ? `${existingData} --- ${comment}` : comment;
+                data[2] = newData;
+            }
+
+            conn.query(updateQuery, data, (err, result) => {
+                if (err) {
+                    response.message = "Something went wrong while updating the task: " + err;
+                    return res.send(response);
+                }
+                response.status = 1;
+                response.message = "Task updated successfully";
+                res.send(response);
+            });
+        });
+    }
+});
+
+
 
 
 

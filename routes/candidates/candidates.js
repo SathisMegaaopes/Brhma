@@ -1,5 +1,6 @@
 import express, { Router } from "express";
 import conn from "../../sql.js";
+import { generateEmployeeObject } from "../Utlis/index.js";
 
 const router = express.Router();
 
@@ -30,11 +31,12 @@ router.get('/', (req, res) => {
 
         let response = { status: 0, data: [], message: "" };
         if (!err) {
-            const emp_details = "SELECT * FROM employee_master";
+            const emp_details = "SELECT * FROM emp_master";
             conn.query(emp_details, (err1, res1) => {
                 if (!err1) {
+                    const changedOne = generateEmployeeObject(res1);
                     response.data = rows;
-                    response.emp_details = res1;
+                    response.emp_details = changedOne;
                     response.message = "Success";
                     res.send(response);
                 }
@@ -56,7 +58,8 @@ router.get('/', (req, res) => {
     });
 });
 
-/* get all candidates with date range*/
+/* This is the api , I'm going to working on Changing the ui with the dump_table data , with data concatenated in the table ....  */
+
 router.get('/searchByDate/:from/:to', (req, res) => {
     const sql = "SELECT * FROM candidate_master WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC";
     const sql_data = [req.params.from, req.params.to];
@@ -64,13 +67,21 @@ router.get('/searchByDate/:from/:to', (req, res) => {
     conn.query(sql, sql_data, (err, rows) => {
         let response = { status: 0, data: [], message: "" };
         if (!err) {
-            const emp_details = "SELECT * FROM employee_master WHERE emp_id in (SELECT user_name FROM user_login) ORDER BY emp_name ASC";
-            conn.query(emp_details, (err1, res1) => {
-                if (!err1) {
-                    response.data = rows;
-                    response.emp_details = res1;
-                    response.message = "Success";
-                    res.send(response);
+                    const dumpQuery = " SELECT * FROM `emp_master` WHERE emp_id in (SELECT user_name FROM user_login) ORDER BY f_name ASC "
+                    conn.query(dumpQuery,(err,rows)=>{
+                        if(!err){
+                            const changedOne = generateEmployeeObject(rows);
+                            response.emp_details = changedOne;
+                            response.message = "Success";
+                            res.send(response);
+                        }else{
+                            response.status = 1;
+                            response.message = "Something went worng !!" + JSON.stringify(err);
+                            res.send(response);
+                        }
+
+                    })
+
                 }
 
                 else {
@@ -79,14 +90,10 @@ router.get('/searchByDate/:from/:to', (req, res) => {
                     res.send(response);
                 }
             });
-        }
-        else {
-            response.status = 1;
-            response.message = "Something went worng !!" + JSON.stringify(err);
-            res.send(response);
-        }
-    });
 });
+
+
+
 
 
 
@@ -101,7 +108,7 @@ router.get('/:mobile', (req, res) => {
             return res.status(500).json({ status: 1, message: "Something went wrong!", error: err });
         }
 
-        const emp_details_query = "SELECT * FROM employee_master";
+        const emp_details_query = "SELECT * FROM emp_master";
         conn.query(emp_details_query, (err1, empDetails) => {
             if (err1) {
                 return res.status(500).json({ status: 1, message: "Something went wrong!", error: err1 });
@@ -142,10 +149,11 @@ router.get('/searchCandidate/:id', (req, res) => {
     conn.query(sql_query, ['%' + search_data + '%', '%' + search_data + '%', '%' + search_data + '%'], (err, rows) => {
         let response = { status: 0, data: [], message: "" };
         if (!err) {
-            const emp_details = "SELECT * FROM employee_master";
+            const emp_details = "SELECT * FROM emp_master";
             conn.query(emp_details, (err1, res1) => {
                 if (!err1) {
-                    response.emp_details = res1;
+                    const changedOne = generateEmployeeObject(res1);
+                    response.emp_details = changedOne;
                     response.data = rows;
                     res.send(response);
                 }
@@ -199,8 +207,6 @@ router.post('/', (req, res) => {
     const address = req.body.address;
     const hr = req.body.HR !== undefined ? req.body.HR : null;
     const image = req.body.profile_pic;
-
-    //new code
     const candidate_pincode = req.body.pincode;
     const candidate_distance = req.body.distance;
 
@@ -368,14 +374,6 @@ router.delete('/', (req, res) => {
                                         res.send(response);
                                     }
                                     
-                                    const query9 = "DELETE FROM `cnadidate_uploads` WHERE `candidate_id`= ? "
-
-                                    conn.query(query9, [candidateDeleteid], (err, rows) => {
-                                        if (err) {
-                                            response.message = "Something went Wrong ! " + err;
-                                            res.send(response);
-                                        }
-                                        
                                         const query10 = "DELETE FROM `candidate_work` WHERE `candidate_id`= ? "
 
                                         conn.query(query10, [candidateDeleteid], (err, rows) => {
@@ -428,10 +426,7 @@ router.delete('/', (req, res) => {
                                                             response.message = "The Candidate deleted successfully...";
                                                             res.send(response)
 
-                                                        })
-
                                                     })
-
 
                                                 })
 
@@ -443,7 +438,6 @@ router.delete('/', (req, res) => {
 
 
                                     })
-
 
                                 })
 
@@ -467,7 +461,84 @@ router.delete('/', (req, res) => {
 export default router;
 
 
-
         
 // const query3 = "DELETE FROM `candidate_edu_master` WHERE `candidate_id`= ?; DELETE FROM `candidate_personal`  WHERE `candidate_id`= ? ; DELETE FROM `candidate_reference_master` WHERE `candidate_id` = ? ; "
 // conn.query(query3, [candidateDeleteid, candidateDeleteid, candidateDeleteid], (err, row) => {
+
+
+
+    // router.post('/', (req, res) => {
+
+    //     const mobile_number = req.body.mobile_number;
+    //     const fname = req.body.fname;
+    //     const lname = req.body.lname;
+    //     const alt_mobile = req.body.alt_mobile;
+    //     const email = req.body.email;
+    //     const gender = req.body.gender;
+    //     const designation = req.body.designation;
+    //     const ref_by = req.body.ref_by;
+    //     const ref_others = req.body.ref_others;
+    //     const dob = req.body.dob;
+    //     const years = req.body.years;
+    //     const months = req.body.months;
+    //     const address = req.body.address;
+    //     const hr = req.body.HR !== undefined ? req.body.HR : null;
+    //     const image = req.body.profile_pic;
+    
+    //     const candidate_pincode = req.body.pincode;
+    //     const candidate_distance = req.body.distance;
+    
+    //     let new_date = new Date();
+    //     let year = new_date.getFullYear();
+    //     let month = ("0" + (new_date.getMonth() + 1)).slice(-2);
+    //     let date = ("0" + new_date.getDate()).slice(-2);
+    
+    //     let candidate_id = year + month + date;
+    
+    //     const checkalreadyPresent = "SELECT * FROM candidate_master WHERE mobile_basic = ?"
+    //     conn.query(checkalreadyPresent, [mobile_number], (err, rows) => {
+    //         if (err) {
+    //             res.send({ status: 1, message: "Something went wrong " + JSON.stringify(err) });
+    //         } else {
+    //             let finalQuery;
+    //             let data ; 
+    //             if (rows.length > 0) {
+    //                 const alreadyUserId = rows[0].id
+    //                 // console.log(rows[0].id)
+    //                 finalQuery = "UPDATE candidate_master SET  f_name_basic = ?, l_name_basic = ?, mobile_basic = ?, gender = ?, alt_mobile_basic = ?, email_basic = ?, job_profile_basic = ?, ref_by_basic = ?, ref_by_others = ?, dob = ?, years = ?, months = ?, address = ?, created_by = ?, pincode = ?, distance = ? WHERE id = ?";
+    //                 data = [fname, lname, mobile_number, gender, alt_mobile, email, designation, ref_by, ref_others, dob, years, months, address, hr, candidate_pincode, candidate_distance,alreadyUserId]
+    //             } else {
+    //                 finalQuery = "INSERT INTO candidate_master (candidate_id,f_name_basic,l_name_basic,mobile_basic,gender,alt_mobile_basic,email_basic,job_profile_basic,ref_by_basic,ref_by_others,dob,years,months,address,created_by,pincode,distance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    //                 data = [candidate_id, fname, lname, mobile_number, gender, alt_mobile, email, designation, ref_by, ref_others, dob, years, months, address, hr, candidate_pincode, candidate_distance]
+    //             }
+    
+    //             // conn.query("INSERT INTO candidate_master (candidate_id,f_name_basic,l_name_basic,mobile_basic,gender,alt_mobile_basic,email_basic,job_profile_basic,ref_by_basic,ref_by_others,dob,years,months,address,created_by,pincode,distance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    //             conn.query(finalQuery,data,(err, rows) => {
+    //                     if (!err) {
+    //                         const record_id = rows.insertId;
+    //                         const id = "MOS" + candidate_id + record_id;
+    //                         conn.query("UPDATE candidate_master SET candidate_id = ? WHERE id= ?", [id, record_id], (err) => {
+    
+    //                             if (!err) {
+    //                                 res.send({ status: 0, data: { id: record_id, candidate_id: id }, message: "Candidate created Successfully" });
+    //                             }
+    //                             else {
+    //                                 res.send({ status: 1, message: "Something went wrong " + JSON.stringify(err) });
+    //                             }
+    //                         });
+    
+    //                     }
+    //                     else {
+    //                         res.send({ status: 0, message: "Something went wrong " + JSON.stringify(err) });
+    //                     }
+    //                 });
+    //         }
+    //     })
+    
+    
+    
+    
+    
+    
+    // });
+    

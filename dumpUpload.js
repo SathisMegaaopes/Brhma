@@ -1,5 +1,8 @@
 import mysql from "mysql"
 
+
+
+
 const conn = mysql.createConnection({
   host: "localhost",
   port: "3306",
@@ -18,11 +21,26 @@ conn.connect((err) => {
   }
 })
 
+function generateEmployeeObject(arr) {
+
+  return arr.map((item) => {
+      return {
+          "id": item.id,
+          "emp_id": item.emp_id,
+          "emp_name": item.f_name + " " + item.l_name , 
+          "emp_destination": item.designation,
+          "status": item.status ,
+          "reporting_team_lead_manager": item.reporting_manager, 
+          "process": item.designation,
+          "joining_date": item.DOJ 
+      };
+  });
+}
 
 
 export function gettingDepartment(conn) {
   return new Promise((resolve, reject) => {
-    const query = "SELECT DISTINCT Department FROM `dump`";
+    const query = "SELECT DISTINCT department FROM `emp_master`";
 
     conn.query(query, (err, results) => {
       if (err) {
@@ -37,11 +55,11 @@ export function gettingDepartment(conn) {
 export function gettingTeam(conn) {
   return new Promise((resolve, reject) => {
 
-    const query = "SELECT DISTINCT Department , Team FROM `dump`";
+    const query = "SELECT DISTINCT department , team FROM `emp_master`";
 
     conn.query(query, (err, results) => {
       if (err) {
-        return reject('Error selecting the Team Data ' + err.stack)
+        return reject('Error selecting the team Data ' + err.stack)
       }
       resolve(results)
     })
@@ -51,8 +69,8 @@ export function gettingTeam(conn) {
 
 
 export function updateDepartment(conn, data) {
-  const values = data.map(item => item.Department);
-  console.log(values, 'updateDepartment');
+  const values = data.map(item => item.department);
+
 
   return new Promise((resolve, reject) => {
 
@@ -86,13 +104,12 @@ export function updateTeams(conn, data) {
         }, {});
 
         return rowData.map(data => ({
-          dept_id: nameToIdMap[data.Department],
-          name: data.Team
+          dept_id: nameToIdMap[data.department],
+          name: data.team
         }));
       };
 
       const finalOut = outputs(data, results);
-      console.log(finalOut, 'finalOut');
 
       const formattedData = finalOut.map(item => [item.dept_id, item.name, '1']);
 
@@ -111,7 +128,7 @@ export function updateTeams(conn, data) {
 
 export function updateNametoId() {
   return new Promise((resolve, reject) => {
-    const query1 = "SELECT * FROM `dump`"
+    const query1 = "SELECT * FROM `emp_master`"
 
     conn.query(query1, (err, results) => {
       if (err) {
@@ -120,22 +137,23 @@ export function updateNametoId() {
 
       const alldump = results;
 
-      const query2 = 'SELECT `emp_id`,`emp_name` FROM `employee_master`';
+      // const query2 = 'SELECT `emp_id`,`emp_name` FROM `emp_master`';
+      const query2 = 'SELECT * FROM `emp_master`';
 
       conn.query(query2, (err, results) => {
         if (err) {
           return reject(err);
         }
 
-        const employeemaster = results;
+        // const employeemaster = results;
+        const result = generateEmployeeObject(results)
 
         function getEmpIdByName(name) {
-          console.log(name, 'name')
           if (!name) {
             return name;
           } else {
 
-            const employee = results.find(emp => emp.emp_name.toLowerCase().includes(name.toLowerCase()));
+            const employee = result.find(emp => emp.emp_name.toLowerCase().includes(name.toLowerCase()));
             return employee ? employee.emp_id : name;
           }
         }
@@ -143,21 +161,17 @@ export function updateNametoId() {
 
         for (let i = 0; i < alldump.length; i++) {
 
-          const emplyeeid = alldump[i]['Emp ID']
+          const emplyeeid = alldump[i]['emp_id']
 
-          const reportingTeamLead = alldump[i]["Reporting Team Lead"];
+          const reportingTeamLead = alldump[i]["reporting_team_lead"];
 
-          const reportinManager = alldump[i]["Reporting Manager"];
+          const reportinManager = alldump[i]["reporting_manager"];
 
           const teamleadID = getEmpIdByName(reportingTeamLead)
 
           const managerID = getEmpIdByName(reportinManager)
 
-          console.log(teamleadID, 'teamleadID')
-
-          console.log(managerID, 'managerID')
-
-          const query3 = ' UPDATE `dump` SET `Reporting Team Lead` = ?,`Reporting Manager` = ? WHERE `Emp ID` = ? '
+          const query3 = ' UPDATE `emp_master` SET `reporting_team_lead` = ?,`reporting_manager` = ? WHERE `emp_id` = ? '
 
           conn.query(query3, [teamleadID, managerID, emplyeeid], (err, results) => {
             if (err) {
@@ -182,7 +196,7 @@ export function updateNametoId() {
 
 export function DepartmentoId() {
   return new Promise((resolve, reject) => {
-    const query1 = "SELECT `Department` FROM `dump`"
+    const query1 = "SELECT `department` FROM `emp_master`"
 
     conn.query(query1, (err, results) => {
       if (err) {
@@ -207,12 +221,12 @@ export function DepartmentoId() {
 
 
         const departmentsWithId = alldump.map(department => {
-          const id = departmentIdMap[department.Department];
-          return id ? { Department : id } : department;
+          const id = departmentIdMap[department.department];
+          return id ? { department : id } : department;
         });
 
 
-        const query3 = 'SELECT * FROM `dump`';
+        const query3 = 'SELECT * FROM `emp_master`';
 
         conn.query(query3, (err, results) => {
           if (err) {
@@ -221,18 +235,18 @@ export function DepartmentoId() {
           }
 
           for (let i = 0; i < results.length; i++) {
-            const rowid = results[i]["Emp ID"]
+            const rowid = results[i]["emp_id"]
 
-            const departID = departmentsWithId[i].Department
+            const departID = departmentsWithId[i].department
 
-            const query4 = 'UPDATE `dump` SET `Department` = ? WHERE `Emp ID` = ?'
+            const query4 = 'UPDATE `emp_master` SET `department` = ? WHERE `emp_id` = ?'
 
             conn.query(query4, [departID, rowid], (err, results) => {
               if (err) {
                 return reject(err);
               }
 
-              console.log('Successfully updated Department name to ID')
+              console.log('Successfully updated department name to ID')
             })
           }
 
@@ -247,7 +261,7 @@ export function DepartmentoId() {
 
 export function TeamtoId() {
   return new Promise((resolve, reject) => {
-    const query1 = "SELECT `Team` FROM `dump`"
+    const query1 = "SELECT `team` FROM `emp_master`"
 
     conn.query(query1, (err, results) => {
       if (err) {
@@ -273,12 +287,12 @@ export function TeamtoId() {
         }, {});
 
         const departmentsWithId = alldump.map(department => {
-          const id = departmentIdMap[department.Team];
-          return id ? { Team : id} : department;
+          const id = departmentIdMap[department.team];
+          return id ? { team : id} : department;
         });
         
 
-        const query3 = 'SELECT * FROM `dump`';
+        const query3 = 'SELECT * FROM `emp_master`';
 
         conn.query(query3, (err, results) => {
           if (err) {
@@ -288,11 +302,11 @@ export function TeamtoId() {
 
           for (let i = 0; i < results.length; i++) {
 
-            const rowid = results[i]["Emp ID"]
+            const rowid = results[i]["emp_id"]
 
-            const departID = departmentsWithId[i].Team
+            const departID = departmentsWithId[i].team
 
-            const query4 = 'UPDATE `dump` SET `Team` = ? WHERE `Emp ID` = ?'
+            const query4 = 'UPDATE `emp_master` SET `team` = ? WHERE `emp_id` = ?'
 
             conn.query(query4, [departID, rowid], (err, results) => {
               if (err) {
@@ -324,7 +338,7 @@ export function TeamtoId() {
 
 
 
-//Changing department to ID
+// Changing department to ID
 
 // (async () => {
 //   try {
@@ -339,17 +353,17 @@ export function TeamtoId() {
 // updaete the name into id 
 
 
-// (async () => {
-//   try {
-//     updateNametoId()
-//   } catch (err) {
-//     console.log(err);
-//   }``
-// })()
+(async () => {
+  try {
+    updateNametoId()
+  } catch (err) {
+    console.log(err);
+  }``
+})()
 
 
 
-//This is the first one ( Dump Department to department_master )
+//This is the first one ( Dump department to department_master )
  
 // (async () => {
 //   try {
@@ -376,7 +390,7 @@ export function TeamtoId() {
 
 
 
-// this is the second one ( Dump Team to Team_master )
+// this is the second one ( Dump team to Team_master )
 
 // (async () => {
 //   try {
@@ -404,10 +418,10 @@ export function TeamtoId() {
 
 
 // UPDATE `dump` 
-// SET `Reporting Team Lead` = ELT(FLOOR(1 + (RAND() * 4)), 'Kannan R', 'Shamala Srinivas', 'Manoj Kumar G', 'Sathish Kumar') 
-// WHERE `Emp ID` != 18001;
+// SET `reporting_team_lead` = ELT(FLOOR(1 + (RAND() * 4)), 'Kannan R', 'Shamala Srinivas', 'Manoj Kumar G', 'Sathish Kumar') 
+// WHERE `emp_id` != 18001;
 
-// UPDATE `dump` SET `Reporting Team Lead` = 'Shamala Nagaveni S' WHERE `Reporting Team Lead` = 'Shamala Srinivas';
+// UPDATE `dump` SET `reporting_team_lead` = 'Shamala Nagaveni S' WHERE `reporting_team_lead` = 'Shamala Srinivas';
 
 
 

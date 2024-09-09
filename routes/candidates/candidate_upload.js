@@ -1,4 +1,3 @@
-// import * as React from 'react';
 import express from "express";
 import multer from 'multer';
 import path from 'path';
@@ -6,7 +5,7 @@ import fs from 'fs';
 import bodyParser from "body-parser";
 import { fileURLToPath } from 'url';
 import cors from 'cors';
-import conn from "../../sql.js";  // connection for the sql query
+import conn from "../../sql.js"; 
 
 
 
@@ -35,7 +34,6 @@ const fileUpload = (req, res, next) => {
 
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear().toString();
-    // const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
     const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2);
 
     const baseDirectory = path.join(__dirname, 'Uploads')
@@ -134,7 +132,7 @@ const fileUpload = (req, res, next) => {
     function fileUploading(value) {
         const targetPath = path.join(targetDirectory, `${id}_${file.originalname}`);
 
-        const relativePath = path.relative(__dirname, targetPath); // This is a relative path
+        const relativePath = path.relative(__dirname, targetPath); 
 
         fs.writeFile(targetPath, file.buffer, (err) => {
             if (err) {
@@ -149,14 +147,12 @@ const fileUpload = (req, res, next) => {
                         if (!err) {
                             response.message = "Resume Details Updated!!!";
                             res.send(response);
-                            console.log(response)
                             next()
                         }
                         else {
                             response.status = 1;
                             response.message = "Something Went Wrong!!! " + JSON.stringify(err);
                             res.send(response);
-                            console.log(response)
 
                         }
                     }
@@ -173,7 +169,6 @@ const fileUpload = (req, res, next) => {
                         if (!err) {
                             response.message = "Resume Details Updated!!!";
                             res.send(response);
-                            console.log(response)
                             next()
 
                         }
@@ -181,7 +176,6 @@ const fileUpload = (req, res, next) => {
                             response.status = 1;
                             response.message = "Something Went Wrong!!! " + JSON.stringify(err);
                             res.send(response);
-                            console.log(response)
 
                         }
                     }
@@ -215,66 +209,29 @@ router.get('/:id', (req, res) => {
             let response = { status: 0, data: {resume:'',profile:''}, message: "" };
             if (!err) {
                 if (rows.length > 0) {
-                    console.log(rows)
                     const resumeUrl = rows[0].resume;
                     const profileUrl = rows[0].profile;
                     response.data.resume = resumeUrl;
                     response.data.profile = profileUrl
-                    // response.data = { resumeUrl }; 
                     response.message = "Resume URL is fetched";
                 } else {
                     response.status = 1;
                     response.message = "No resume URL found for the given candidate ID";
                 }
                 res.send(response);
-                console.log(response);
 
             }
             else {
                 response.status = 1;
                 response.message = "Something Went Wrong!!! " + JSON.stringify(err);
                 res.send(response);
-                console.log(response)
 
             }
         }
     )
 
-
-    console.log(id)
     
 })
 
 
-
-
-// if (!id) {
-//     return res.status(400).json({ error: 'User ID is required' });
-// }
 export default router;
-
-
-
-
-
-
-// router.post('/', upload.single('file'), fileUpload, (req, res) => {
-//     try {
-//         res.status(200).send(`File uploaded successfully ${req.file.originalname}`);
-//         console.log(`File uploaded successfully ${req.file.originalname}`);
-//     }
-//     catch (err) {
-//         console.error(err);
-//         res.status(500).send(err);
-//     }
-// });
-//  (req, res) => {
-//     try {
-//         res.status(200).send(`File uploaded successfully ${req.file.originalname}`);
-//         console.log(`File uploaded successfully ${req.file.originalname}`);
-//     }
-//     catch (err) {
-//         console.error(err);
-//         res.status(500).send(err);
-//     }
-// });

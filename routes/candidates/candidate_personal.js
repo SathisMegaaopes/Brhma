@@ -1,16 +1,8 @@
 import express from "express";
-
-
 import conn from "../../sql.js";
 
 const router = express.Router();
 
-
-/*
-{"candidate_id" : "","fatherName":"","fatherAge" : "", "fatherOccu":"","fatherMob":"",
-    "motherName":"","motherAge" : "", "motherOccu":"","motherMob":"",
-    "guardName":"","guardAge" : "", "guardOccu":"","guardMob":""}
-*/
 router.post('/',(req,res)=>{
 
 

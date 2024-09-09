@@ -21,4 +21,21 @@ const fnGetCandidatedetails = (id) =>{
 }
 
 
-export default fnGetCandidatedetails;
+function generateEmployeeObject(arr) {
+
+    return arr.map((item) => {
+        return {
+            "id": item.id,
+            "emp_id": item.emp_id,
+            "emp_name": item.f_name + " " + item.l_name, 
+            "emp_destination": item.designation,
+            "status": item.status,
+            "reporting_team_lead_manager": item.reporting_manager, 
+            "process": item.designation,
+            "joining_date": item.DOJ 
+        };
+    });
+}
+
+
+export { fnGetCandidatedetails , generateEmployeeObject  }
