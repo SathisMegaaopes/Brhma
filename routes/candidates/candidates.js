@@ -114,10 +114,12 @@ router.get('/:mobile', (req, res) => {
                 return res.status(500).json({ status: 1, message: "Something went wrong!", error: err1 });
             }
 
+
+            const changedOne = generateEmployeeObject(empDetails);
             let response = {
                 status: 0,
                 message: "Mobile Number Does Not Exist!",
-                emp_details: empDetails
+                emp_details: changedOne
             };
 
             if (rows.length > 0) {

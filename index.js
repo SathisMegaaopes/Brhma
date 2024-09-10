@@ -17,6 +17,7 @@ import selected from "./routes/interview/hr_round.js";
 import employeeList from "./routes/Employee/employeeList.js";
 import Login from "./routes/Login/login.js";
 import todolist from "./routes/todolist/todolist.js"
+import employeemaster from "./routes/employeeMaster/employeemaster.js"
 
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -51,10 +52,10 @@ app.use('/writingtest', writingTest);
 app.use('/hrround', selected);
 app.use('/employeelist', employeeList);
 app.use('/login', Login);
-
 app.use('/candidateupload', candidateUploads)
-
 app.use('/todolist',todolist)
+
+app.use('/employeemaster',employeemaster)
 
 
 app.get('/', (req, res) => {
