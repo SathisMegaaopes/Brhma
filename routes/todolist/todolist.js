@@ -8,7 +8,8 @@ router.get('/', (req, res) => {
 
     const { id, role } = req.query;
     
-    const sql_query = "SELECT * FROM `to_do_list` ORDER BY `id` DESC"
+    // const sql_query = "SELECT * FROM `to_do_list` ORDER BY `id` DESC"
+    const sql_query = "SELECT * FROM `to_do_list` WHERE `status` != 4 ORDER BY `id` DESC"
 
     conn.query(sql_query, [id],
         (err, rows) => {
@@ -55,10 +56,16 @@ router.get('/', (req, res) => {
                                 assigneeMap[String(row["emp_id"])] = row.f_name + " " + row.l_name;
                             });
                             
+                            // const updatedAssignedToMe = otherTasks.map(task => ({
+                            //     ...task,
+                            //     task_assignee: assigneeMap[String(task.task_assignee)] || task.task_assignee,
+                            //     created_by: assigneeMap[String(task.created_by)] || task.created_by
+                            // }));
+                            
                             const updatedAssignedToMe = otherTasks.map(task => ({
                                 ...task,
                                 task_assignee: assigneeMap[String(task.task_assignee)] || task.task_assignee,
-                                created_by: assigneeMap[String(task.created_by)] || task.created_by
+                                created_by_new: assigneeMap[String(task.created_by)] || task.created_by  // Adding new key
                             }));
                             
 

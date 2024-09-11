@@ -44,12 +44,8 @@ router.post('/validateUser', (req, res) => {
 
                             conn.query(login_query, [user_name, date], (err, rowww) => {
 
-                                console.log(rowww)
-
                                 if (!err) {
                                     if (rowww.length>0){
-
-                                        console.log("this is comed under a response , because . This user already have a login Time")
 
                                         const result = generateEmployeeObject(rows2[0])
                                         // rows[0].user_details = rows2[0];
@@ -63,8 +59,6 @@ router.post('/validateUser', (req, res) => {
                                         
                                         conn.query(query, [user_name], (err, row) => {
                                             if (!err) {
-
-                                                console.log('This is executed because , He or She logged in today for the first time ...')
 
                                                 const result = generateEmployeeObject(rows2[0])
                                                 rows[0].user_details = result;
@@ -100,7 +94,6 @@ router.post('/validateUser', (req, res) => {
 
                 }
                 else {
-                    console.log(JSON.stringify(err1));
                     response.status = 1;
                     response.message = "Invalid Username / Password";
                     response.errorMessage = err ;
@@ -117,6 +110,8 @@ router.post('/validateUser', (req, res) => {
         }
     });
 });
+
+
 
 
 function generateEmployeeObject(arr) {

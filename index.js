@@ -18,6 +18,7 @@ import employeeList from "./routes/Employee/employeeList.js";
 import Login from "./routes/Login/login.js";
 import todolist from "./routes/todolist/todolist.js"
 import employeemaster from "./routes/employeeMaster/employeemaster.js"
+import logout from "./routes/Logout/logout.js"
 
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -54,8 +55,9 @@ app.use('/employeelist', employeeList);
 app.use('/login', Login);
 app.use('/candidateupload', candidateUploads)
 app.use('/todolist',todolist)
-
 app.use('/employeemaster',employeemaster)
+
+app.use('/logout',logout)
 
 
 app.get('/', (req, res) => {
