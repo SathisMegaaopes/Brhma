@@ -9,6 +9,9 @@ const router = express.Router();
 router.post('/validateUser', (req, res) => {
     let user_name = req.body.user_name;
     let user_pwd = req.body.user_pwd;
+    let type = req.body.type
+
+    // console.log(type)
 
 
     let sql_query = "SELECT * FROM user_login WHERE ";
@@ -45,36 +48,59 @@ router.post('/validateUser', (req, res) => {
                             conn.query(login_query, [user_name, date], (err, rowww) => {
 
                                 if (!err) {
-                                    if (rowww.length>0){
 
-                                        const result = generateEmployeeObject(rows2[0])
-                                        // rows[0].user_details = rows2[0];
-                                        rows[0].user_details = result;
-                                        response.data = rows;
-                                        response.message = "Success";
-                                        res.send(response);
-                                    } else {
+                                    if (type === 'login') {
+                                        if (rowww.length > 0) {
 
-                                        const query = " INSERT INTO `emp_activity` (emp_id, login_time) VALUES (?, CURRENT_TIMESTAMP)"
-                                        
-                                        conn.query(query, [user_name], (err, row) => {
+                                            const result = generateEmployeeObject(rows2[0])
+                                            // rows[0].user_details = rows2[0];
+                                            rows[0].user_details = result;
+                                            response.data = rows;
+                                            response.message = "Success";
+                                            res.send(response);
+                                        } else {
+
+                                            const query = " INSERT INTO `emp_activity` (emp_id, login_time) VALUES (?, CURRENT_TIMESTAMP)"
+
+                                            conn.query(query, [user_name], (err, row) => {
+                                                if (!err) {
+
+                                                    const result = generateEmployeeObject(rows2[0])
+                                                    rows[0].user_details = result;
+                                                    response.data = rows;
+                                                    response.message = "Success";
+                                                    res.send(response);
+                                                } else {
+                                                    response.status = 1;
+                                                    response.message = "Invalid Username / Password";
+                                                    response.errorMessage = err;
+                                                    res.send(response);
+                                                }
+                                            })
+
+
+                                        }
+                                    } else if (type === 'logout') {
+                                        const date = getTodayDate()
+
+                                        const query = " UPDATE `emp_activity` SET `logout_time` = CURRENT_TIMESTAMP WHERE `emp_id`= ?  AND `login_time` LIKE  ? "
+
+                                        conn.query(query, [user_name, date], (err, row) => {
+                                            let response = { status: 0, data: [], message: "" };
                                             if (!err) {
+                                                response.message = " You are logged out successfully .... "
+                                                response.status = 1
+                                                res.send(response)
+                                            } else {
 
-                                                const result = generateEmployeeObject(rows2[0])
-                                                rows[0].user_details = result;
-                                                response.data = rows;
-                                                response.message = "Success";
-                                                res.send(response);
-                                            }else{
-                                                response.status = 1;
-                                                response.message = "Invalid Username / Password";
-                                                response.errorMessage = err;
-                                                res.send(response);
+                                                response.message = "Something went wrong ! .... " + err
+                                                res.send(response)
+
                                             }
                                         })
 
-
                                     }
+
                                 } else {
                                     response.status = 1;
                                     response.message = "Invalid Username / Password";
@@ -96,7 +122,7 @@ router.post('/validateUser', (req, res) => {
                 else {
                     response.status = 1;
                     response.message = "Invalid Username / Password";
-                    response.errorMessage = err ;
+                    response.errorMessage = err;
                     res.send(response);
                 }
             });
