@@ -23,18 +23,19 @@ function HoursIntoValue(totalHoursSpent) {
     const lastminutes = Math.floor((totalHoursSpent % 3600) / 60);
 
     const formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastminutes).padStart(2, '0')}`;
-    
+
     return formattedTime
 }
 
 
-function StringtoSeconds(str){
+function StringtoSeconds(str) {
     const [hours, minutes] = str.split(':').map(Number);
 
     const totalSeconds = hours * 3600 + minutes * 60;
 
     return totalSeconds;
 }
+
 
 
 router.put('/', (req, res) => {
@@ -77,10 +78,7 @@ router.put('/', (req, res) => {
         }
     }
 
-    // let query = `UPDATE emp_activity SET \`${break_name}\` = CURRENT_TIMESTAMP WHERE emp_id = ? AND login_time LIKE ?`;
-
-
-    let query = `UPDATE emp_activity SET \`${break_name}\` = "2024-09-12 02:40:37" WHERE emp_id = ? AND login_time LIKE ?`;
+    let query = `UPDATE emp_activity SET \`${break_name}\` = CURRENT_TIMESTAMP WHERE emp_id = ? AND login_time LIKE ?`;
 
     conn.query(query, [emp_id, date], (err, rows) => {
         let response = {
@@ -100,11 +98,16 @@ router.put('/', (req, res) => {
 
                 if (!err) {
 
-                    Boolean(rows[0].break_1_end) ? response.data.break1End = 1 : ''
-                    Boolean(rows[0].break_2_end) ? response.data.break2End = 1 : ''
-                    Boolean(rows[0].break_3_end) ? response.data.break3End = 1 : ''
+                    // Boolean(rows[0].break_1_end) ? response.data.break1End = 1 : ''
+                    // Boolean(rows[0].break_2_end) ? response.data.break2End = 1 : ''
+                    // Boolean(rows[0].break_3_end) ? response.data.break3End = 1 : ''
 
-                    if (breakType === 3 && breakEnd === 1) {
+                    response.data.break1End = Boolean(rows[0].break_1_end) ? 1 : response.data.break1End;
+                    response.data.break2End = Boolean(rows[0].break_2_end) ? 1 : response.data.break2End;
+                    response.data.break3End = Boolean(rows[0].break_3_end) ? 1 : response.data.break3End;
+
+
+                    if (breakType === 4 && breakEnd === 1) {
                         if (rows[0].meeting_end !== null) {
                             const meeting_start = rows[0].meeting_start;
                             const meeting_end = rows[0].meeting_end;
@@ -125,10 +128,12 @@ router.put('/', (req, res) => {
                             const formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastminutes).padStart(2, '0')}`;
 
 
+
                             const anotherQuery = "UPDATE `emp_activity` SET `meeting_spent` = ? WHERE emp_id = ? AND login_time LIKE ? ";
 
                             conn.query(anotherQuery, [formattedTime, emp_id, date], (err, rows) => {
                                 if (!err) {
+                                    response.status = 1
                                     response.message = "Success ...... ";
                                     res.send(response)
                                 } else {
@@ -140,7 +145,7 @@ router.put('/', (req, res) => {
 
 
                         }
-                    } else if (breakType === 4 && breakEnd === 1) {
+                    } else if (breakType === 5 && breakEnd === 1) {
                         if (rows[0].feedback_end !== null) {
                             const meeting_start = rows[0].feedback_start;
 
@@ -165,6 +170,7 @@ router.put('/', (req, res) => {
 
                             conn.query(anotherQuery, [formattedTime, emp_id, date], (err, rows) => {
                                 if (!err) {
+                                    response.status = 1
                                     response.message = "Success !...... ";
                                     res.send(response)
                                 } else {
@@ -221,66 +227,86 @@ router.get('/', (req, res) => {
 
         if (!err) {
 
-            let firstBreak = 0;
-            let secondBreak = 0;
-            let thirdBreak = 0;
 
-            let totalLogin = 0
+            if (rows.length !== 0) {
+                let firstBreak = 0;
+                let secondBreak = 0;
+                let thirdBreak = 0;
+
+                let totalLogin = 0
 
 
-            if (rows[0].break_1_start !== null && rows[0].break_1_end !== null) {
-                const difference = CalculateTimeDifference(rows[0].break_1_start, rows[0].break_1_end)
-                firstBreak = difference;
+                if (rows[0].break_1_start !== null && rows[0].break_1_end !== null) {
+                    const difference = CalculateTimeDifference(rows[0].break_1_start, rows[0].break_1_end)
+                    firstBreak = difference;
+                }
+
+                if ((rows[0].break_2_start !== null && rows[0].break_2_end !== null)) {
+                    const difference = CalculateTimeDifference(rows[0].break_2_start, rows[0].break_2_end)
+                    secondBreak = difference;
+                }
+
+                if ((rows[0].break_3_start !== null && rows[0].break_3_end !== null)) {
+                    const difference = CalculateTimeDifference(rows[0].break_3_start, rows[0].break_3_end)
+                    thirdBreak = difference;
+                }
+
+
+                if (rows[0].login_time !== null) {
+                    console.log('This is called , I think so')
+                    const date = new Date()
+
+                    const difference = CalculateTimeDifference(rows[0].login_time, date)
+
+                    console.log(difference, 'This is the difference , which in time')
+
+                    totalLogin = difference;
+                }
+
+                const totalBreakTime = firstBreak + secondBreak + thirdBreak
+
+                const finalBreak = HoursIntoValue(totalBreakTime)
+
+                const finalLoginTime = HoursIntoValue(totalLogin)
+
+
+
+                const nonproductive = totalLogin - totalBreakTime
+
+                const finalNonProductive = HoursIntoValue(nonproductive)
+
+
+
+
+                const meetingspentTime = rows[0].meeting_spent;
+
+                const meetingTotal = StringtoSeconds(meetingspentTime)
+
+                const feedbackspentTime = rows[0].feedback_spent;
+
+                const feedbackTotal = StringtoSeconds(feedbackspentTime)
+
+                const totalMeeting = meetingTotal + feedbackTotal;
+
+                const finalMeetingTotal = HoursIntoValue(totalMeeting)
+
+
+                response.data.breaktime = finalBreak;
+                response.data.loggedhours = finalLoginTime
+                // response.data.nonproductivehours = finalNonProductive
+                response.data.nonproductivehours = '00:00'
+                response.data.meetingfeedback = finalMeetingTotal
+
+
+                response.message = "Successfull"
+                res.send(response)
+
+            }else{
+                response.message = "No data available"
+                res.send(response)
             }
 
-            if ((rows[0].break_2_start !== null && rows[0].break_2_end !== null)) {
-                const difference = CalculateTimeDifference(rows[0].break_2_start, rows[0].break_2_end)
-                secondBreak = difference;
-            }
 
-            if ((rows[0].break_3_start !== null && rows[0].break_3_end !== null)) {
-                const difference = CalculateTimeDifference(rows[0].break_3_start, rows[0].break_3_end)
-                thirdBreak = difference;
-            }
-
-
-            if(rows[0].login_time !== null){
-                const date = new Date()
-                const difference = CalculateTimeDifference(rows[0].login_time,date)
-                totalLogin = difference;
-            }
-
-            const totalBreakTime = firstBreak + secondBreak + thirdBreak
-
-            const finalBreak = HoursIntoValue(totalBreakTime)
-
-            const finalLoginTime = HoursIntoValue(totalLogin)
-
-            const nonproductive = totalLogin-totalBreakTime
-
-            const finalNonProductive = HoursIntoValue(nonproductive)
-
-
-            const meetingspentTime = rows[0].meeting_spent; 
-
-            const meetingTotal = StringtoSeconds(meetingspentTime)
-
-            const feedbackspentTime = rows[0].feedback_spent;
-
-            const feedbackTotal = StringtoSeconds(feedbackspentTime)
-
-            const totalMeeting = meetingTotal + feedbackTotal ; 
-
-            const finalMeetingTotal = HoursIntoValue(totalMeeting)
-
-            
-            response.data.breaktime =  finalBreak;
-            response.data.loggedhours = finalLoginTime
-            response.data.nonproductivehours = finalNonProductive
-            response.data.meetingfeedback = finalMeetingTotal
-
-
-            res.send(response)
 
         } else {
             response.message = "Something went wrong in getting breaks " + err;
@@ -291,3 +317,22 @@ router.get('/', (req, res) => {
 })
 
 export default router;
+
+
+
+
+
+
+
+
+//Important queries bro ---- "SELECT * 
+// FROM `emp_activity` 
+// WHERE `emp_id` = 18001
+// AND `login_time` BETWEEN DATE_FORMAT(NOW(), '%Y-%m-01') 
+// AND LAST_DAY(NOW());
+// "
+
+
+
+//import Query2 
+// SELECT * FROM `emp_activity` WHERE `emp_id` = 18001 AND `login_time` BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE());
