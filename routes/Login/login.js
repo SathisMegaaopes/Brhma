@@ -147,7 +147,7 @@ router.post('/validateUser', (req, res) => {
 
         }
         else {
-            
+
             response.status = 1;
             response.message = "Invalid Username / Password";
             response.errorMessage = err;

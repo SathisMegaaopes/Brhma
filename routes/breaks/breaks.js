@@ -59,6 +59,8 @@ router.put('/', (req, res) => {
 
     let break_name;
 
+    // let query;
+
     if (breakType === 1) {
         if (breakEnd === 0) {
             break_name = "break_1_start";
@@ -116,16 +118,17 @@ router.put('/', (req, res) => {
                     response.data.break3End = Boolean(rows[0].break_3_end) ? 1 : response.data.break3End;
 
 
-                    if (breakType === 4 && breakEnd === 1) {
+                    // if (breakType === 4 && breakEnd === 1) {
+                    if (breakType === 4 && breakEnd === 1 && rows[0].meeting_start !== null && rows[0].meeting_end !== null) {
                         if (rows[0].meeting_end !== null) {
                             const meeting_start = rows[0].meeting_start;
                             const meeting_end = rows[0].meeting_end;
 
                             const meetings_time = rows[0].meeting_spent;
 
-                            const [hours, minutes] = meetings_time.split(":").map(Number);
+                            const [hours, minutes,seconds] = meetings_time.split(":").map(Number);
 
-                            const firsttotalHours = hours * 3600 + minutes * 60
+                            const firsttotalHours = hours * 3600 + minutes * 60 + seconds
 
                             const difference = CalculateTimeDifference(meeting_start, meeting_end)
 
@@ -137,13 +140,14 @@ router.put('/', (req, res) => {
 
                             const formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastminutes).padStart(2, '0')}:${String(lastseconds).padStart(2, '0')}`;
 
-                            const anotherQuery = "UPDATE `emp_activity` SET `meeting_spent` = ? WHERE emp_id = ? AND login_time LIKE ? ";
+                            const anotherQuery = "UPDATE `emp_activity` SET `meeting_spent` = ? , `meeting_start` = NULL , `meeting_end` = NULL WHERE emp_id = ? AND login_time LIKE ? ";
 
                             conn.query(anotherQuery, [formattedTime, emp_id, date], (err, rows) => {
                                 if (!err) {
                                     response.status = 1
                                     response.message = "Success ...... ";
                                     res.send(response)
+
                                 } else {
                                     response.message = "Something went wrong in Updating the Total Meeting Time " + err;
                                     res.send(response)
@@ -161,9 +165,9 @@ router.put('/', (req, res) => {
 
                             const feedback_time = rows[0].feedback_spent;
 
-                            const [hours, minutes] = feedback_time.split(":").map(Number);
+                            const [hours, minutes, seconds] = feedback_time.split(":").map(Number);
 
-                            const firsttotalHours = hours * 3600 + minutes * 60
+                            const firsttotalHours = hours * 3600 + minutes * 60 + seconds
 
                             const difference = CalculateTimeDifference(feedback_start, feedback_end)
 
@@ -175,7 +179,7 @@ router.put('/', (req, res) => {
 
                             const formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastminutes).padStart(2, '0')}:${String(lastseconds).padStart(2, '0')}`;
 
-                            const anotherQuery = "UPDATE `emp_activity` SET `feedback_spent` = ? WHERE emp_id = ? AND login_time LIKE ? ";
+                            const anotherQuery = "UPDATE `emp_activity` SET `feedback_spent` = ? , `feedback_start` = NULL , `feedback_end` = NULL WHERE emp_id = ? AND login_time LIKE ? ";
 
                             conn.query(anotherQuery, [formattedTime, emp_id, date], (err, rows) => {
                                 if (!err) {
@@ -191,6 +195,7 @@ router.put('/', (req, res) => {
 
                         }
                     } else {
+                        response.message = "Something went wrong in Selecting the completed breaks " + err;
                         res.send(response)
                     }
 
@@ -337,8 +342,6 @@ router.get('/', (req, res) => {
                             ].map((item) => {
                                 const { name, start, end, type } = item;
 
-                                console.log(name,start,end,type)
-
                                 let status;
                                 if (start && end) {
                                     status = 2;
@@ -355,6 +358,7 @@ router.get('/', (req, res) => {
 
                                 }
                             })
+
 
                             response.breakStatus = breakStatus;
                             response.breakMasterData = rows2;
@@ -406,7 +410,6 @@ export default router;
 // AND `login_time` BETWEEN DATE_FORMAT(NOW(), '%Y-%m-01') 
 // AND LAST_DAY(NOW());
 // "
-
 
 
 //import Query2 
