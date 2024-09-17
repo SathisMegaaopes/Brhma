@@ -19,6 +19,7 @@ import Login from "./routes/Login/login.js";
 import todolist from "./routes/todolist/todolist.js"
 import employeemaster from "./routes/employeeMaster/employeemaster.js"
 import breaks from "./routes/breaks/breaks.js"
+import employActivity from "./routes/empActivity/empactivity.js"
 
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -56,9 +57,8 @@ app.use('/login', Login);
 app.use('/candidateupload', candidateUploads)
 app.use('/todolist',todolist)
 app.use('/employeemaster',employeemaster)
-
-
 app.use('/breaks',breaks)
+app.use('/empactivity',employActivity)
 
 app.get('/', (req, res) => {
   res.send(`This is the Bramha portal running on this server ${PORT}`)
