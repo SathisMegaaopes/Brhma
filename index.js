@@ -1,28 +1,24 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-
-
 import candidatesRoutes from "./routes/candidates/candidates.js";
 import candidateWorkRoutes from "./routes/candidates/candidate_work.js"
 import candidatePersonalRoutes from "./routes/candidates/candidate_personal.js"
 import candidateReferRoutes from "./routes/candidates/candidate_refer.js";
 import candidateUploads from "./routes/candidates/candidate_upload.js"
-
 import interviewEvaluation from "./routes/interview/evaluation.js";
 import typingTest from "./routes/interview/typingTest.js";
 import writingTest from "./routes/interview/writingTest.js";
 import selected from "./routes/interview/hr_round.js";
-
 import employeeList from "./routes/Employee/employeeList.js";
 import Login from "./routes/Login/login.js";
 import todolist from "./routes/todolist/todolist.js"
 import employeemaster from "./routes/employeeMaster/employeemaster.js"
 import breaks from "./routes/breaks/breaks.js"
 import employActivity from "./routes/empActivity/empactivity.js"
-
 import { fileURLToPath } from 'url';
 import path from 'path';
+
 
 
 
@@ -55,6 +51,7 @@ app.use('/hrround', selected);
 app.use('/employeelist', employeeList);
 app.use('/login', Login);
 app.use('/candidateupload', candidateUploads)
+
 app.use('/todolist', todolist)
 app.use('/employeemaster', employeemaster)
 app.use('/breaks', breaks)

@@ -178,13 +178,8 @@ export function updateNametoId() {
               return reject(err)
             }
             console.log(results)
-
-
           })
-
-
         }
-
         conn.end()
       })
     })
@@ -358,7 +353,7 @@ export function TeamtoId() {
     updateNametoId()
   } catch (err) {
     console.log(err);
-  }``
+  }
 })()
 
 

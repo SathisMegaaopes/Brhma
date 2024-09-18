@@ -58,13 +58,10 @@ router.get('/', (req, res) => {
         let response = { status: 0, data: {}, message: '' };
 
         if (!err) {
-
             if (rows.length === 0) {
                 response.message = "No data available in employee activity... "
                 res.send(response)
             } else {
-
-
                 const allData = rows.map((item) => {
 
                     const login_time = item.login_time;
@@ -78,11 +75,8 @@ router.get('/', (req, res) => {
 
                         const startDate = new Date(login_time);
                         const endDate = new Date(logout_time);
-
                         const difference = endDate - startDate
-
                         const differenceInSeconds = Math.floor(difference / 1000)
-
                         const lasthours = Math.floor(differenceInSeconds / 3600)
                         const lastMinutes = Math.floor((differenceInSeconds % 3600) / 60)
                         const lastSeconds = differenceInSeconds % 60;
@@ -100,11 +94,8 @@ router.get('/', (req, res) => {
 
                         const startDate = new Date(login_time);
                         const endDate = new Date();
-
                         const difference = endDate - startDate
-
                         const differenceInSeconds = Math.floor(difference / 1000)
-
                         const lasthours = Math.floor(differenceInSeconds / 3600)
                         const lastMinutes = Math.floor((differenceInSeconds % 3600) / 60)
                         const lastSeconds = differenceInSeconds % 60;
@@ -122,10 +113,10 @@ router.get('/', (req, res) => {
 
                 })
 
+                console.log(rows)
+
                 const myNeeds = getMonthDate()
-
                 const recordsMap = new Map(allData.map(item => [item.date, item]));
-
                 const finalResults = myNeeds.map(date => {
                     const record = recordsMap.get(date);
 
@@ -145,13 +136,10 @@ router.get('/', (req, res) => {
                 })
 
                 response.status = 1;
-                // response.data = allData
                 response.data = finalResults;
                 response.message = "Employee Activity Getted Successfully..... ";
                 res.send(response)
-
             }
-
         } else {
             response.message = "Something went wrong in getting employee Activity " + err;
             res.send(response)

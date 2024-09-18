@@ -2,10 +2,11 @@ import express from 'express'
 import conn from '../../sql.js'
 import { getTodayDate } from '../Utlis/index.js'
 
+
 const router = express.Router()
 
-
 function CalculateTimeDifference(date1, date2) {
+
     const startDate = new Date(date1)
     const endDate = new Date(date2)
 
@@ -20,6 +21,7 @@ function CalculateTimeDifference(date1, date2) {
 function HoursIntoValue(totalHoursSpent) {
 
     const lasthours = Math.floor(totalHoursSpent / 3600);
+
     const lastminutes = Math.floor((totalHoursSpent % 3600) / 60);
 
     const formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastminutes).padStart(2, '0')}`;
@@ -29,6 +31,7 @@ function HoursIntoValue(totalHoursSpent) {
 
 
 function HoursintoFormat(totalHoursSpent) {
+
     const lasthours = Math.floor(totalHoursSpent / 3600);
     const lastminutes = Math.floor((totalHoursSpent % 3600) / 60);
     const lastseconds = totalHoursSpent % 60;
@@ -42,6 +45,7 @@ function HoursintoFormat(totalHoursSpent) {
 
 
 function StringtoSeconds(str) {
+
     const [hours, minutes] = str.split(':').map(Number);
 
     const totalSeconds = hours * 3600 + minutes * 60;
@@ -428,16 +432,21 @@ router.put('/idle', (req, res) => {
     const date = getTodayDate()
 
     let idle_name;
+
     if (type === 0) {
         idle_name = "idle_start";
     } else if (type === 1) {
         idle_name = "idle_end"
     }
+
     let idlePutQuery = `UPDATE emp_activity SET \`${idle_name}\` = CURRENT_TIMESTAMP WHERE emp_id = ? AND login_time LIKE ?`
+
     conn.query(idlePutQuery, [emp_id, date], (err, rows) => {
         let response = { status: 0, data: {}, message: '' };
+
         if (!err) {
             if (type === 1) {
+
                 const idle2Query = "SELECT `idle_start`,`idle_end`,`non_productive_hrs` FROM `emp_activity` WHERE `emp_id` = ? AND `login_time` LIKE ? ; "
                 conn.query(idle2Query, [emp_id, date], (err, rows) => {
                     if (rows[0].idle_start && rows[0].idle_end && rows[0].non_productive_hrs) {
@@ -445,15 +454,20 @@ router.put('/idle', (req, res) => {
                         const startDate = rows[0].idle_start;
                         const endDate = rows[0].idle_end;
                         const previousValue = rows[0].non_productive_hrs;
+
                         const difference = CalculateTimeDifference(startDate, endDate)
                         const [hours, minutes, seconds] = previousValue.split(":").map(Number);
+
                         const firsttotalHours = hours * 3600 + minutes * 60 + seconds
                         const totalHoursSpent = firsttotalHours + difference
                         const lasthours = Math.floor(totalHoursSpent / 3600);
                         const lastminutes = Math.floor((totalHoursSpent % 3600) / 60);
                         const lastseconds = totalHoursSpent % 60;
+
                         const formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastminutes).padStart(2, '0')}:${String(lastseconds).padStart(2, '0')}`;
+
                         const nonproductiveQuery = " UPDATE `emp_activity` SET `non_productive_hrs` = ? , `idle_start` = NULL , `idle_end` = NULL WHERE `emp_id` = ? AND `login_time` LIKE ? ";
+
                         conn.query(nonproductiveQuery, [formattedTime, emp_id, date], (err, rows) => {
                             if (!err) {
                                 response.message = " idleTime updated Successfully.... "
@@ -483,16 +497,3 @@ router.put('/idle', (req, res) => {
 
 
 export default router;
-
-
-
-//Important queries bro ---- "SELECT * 
-// FROM `emp_activity` 
-// WHERE `emp_id` = 18001
-// AND `login_time` BETWEEN DATE_FORMAT(NOW(), '%Y-%m-01') 
-// AND LAST_DAY(NOW());
-// "
-
-
-//import Query2 
-// SELECT * FROM `emp_activity` WHERE `emp_id` = 18001 AND `login_time` BETWEEN DATE_FORMAT(CURDATE(), '%Y-%m-01') AND LAST_DAY(CURDATE());
