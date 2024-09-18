@@ -222,9 +222,7 @@ router.get('/', (req, res) => {
 
     const query = "SELECT * FROM `emp_activity` WHERE emp_id = ? AND login_time LIKE ?  "
 
-
     conn.query(query, [id, date], (err, rows) => {
-
 
         let response = {
             status: 0,
@@ -249,15 +247,11 @@ router.get('/', (req, res) => {
 
         if (!err) {
 
-
             if (rows.length !== 0) {
                 let firstBreak = 0;
                 let secondBreak = 0;
                 let thirdBreak = 0;
-
-
                 let totalLogin = 0
-
 
                 if (rows[0].break_1_start !== null && rows[0].break_1_end !== null) {
                     const difference = CalculateTimeDifference(rows[0].break_1_start, rows[0].break_1_end)
@@ -274,18 +268,13 @@ router.get('/', (req, res) => {
                     thirdBreak = difference;
                 }
 
-
                 if (rows[0].login_time !== null) {
                     const date = new Date()
-
                     const difference = CalculateTimeDifference(rows[0].login_time, date)
-
                     totalLogin = difference;
                 }
 
                 const totalBreakTime = firstBreak + secondBreak + thirdBreak
-
-
 
                 const finalBreak = HoursIntoValue(totalBreakTime)
 
@@ -293,12 +282,9 @@ router.get('/', (req, res) => {
 
                 // const finalLoginTime2 = HoursintoFormat(finalBreak)
 
-
-
                 const nonproductive = totalLogin - totalBreakTime
 
                 const finalNonProductive = HoursIntoValue(nonproductive)
-
 
                 const nonProductivehours = rows[0].non_productive_hrs;
 
@@ -314,7 +300,6 @@ router.get('/', (req, res) => {
 
                 const finalMeetingTotal = HoursIntoValue(totalMeeting)
 
-
                 const break_masterQuery = "SELECT * FROM `break_master`"
 
                 conn.query(break_masterQuery, (err, rows2) => {
@@ -323,7 +308,6 @@ router.get('/', (req, res) => {
                         res.send(response)
                     } else {
                         if (rows2.length !== 0) {
-
                             const breakStatus = [
                                 { name: '15 mins break 1', start: rows[0].break_1_start, end: rows[0].break_1_end, type: 1 },
                                 { name: '15 mins break 2', start: rows[0].break_2_start, end: rows[0].break_2_end, type: 2 },
@@ -341,7 +325,6 @@ router.get('/', (req, res) => {
                                 } else {
                                     status = 0;
                                 }
-
                                 return {
                                     breakName: name,
                                     status: status,
@@ -410,7 +393,6 @@ router.get('/idle', (req, res) => {
                 { name: "idleStart", start: rows[0].idle_start, end: rows[0].idle_end }
             ].map((item) => {
                 const { name, start, end } = item;
-
                 let status;
                 if (start && end) {
                     status = 2;
@@ -419,7 +401,6 @@ router.get('/idle', (req, res) => {
                 } else {
                     status = 0;
                 }
-
                 return {
                     name: name,
                     start: start,
@@ -430,11 +411,8 @@ router.get('/idle', (req, res) => {
 
             response.message = " Successfully fetched... ";
             response.data = idleStatus
-
             res.send(response)
         } else {
-
-
             response.message = 'Something went wrong!' + err
             res.send(response)
         }
@@ -450,49 +428,32 @@ router.put('/idle', (req, res) => {
     const date = getTodayDate()
 
     let idle_name;
-
     if (type === 0) {
         idle_name = "idle_start";
     } else if (type === 1) {
         idle_name = "idle_end"
     }
-
     let idlePutQuery = `UPDATE emp_activity SET \`${idle_name}\` = CURRENT_TIMESTAMP WHERE emp_id = ? AND login_time LIKE ?`
-
     conn.query(idlePutQuery, [emp_id, date], (err, rows) => {
-
         let response = { status: 0, data: {}, message: '' };
-
         if (!err) {
             if (type === 1) {
-
                 const idle2Query = "SELECT `idle_start`,`idle_end`,`non_productive_hrs` FROM `emp_activity` WHERE `emp_id` = ? AND `login_time` LIKE ? ; "
-
                 conn.query(idle2Query, [emp_id, date], (err, rows) => {
-
                     if (rows[0].idle_start && rows[0].idle_end && rows[0].non_productive_hrs) {
 
                         const startDate = rows[0].idle_start;
                         const endDate = rows[0].idle_end;
-
                         const previousValue = rows[0].non_productive_hrs;
-
                         const difference = CalculateTimeDifference(startDate, endDate)
-
                         const [hours, minutes, seconds] = previousValue.split(":").map(Number);
-
                         const firsttotalHours = hours * 3600 + minutes * 60 + seconds
-
                         const totalHoursSpent = firsttotalHours + difference
-
                         const lasthours = Math.floor(totalHoursSpent / 3600);
                         const lastminutes = Math.floor((totalHoursSpent % 3600) / 60);
                         const lastseconds = totalHoursSpent % 60;
-
                         const formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastminutes).padStart(2, '0')}:${String(lastseconds).padStart(2, '0')}`;
-
                         const nonproductiveQuery = " UPDATE `emp_activity` SET `non_productive_hrs` = ? , `idle_start` = NULL , `idle_end` = NULL WHERE `emp_id` = ? AND `login_time` LIKE ? ";
-
                         conn.query(nonproductiveQuery, [formattedTime, emp_id, date], (err, rows) => {
                             if (!err) {
                                 response.message = " idleTime updated Successfully.... "
@@ -503,16 +464,11 @@ router.put('/idle', (req, res) => {
                                 res.send(response)
                             }
                         })
-
                     } else {
                         response.message = "Something went wrong , Some fields is empty... " + err;
                         res.send(response)
                     }
-
-
                 })
-
-
             } else {
                 response.message = " idleTime updated Successfully.... "
                 response.status = 1
@@ -523,7 +479,6 @@ router.put('/idle', (req, res) => {
             res.send(response)
         }
     })
-
 })
 
 

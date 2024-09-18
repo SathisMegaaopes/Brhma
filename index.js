@@ -55,10 +55,10 @@ app.use('/hrround', selected);
 app.use('/employeelist', employeeList);
 app.use('/login', Login);
 app.use('/candidateupload', candidateUploads)
-app.use('/todolist',todolist)
-app.use('/employeemaster',employeemaster)
-app.use('/breaks',breaks)
-app.use('/empactivity',employActivity)
+app.use('/todolist', todolist)
+app.use('/employeemaster', employeemaster)
+app.use('/breaks', breaks)
+app.use('/empactivity', employActivity)
 
 app.get('/', (req, res) => {
   res.send(`This is the Bramha portal running on this server ${PORT}`)
