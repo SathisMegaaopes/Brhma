@@ -51,6 +51,13 @@ router.get('/', (req, res) => {
 
     const date = getCurrentMonthYear()
 
+    const todayDate = new Date();
+
+    const year = todayDate.getFullYear();
+    const month = String(todayDate.getMonth() + 1).padStart(2, '0');
+    const day = String(todayDate.getDate()).padStart(2, '0');
+    const todayDateFormat = `${year}-${month}-${day}`
+
     const query = "SELECT * FROM `emp_activity` WHERE `emp_id` = ? AND `login_time` LIKE ? ORDER BY `login_time` ASC ";
 
     conn.query(query, [emp_id, date], (err, rows) => {
@@ -71,7 +78,27 @@ router.get('/', (req, res) => {
 
                     const date = extractDatefromtimestamp(login_time)
 
-                    if (login_time && logout_time) {
+                    const todayMapDate = new Date(item.login_time)
+                    const year = todayMapDate.getFullYear();
+                    const month = String(todayMapDate.getMonth() + 1).padStart(2, '0');
+                    const day = String(todayMapDate.getDate()).padStart(2, '0');
+                    const todayMapDateFormat2 = `${year}-${month}-${day}`
+
+                    
+                    if (todayDateFormat === todayMapDateFormat2) {
+
+                        const startDate = new Date(login_time);
+                        const endDate = new Date();
+                        const difference = endDate - startDate
+                        const differenceInSeconds = Math.floor(difference / 1000)
+                        const lasthours = Math.floor(differenceInSeconds / 3600)
+                        const lastMinutes = Math.floor((differenceInSeconds % 3600) / 60)
+                        const lastSeconds = differenceInSeconds % 60;
+
+                        formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastMinutes).padStart(2, '0')}:${String(lastSeconds).padStart(2, '0')}`
+                        color = 'none'
+                    }
+                    else if (login_time && logout_time) {
 
                         const startDate = new Date(login_time);
                         const endDate = new Date(logout_time);
@@ -90,21 +117,7 @@ router.get('/', (req, res) => {
                         }
 
 
-                    } else if (login_time && !logout_time) {
-
-                        const startDate = new Date(login_time);
-                        const endDate = new Date();
-                        const difference = endDate - startDate
-                        const differenceInSeconds = Math.floor(difference / 1000)
-                        const lasthours = Math.floor(differenceInSeconds / 3600)
-                        const lastMinutes = Math.floor((differenceInSeconds % 3600) / 60)
-                        const lastSeconds = differenceInSeconds % 60;
-
-                        formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastMinutes).padStart(2, '0')}:${String(lastSeconds).padStart(2, '0')}`
-
-                        color = '#00b0ff'
                     }
-
                     return {
                         "date": date,
                         "color": color,
@@ -112,8 +125,6 @@ router.get('/', (req, res) => {
                     }
 
                 })
-
-                console.log(rows)
 
                 const myNeeds = getMonthDate()
                 const recordsMap = new Map(allData.map(item => [item.date, item]));
@@ -129,7 +140,7 @@ router.get('/', (req, res) => {
                     } else {
                         return {
                             date: date,
-                            color: "#e0e0e0",
+                            color: "#c4dad2",
                             content: null
                         }
                     }
@@ -151,3 +162,19 @@ router.get('/', (req, res) => {
 
 export default router
 
+
+
+                    // else if (login_time && !logout_time) {
+
+                    //     const startDate = new Date(login_time);
+                    //     const endDate = new Date();
+                    //     const difference = endDate - startDate
+                    //     const differenceInSeconds = Math.floor(difference / 1000)
+                    //     const lasthours = Math.floor(differenceInSeconds / 3600)
+                    //     const lastMinutes = Math.floor((differenceInSeconds % 3600) / 60)
+                    //     const lastSeconds = differenceInSeconds % 60;
+
+                    //     formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastMinutes).padStart(2, '0')}:${String(lastSeconds).padStart(2, '0')}`
+
+                    //     // color = '#00b0ff'
+                    // }

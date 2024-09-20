@@ -496,4 +496,16 @@ router.put('/idle', (req, res) => {
 })
 
 
+
+
+router.get('/demodemo',(req,res)=>{
+    console.log('The api you are eagaring is hitted buddy')
+    res.send('HI')
+})
+
+
 export default router;
+
+
+
+
