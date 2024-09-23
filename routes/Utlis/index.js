@@ -54,4 +54,4 @@ function getCurrentMonthYear() {
     return `%${year}-${month}%`;
 }
 
-export { fnGetCandidatedetails, generateEmployeeObject, getTodayDate , getCurrentMonthYear}
+export { fnGetCandidatedetails, generateEmployeeObject, getTodayDate, getCurrentMonthYear }

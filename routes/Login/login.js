@@ -5,13 +5,10 @@ import { getTodayDate } from "../Utlis/index.js";
 
 const router = express.Router();
 
-/* get all candidates */
 router.post('/validateUser', (req, res) => {
     let user_name = req.body.user_name;
     let user_pwd = req.body.user_pwd;
     let type = req.body.type
-
-    // console.log(type)
 
 
     let sql_query = "SELECT * FROM user_login WHERE ";
@@ -59,7 +56,6 @@ router.post('/validateUser', (req, res) => {
                                                 if (rowww.length > 0) {
 
                                                     const result = generateEmployeeObject(rows2[0])
-                                                    // rows[0].user_details = rows2[0];
                                                     response.calenderData = results
                                                     rows[0].user_details = result;
                                                     response.data = rows;
