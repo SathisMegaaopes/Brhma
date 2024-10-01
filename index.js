@@ -16,6 +16,7 @@ import todolist from "./routes/todolist/todolist.js"
 import employeemaster from "./routes/employeeMaster/employeemaster.js"
 import breaks from "./routes/breaks/breaks.js"
 import employActivity from "./routes/empActivity/empactivity.js"
+import employeeonBoard from "./routes/employeeOnboard/employeeOnboard.js"
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -36,7 +37,6 @@ app.use(cors({
 app.use(bodyParser.json());
 
 
-
 app.use('/uploads', express.static(path.join(__dirname, 'routes/candidates/Uploads')));
 
 
@@ -51,11 +51,13 @@ app.use('/hrround', selected);
 app.use('/employeelist', employeeList);
 app.use('/login', Login);
 app.use('/candidateupload', candidateUploads)
-
 app.use('/todolist', todolist)
 app.use('/employeemaster', employeemaster)
 app.use('/breaks', breaks)
 app.use('/empactivity', employActivity)
+app.use('/employeeonboard', employeeonBoard)
+
+
 
 app.get('/', (req, res) => {
   res.send(`This is the Bramha portal running on this server ${PORT}`)

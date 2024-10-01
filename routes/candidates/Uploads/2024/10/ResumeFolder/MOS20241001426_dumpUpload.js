@@ -1,6 +1,8 @@
 import mysql from "mysql"
 
 
+
+
 const conn = mysql.createConnection({
   host: "localhost",
   port: "3306",
@@ -18,8 +20,6 @@ conn.connect((err) => {
     console.log("DB FAILED" + JSON.stringify(err, undefined, 2));
   }
 })
-
-
 
 function generateEmployeeObject(arr) {
 

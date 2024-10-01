@@ -26,7 +26,11 @@ router.get('/', (req, res) => {
 
     query += " ORDER BY id DESC";
 
+    console.log(query)
+
     conn.query(query, params, (err, rows) => {
+
+        console.log(query)
 
         let response = { status: 0, data: [], message: "" };
         if (!err) {
@@ -59,16 +63,20 @@ router.get('/', (req, res) => {
 
 
 router.get('/searchByDate/:from/:to', (req, res) => {
+
+    // console.log('This data being hitted.....')
+
     const sql = "SELECT * FROM candidate_master WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC";
     const sql_data = [req.params.from, req.params.to];
 
-    conn.query(sql, sql_data, (err, rows) => {
+    conn.query(sql, sql_data, (err, rows1) => {
         let response = { status: 0, data: [], message: "" };
         if (!err) {
             const dumpQuery = " SELECT * FROM `emp_master` WHERE emp_id in (SELECT user_name FROM user_login) ORDER BY f_name ASC "
             conn.query(dumpQuery, (err, rows) => {
                 if (!err) {
                     const changedOne = generateEmployeeObject(rows);
+                    response.data = rows1
                     response.emp_details = changedOne;
                     response.message = "Success";
                     res.send(response);
