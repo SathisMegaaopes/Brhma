@@ -5,7 +5,7 @@ import fs from 'fs';
 import bodyParser from "body-parser";
 import { fileURLToPath } from 'url';
 import cors from 'cors';
-import conn from "../../sql.js"; 
+import conn from "../../sql.js";
 
 
 
@@ -74,6 +74,7 @@ const fileUpload = (req, res, next) => {
                         }
                     });
                 }
+
                 if (type === 'file') {
                     fs.access(fileFolder, fs.constants.F_OK, (folderErr) => {
                         if (folderErr) {
@@ -97,6 +98,8 @@ const fileUpload = (req, res, next) => {
                             fileUploading(a)
                         }
                     });
+
+                    
                 } else if (type === 'image') {
                     fs.access(imagesFolder, fs.constants.F_OK, (folderErr) => {
                         if (folderErr) {
@@ -132,7 +135,7 @@ const fileUpload = (req, res, next) => {
     function fileUploading(value) {
         const targetPath = path.join(targetDirectory, `${id}_${file.originalname}`);
 
-        const relativePath = path.relative(__dirname, targetPath); 
+        const relativePath = path.relative(__dirname, targetPath);
 
         fs.writeFile(targetPath, file.buffer, (err) => {
             if (err) {
@@ -204,9 +207,9 @@ router.get('/:id', (req, res) => {
 
 
     const sql_query = "SELECT `resume`,`profile` FROM `candidate_master` WHERE `candidate_id` = ? ";
-    conn.query(sql_query, [ id],
+    conn.query(sql_query, [id],
         (err, rows) => {
-            let response = { status: 0, data: {resume:'',profile:''}, message: "" };
+            let response = { status: 0, data: { resume: '', profile: '' }, message: "" };
             if (!err) {
                 if (rows.length > 0) {
                     const resumeUrl = rows[0].resume;
@@ -230,7 +233,7 @@ router.get('/:id', (req, res) => {
         }
     )
 
-    
+
 })
 
 
