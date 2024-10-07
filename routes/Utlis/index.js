@@ -54,4 +54,22 @@ function getCurrentMonthYear() {
     return `%${year}-${month}%`;
 }
 
-export { fnGetCandidatedetails, generateEmployeeObject, getTodayDate, getCurrentMonthYear }
+
+const DateFormater = (val) => {
+
+    console.log(val,'This is the value comming inside....')
+    let new_date = new Date(val);
+    let year = new_date.getFullYear();
+    let month = ("0" + (new_date.getMonth() + 1)).slice(-2);
+    let date = ("0" + new_date.getDate()).slice(-2);
+
+    console.log(year + "-" + month + "-" + date , 'This is the value , when it is outside....')
+
+    // return date + "/" + month + "/" + year;
+    return year + "-" + month + "-" + date ;
+    
+}
+
+
+
+export { fnGetCandidatedetails, generateEmployeeObject, getTodayDate, getCurrentMonthYear, DateFormater }
