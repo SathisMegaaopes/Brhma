@@ -190,10 +190,10 @@ router.get('/getCandidate', (req, res) => {
 
                                     const DateFormater2 = (val) => {
                                         let [day, month, year] = val.split('/');
-                                    
+
                                         day = ("0" + day).slice(-2);
                                         month = ("0" + month).slice(-2);
-                                    
+
                                         return `${year}-${month}-${day}`;
                                     };
 
@@ -203,7 +203,6 @@ router.get('/getCandidate', (req, res) => {
                                             firstname: item?.f_name_basic,
                                             lastname: item?.l_name_basic,
                                             dateOfBirth: DateFormater2(item?.dob),
-                                            // dateOfBirth: '07/30/2002',
                                             gender: item?.gender,
                                             email: item?.email_basic,
                                             mobileNumber: item?.mobile_basic,
