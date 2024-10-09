@@ -11,37 +11,19 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+
 const transporter = nodemailer.createTransport({
-    service: 'Gmail',
+    host: "brhma.org.in",
+    port: "465",
+    secure: true,
     auth: {
-        user: 'brhma@megaaopes.com',
-        pass: 'B^hM@mos#24',
-    },
+        user: "no-reply@brhma.org.in",
+        pass: "Megaoopes@brhma"
+    }
 });
 
 
-// router.get('/', async (req, res) => {
 
-//     const mailOptions = {
-//         from: 'sathiskumar.r@megaaopes.com',
-//         to: 'sathiskumar.r@megaaopes.com',
-//         subject: 'Welcome to the Team!',
-//         html: `<h1>Welcome! Sathis kumar , Babuuuuu.....</h1>
-//                <p>We are excited to have you on board.</p>
-//                <p>Best regards,</p>
-//                <p>Your Company</p>`,
-//     };
-
-//     try {
-//         await transporter.sendMail(mailOptions);
-//         res.status(200).send('Mapla email odiruchu da ')
-//     } catch (error) {
-//         console.error('Something went wrong mapla', error)
-//         res.send(500).send('Failed to sent email ')
-//     }
-
-
-// })
 
 
 router.get('/shift', (req, res) => {
@@ -151,8 +133,6 @@ router.get('/getCandidate', (req, res) => {
     const query3 = 'SELECT * FROM `candidate_personal` WHERE `candidate_id` = ?'
 
     const query4 = 'SELECT * FROM `candidate_work` WHERE `candidate_id` = ?'
-
-    // Candidate id vera da , so check pannanum da marantharatha seriya...... seriyaa......
 
     conn.query(query1, [id], (err, rows1) => {
 
@@ -273,8 +253,6 @@ router.get('/getEmployee', (req, res) => {
 
     conn.query(getEmployeeQuery, [employee_id], (err, rows) => {
 
-        const candidate_id = rows[0].emp_id;
-
         let response = { status: 0, data: {}, message: '' };
 
         if (err) {
@@ -282,103 +260,92 @@ router.get('/getEmployee', (req, res) => {
             res.send(response);
         } else {
 
-            const profilePathQuery = ' SELECT `profile` FROM `candidate_master` WHERE `candidate_id` = ? ;'
+            if (rows.length > 0) {
+                const item = rows[0];
 
-            conn.query(profilePathQuery, [candidate_id], (err, rows2) => {
+                const PopulatedData = {
+                    firstname: item.first_name,
+                    lastname: item.last_name,
+                    dateOfBirth: DateFormater(item.dateofbirth),
+                    employeeNumber: item.employee_number,
+                    gender: item.gender,
+                    email: item.email,
+                    mobileNumber: item.mobile_number,
+                    phone: item.phone,
+                    bloodGroup: item.blood_group,
+                    dateOfJoining: DateFormater(item.date_of_join),
+                    fathersName: item.father_name,
+                    fathersOccupation: item.father_occupation,
+                    countryOfOrigin: item.country_of_origin,
+                    nationality: item.nationality,
+                    emergencyContactName: item.emergency_contact_name,
+                    emergencyContactNumber: item.emergency_contact_number,
+                    emergencyContactRelation: item.emergency_contact_relation,
+                    spouseName: item.spouse_name,
+                    physicallyChallenged: item.physically_challenged,
+                    education: item.education,
+                    addressprofType: item.address_prof_type,
+                    reportingmanager: item.reporting_manager,
+                    reportingteamlead: item.reporting_team_lead,
+                    designation: item.designation,
+                    department: item.department,
+                    team: item.team,
+                    referrdby: item.referred_by,
+                    employmentstatus: item.employment_status,
+                    employeestatus: item.employee_status,
+                    shift: item.shift,
+                    grade: item.grade,
+                    probabationperiod: item.probabtion_period,
+                    salaryofferred: item.salary_offered,
+                    totalmonthlyctc: item.total_month_salary,
+                    attendancebonus: item.attendance_bonus,
+                    totalyearlyctc: item.total_yearly_salary,
+                    billablestatus: item.billable_status,
+                    addresprofpath: item.addres_prof_path,
+                    currentaddress: item.current_address,
+                    permanentAddress: item.permanent_address,
+                    currentCity: item.current_city,
+                    currentPincode: item.current_pincode,
+                    permanentcity: item.permanent_city,
+                    permanentPincode: item.permanent_pincode,
+                    organization1: item.organization_1,
+                    designation1: item.designation_1,
+                    startdate1: DateFormater(item.start_date_1),
+                    enddate1: DateFormater(item.end_date_1),
+                    totalExperience1: item.totalExperience_1,
+                    organization2: item.organization_2,
+                    designation2: item.designation_2,
+                    startdate2: DateFormater(item.start_date_2),
+                    enddate2: DateFormater(item.end_date_2),
+                    totalExperience2: item.totalExperience_2,
+                    organization3: item.organization_3,
+                    designation3: item.designation_3,
+                    startdate3: DateFormater(item.start_date_3),
+                    enddate3: DateFormater(item.end_date_3),
+                    totalExperience3: item.totalExperience_3,
+                    aadhaarnumber: item.aadhaar_number,
+                    pannumber: item.pan_number,
+                    passportnumber: item.passport_number,
+                    uannumber: item.uan_number,
+                    pfnumber: item.pf_number,
+                    pfjoindate: DateFormater(item.pfjoin_date),
+                    esinumber: item.esi_number,
+                    lwfnumber: item.lwf_number,
+                    modeofpayment: item.mode_of_payment,
+                    bankname: item.bank_name,
+                    branchname: item.branch_name,
+                    ifsccode: item.ifsc_code,
+                    accountNumber: item.account_number,
+                    beneficiarycode: item.beneficiary_code,
+                    profileUrl: item.profileUrl
 
-                if (err) {
-
-                    response.message = "Something went wrong in the getting details of profile photo .... " + err;
-                    res.send(response);
-
-                } else {
-
-                    const PopulatedData = rows.map((item, index) => {
-                        return {
-                            firstname: item.first_name,
-                            lastname: item.last_name,
-                            dateOfBirth: DateFormater(item.dateofbirth),
-                            employeeNumber: item.employee_number,
-                            gender: item.gender,
-                            email: item.email,
-                            mobileNumber: item.mobile_number,
-                            phone: item.phone,
-                            bloodGroup: item.blood_group,
-                            dateOfJoining: DateFormater(item.date_of_join),
-                            fathersName: item.father_name,
-                            fathersOccupation: item.father_occupation,
-                            countryOfOrigin: item.country_of_origin,
-                            nationality: item.nationality,
-                            emergencyContactName: item.emergency_contact_name,
-                            emergencyContactNumber: item.emergency_contact_number,
-                            emergencyContactRelation: item.emergency_contact_relation,
-                            spouseName: item.spouse_name,
-                            physicallyChallenged: item.physically_challenged,
-                            education: item.education,
-                            addressprofType: item.address_prof_type,
-                            reportingmanager: item.reporting_manager,
-                            reportingteamlead: item.reporting_team_lead,
-                            designation: item.designation,
-                            department: item.department,
-                            team: item.team,
-                            referrdby: item.referred_by,
-                            employmentstatus: item.employment_status,
-                            employeestatus: item.employee_status,
-                            shift: item.shift,
-                            grade: item.grade,
-                            probabationperiod: item.probabtion_period,
-                            salaryofferred: item.salary_offered,
-                            totalmonthlyctc: item.total_month_salary,
-                            attendancebonus: item.attendance_bonus,
-                            totalyearlyctc: item.total_yearly_salary,
-                            billablestatus: item.billable_status,
-                            addresprofpath: item.addres_prof_path,
-                            currentaddress: item.current_address,
-                            permanentAddress: item.permanent_address,
-                            currentCity: item.current_city,
-                            currentPincode: item.current_pincode,
-                            permanentcity: item.permanent_city,
-                            permanentPincode: item.permanent_pincode,
-                            organization1: item.organization_1,
-                            designation1: item.designation_1,
-                            startdate1: DateFormater(item.start_date_1),
-                            enddate1: DateFormater(item.end_date_1),
-                            totalExperience1: item.totalExperience_1,
-                            organization2: item.organization_2,
-                            designation2: item.designation_2,
-                            startdate2: DateFormater(item.start_date_2),
-                            enddate2: DateFormater(item.end_date_2),
-                            totalExperience2: item.totalExperience_2,
-                            organization3: item.organization_3,
-                            designation3: item.designation_3,
-                            startdate3: DateFormater(item.start_date_3),
-                            enddate3: DateFormater(item.end_date_3),
-                            totalExperience3: item.totalExperience_3,
-                            aadhaarnumber: item.aadhaar_number,
-                            pannumber: item.pan_number,
-                            passportnumber: item.passport_number,
-                            uannumber: item.uan_number,
-                            pfnumber: item.pf_number,
-                            pfjoindate: DateFormater(item.pfjoin_date),
-                            esinumber: item.esi_number,
-                            lwfnumber: item.lwf_number,
-                            modeofpayment: item.mode_of_payment,
-                            bankname: item.bank_name,
-                            branchname: item.branch_name,
-                            ifsccode: item.ifsc_code,
-                            accountNumber: item.account_number,
-                            beneficiarycode: item.beneficiary_code,
-                            profileUrl: rows2[index].profile,
-
-                        }
-                    })
-
-                    response.message = "Data fetcched Successfully....";
-                    response.status = 1;
-                    response.data = PopulatedData;
-                    res.send(response);
                 }
-            })
+
+                response.message = "Data fetcched Successfully....";
+                response.status = 1;
+                response.data = PopulatedData;
+                res.send(response);
+            }
 
         }
     })
@@ -387,9 +354,11 @@ router.get('/getEmployee', (req, res) => {
 })
 
 
+
 const uploadAddresdoc = (req, res, next) => {   //It is a Controller for Uploading the file to the backend Directory......
 
-    const id = 3000;
+    const { id } = req.body;
+
 
     const file = req.file;
 
@@ -494,6 +463,113 @@ const uploadAddresdoc = (req, res, next) => {   //It is a Controller for Uploadi
 router.post('/addressprof', upload.single('file'), uploadAddresdoc)
 
 
+const uploadProfile = (req, res, next) => {   //It is a Controller for Uploading the ProfilePhoto. to the backend Directory......
+
+    const id = Math.floor(1000 + Math.random() * 9000);
+
+
+    const file = req.file;
+
+    let response = { status: 0, data: {}, message: '' };
+
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear().toString();
+    const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2);
+
+    const baseDirectory = path.join(__dirname, 'profileUploads');
+    const yearFoleder = path.join(baseDirectory, currentYear);
+    const monthFolder = path.join(yearFoleder, currentMonth);
+
+
+    if (!file) {
+        response.message = "Somethin went wrong in the file " + err;
+        res.send(response);
+    } else {
+        fs.access(baseDirectory, fs.constants.F_OK, (baseErr) => {
+            if (baseErr) {
+                fs.mkdir(baseDirectory, { recursive: true }, (err) => {
+                    if (err) {
+                        response.message = "Failed in creating the baseDirectory" + err;
+                        res.send(response)
+                    }
+                })
+            }
+            fs.access(yearFoleder, fs.constants.F_OK, (yearErr) => {
+                if (yearErr) {
+                    fs.mkdir(yearFoleder, { recursive: true }, (err) => {
+                        if (err) {
+                            response.message = " Failed to create the Yearfolder" + err;
+                            res.send(response);
+                        }
+                    })
+                }
+                fs.access(monthFolder, fs.constants.F_OK, (monthErr) => {
+                    if (monthErr) {
+                        fs.mkdir(monthFolder, { recursive: true }, (err) => {
+                            if (err) {
+                                response.message = "Failed to create the MonthFolder" + err;
+                                res.send(response);
+                            } else {
+
+                                const targetPath = path.join(monthFolder, `${id}_${file.originalname}`);
+
+                                const relativePath = path.relative(__dirname, targetPath);
+
+                                fs.writeFile(targetPath, file.buffer, (err) => {
+
+                                    if (err) {
+
+                                        response.message = "Something went wrong !!! " + err;
+                                        res.send(response);
+                                    } else {
+                                        response.message = "File Uploaded Successfully";
+                                        response.status = 1;
+                                        response.data.url = relativePath;
+                                        res.send(response);
+                                    }
+
+                                })
+
+
+                            }
+                        })
+
+                    } else {
+
+                        const targetPath = path.join(monthFolder, `${id}_${file.originalname}`);
+
+                        const relativePath = path.relative(__dirname, targetPath);
+
+                        fs.writeFile(targetPath, file.buffer, (err) => {
+
+                            if (err) {
+
+                                response.message = "Something went wrong !!! " + err;
+                                res.send(response);
+                            } else {
+                                response.message = "File Uploaded Successfully";
+                                response.status = 1;
+                                response.data.url = relativePath;
+                                res.send(response);
+                            }
+
+                        })
+
+                    }
+                })
+            })
+        })
+    }
+
+
+}
+
+
+router.post('/profileUpload', upload.single('file'), uploadProfile)
+
 
 function generateRandomPassword() {
     const upperCaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -518,30 +594,55 @@ function generateRandomPassword() {
 }
 
 
+router.get('/employeeCheckIds', (req, res) => {
+
+    const gettingIdsQuery = 'SELECT `employee_number` FROM `employee_onboard` WHERE `status` = 1';
+
+    conn.query(gettingIdsQuery, (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = "Something went wrong in the gettings ids in the onboard : " + err;
+            res.send(response);
+
+        } else {
+
+            const mappedIDs = rows.map((item) => item.employee_number);
+
+            response.message = "SuccessFully fetched the data ... ";
+            response.status = 1;
+            response.data = mappedIDs;
+            res.send(response);
+        }
+
+    })
+
+})
 
 
 router.post('/', (req, res) => {
 
-    const { formData, reqType, requestType, emp_id, referenceid, activeStep } = req.body;
+    const { formData, reqType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
 
     let basicInfoQuery;
     let data;
 
-    console.log(reqType)
-    console.log(requestType)
 
     if (activeStep === 0) {
-        if ((reqType === 1 || reqType === 2) && requestType === 1) {
+
+        if ((reqType === 1 || reqType === 2) && requestType === 1 && available === 0) {
 
             basicInfoQuery = ' INSERT INTO `employee_onboard` (`emp_id`, `first_name`, `last_name`, `dateofbirth`,' +
                 '`employee_number`, `gender`, `email`, `mobile_number`, `phone`, `blood_group`, `date_of_join`, `father_name`, `father_occupation`,' +
                 '`country_of_origin`, `nationality`, `emergency_contact_name`, `emergency_contact_number`, `emergency_contact_relation`, `spouse_name`,' +
-                ' `physically_challenged`, `education`, `address_prof_type`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+                ' `physically_challenged`, `education`, `address_prof_type` , `profileUrl` ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
 
             data = [referenceid, formData.firstname, formData.lastname, formData.dateOfBirth, formData.employeeNumber, formData.gender, formData.email]
             data = [...data, formData.mobileNumber, formData.phone, formData.bloodGroup, formData.dateOfJoining, formData.fathersName, formData.fathersOccupation, formData.countryOfOrigin]
             data = [...data, formData.nationality, formData.emergencyContactName, formData.emergencyContactNumber, formData.emergencyContactRelation]
-            data = [...data, formData.spouseName, formData.physicallyChallenged, formData.education, formData.addressprofType]
+            data = [...data, formData.spouseName, formData.physicallyChallenged, formData.education, formData.addressprofType, profileUrl]
 
 
         } else {
@@ -600,10 +701,6 @@ router.post('/', (req, res) => {
 
         let response = { status: 0, data: {}, message: '' };
 
-        console.log(basicInfoQuery, ' This is the Query...... ')
-
-        console.log(data)
-
         if (err) {
 
             response.message = 'Something went wrong in the creating or updating the employee ' + err;
@@ -615,26 +712,43 @@ router.post('/', (req, res) => {
 
             const password = generateRandomPassword();
 
-            if (activeStep === 5 && reqType === 1) {
+            if (activeStep === 5 && (reqType === 1 || reqType === 2)) {
 
                 const loginQuery = 'INSERT INTO `user_login` (`id`, `user_name`, `user_pwd`, `user_role`, `login_time`, `emp_id`) VALUES (NULL, ?, ?, ?, current_timestamp(), ?);'
 
-                conn.query(loginQuery, [userName, password, '2', userName], (err, rows) => {
+                conn.query(loginQuery, [userName, password, '2', userName], async (err, rows) => {
                     if (err) {
-
                         response.message = "Sonething went wrong in creating the logins : " + err;
                         res.send(response);
 
                     } else {
-                        response.message = "Success Created Employee and login Credentials....";
-                        response.status = 1;
-                        res.send(response);
+
+                        const mailOptions = {
+                            from: 'sathiskumar.r@megaaopes.com',
+                            to: 'sathiskumar.r@megaaopes.com',
+                            subject: 'Welcome to the Team!',
+                            html: `<h1>Welcome! Sathis Kumar</h1>
+                                   <p>We are excited to have you on board.</p>
+                                   <p>This is your username: ${userName}</p>
+                                   <p>This is your password: ${password}</p>
+                                   <p>Best regards,</p>
+                                   <p>MegaaOpes Solutions...</p>`,
+                        };
+
+                        try {
+                            await transporter.sendMail(mailOptions);
+                            response.message = "Success Created Employee and login Credentials....";
+                            response.status = 1;
+                            res.status(200).send(response);
+                        } catch (error) {
+                            response.message = 'Failed to send email' + err;
+                            res.send(response)
+
+                        }
                     }
                 })
 
             } else {
-
-                console.log('Success dude ehhhhhhhhhhh..................................')
                 response.message = 'Successfully updated...';
                 response.status = 1;
                 res.send(response);

@@ -1,0 +1,126 @@
+
+// router.get('/getEmployee', (req, res) => {
+
+//     const { employee_id } = req.query;
+
+//     const getEmployeeQuery = ' SELECT * FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1 ';
+
+//     conn.query(getEmployeeQuery, [employee_id], (err, rows) => {
+
+//         const candidate_id = rows[0].emp_id;
+
+//         let response = { status: 0, data: {}, message: '' };
+
+//         if (err) {
+//             response.message = "Something went wrong in getting the employee Details " + err;
+//             res.send(response);
+//         } else {
+
+
+//             const profilePathQuery = ' SELECT `profile` FROM `candidate_master` WHERE `candidate_id` = ? ;'
+
+//             conn.query(profilePathQuery, [candidate_id], (err, rows2) => {
+
+//                 if (err) {
+
+//                     response.message = "Something went wrong in the getting details of profile photo .... " + err;
+//                     res.send(response);
+
+//                 } else {
+
+//                     const PopulatedData = rows.map((item, index) => {
+//                         return {
+//                             firstname: item.first_name,
+//                             lastname: item.last_name,
+//                             dateOfBirth: DateFormater(item.dateofbirth),
+//                             employeeNumber: item.employee_number,
+//                             gender: item.gender,
+//                             email: item.email,
+//                             mobileNumber: item.mobile_number,
+//                             phone: item.phone,
+//                             bloodGroup: item.blood_group,
+//                             dateOfJoining: DateFormater(item.date_of_join),
+//                             fathersName: item.father_name,
+//                             fathersOccupation: item.father_occupation,
+//                             countryOfOrigin: item.country_of_origin,
+//                             nationality: item.nationality,
+//                             emergencyContactName: item.emergency_contact_name,
+//                             emergencyContactNumber: item.emergency_contact_number,
+//                             emergencyContactRelation: item.emergency_contact_relation,
+//                             spouseName: item.spouse_name,
+//                             physicallyChallenged: item.physically_challenged,
+//                             education: item.education,
+//                             addressprofType: item.address_prof_type,
+//                             reportingmanager: item.reporting_manager,
+//                             reportingteamlead: item.reporting_team_lead,
+//                             designation: item.designation,
+//                             department: item.department,
+//                             team: item.team,
+//                             referrdby: item.referred_by,
+//                             employmentstatus: item.employment_status,
+//                             employeestatus: item.employee_status,
+//                             shift: item.shift,
+//                             grade: item.grade,
+//                             probabationperiod: item.probabtion_period,
+//                             salaryofferred: item.salary_offered,
+//                             totalmonthlyctc: item.total_month_salary,
+//                             attendancebonus: item.attendance_bonus,
+//                             totalyearlyctc: item.total_yearly_salary,
+//                             billablestatus: item.billable_status,
+//                             addresprofpath: item.addres_prof_path,
+//                             currentaddress: item.current_address,
+//                             permanentAddress: item.permanent_address,
+//                             currentCity: item.current_city,
+//                             currentPincode: item.current_pincode,
+//                             permanentcity: item.permanent_city,
+//                             permanentPincode: item.permanent_pincode,
+//                             organization1: item.organization_1,
+//                             designation1: item.designation_1,
+//                             startdate1: DateFormater(item.start_date_1),
+//                             enddate1: DateFormater(item.end_date_1),
+//                             totalExperience1: item.totalExperience_1,
+//                             organization2: item.organization_2,
+//                             designation2: item.designation_2,
+//                             startdate2: DateFormater(item.start_date_2),
+//                             enddate2: DateFormater(item.end_date_2),
+//                             totalExperience2: item.totalExperience_2,
+//                             organization3: item.organization_3,
+//                             designation3: item.designation_3,
+//                             startdate3: DateFormater(item.start_date_3),
+//                             enddate3: DateFormater(item.end_date_3),
+//                             totalExperience3: item.totalExperience_3,
+//                             aadhaarnumber: item.aadhaar_number,
+//                             pannumber: item.pan_number,
+//                             passportnumber: item.passport_number,
+//                             uannumber: item.uan_number,
+//                             pfnumber: item.pf_number,
+//                             pfjoindate: DateFormater(item.pfjoin_date),
+//                             esinumber: item.esi_number,
+//                             lwfnumber: item.lwf_number,
+//                             modeofpayment: item.mode_of_payment,
+//                             bankname: item.bank_name,
+//                             branchname: item.branch_name,
+//                             ifsccode: item.ifsc_code,
+//                             accountNumber: item.account_number,
+//                             beneficiarycode: item.beneficiary_code,
+//                             // profileUrl: rows2[index].profile,
+//                             profileUrl:item.profileUrl
+
+//                         }
+//                     })
+
+//                     response.message = "Data fetcched Successfully....";
+//                     response.status = 1;
+//                     response.data = PopulatedData;
+//                     res.send(response);
+//                 }
+//             })
+
+//         }
+//     })
+
+
+// })
+
+
+// const { employee_id } = req.query;

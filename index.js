@@ -39,6 +39,8 @@ app.use(bodyParser.json());
 
 app.use('/uploads', express.static(path.join(__dirname, 'routes/candidates/Uploads')));
 
+app.use('/profileUploads', express.static(path.join(__dirname, 'routes/employeeOnboard/profileUploads')));
+
 
 app.use('/candidates', candidatesRoutes);
 app.use('/candidatework', candidateWorkRoutes);
