@@ -760,7 +760,70 @@ router.post('/', (req, res) => {
 
 })
 
+router.get('/dynamicDepartments', (req, res) => {
 
+
+    const { value } = req.query;
+
+    const fullData = value + '%';
+
+    const query = 'SELECT * FROM `dept_master` WHERE `name` LIKE ? AND `status` = 1 ';
+
+
+    conn.query(query, [fullData], (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+            response.message = 'Something went wrong ! ' + err;
+            res.send(response);
+
+        } else {
+
+            response.message = 'Successfully fetched the data ...';
+            response.status = 1;
+            response.data = rows;
+            res.send(response);
+
+        }
+    })
+
+})
+
+
+router.get('/dynamicTeams', (req, res) => {
+
+    // const { value } = req.query;
+
+    const value = 's';
+
+    const fullData = value + '%';
+
+    // const query = ' SELECT * FROM `team_master` WHERE `name` LIKE ? AND `status` = 1 ';
+
+    const query = 'SELECT * FROM `team_master` WHERE `name` LIKE ? AND `status` = 1';
+
+
+    conn.query(query, [fullData], (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Sonething went wrong in getting the Teams data ' + err;
+            res.send(response);
+
+        } else {
+
+            response.message = "Successfully fetched the Teams data";
+            response.status = 1;
+            response.data = rows;
+            res.send(rows);
+
+        }
+    })
+
+})
 
 export default router;
 
