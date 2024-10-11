@@ -24,8 +24,6 @@ const transporter = nodemailer.createTransport({
 
 
 
-
-
 router.get('/shift', (req, res) => {
 
     const query = 'SELECT * FROM `shift_master`WHERE status = 1;'
@@ -126,6 +124,8 @@ router.get('/getCandidate', (req, res) => {
 
     const { id } = req.query;
 
+    // const id = 'MOS20241007427';
+
     const query1 = 'SELECT * FROM `candidate_master` WHERE `candidate_id` = ? ;'
 
     const query2 = 'SELECT * FROM `candidate_edu_master` WHERE `candidate_id` = ? '
@@ -182,7 +182,7 @@ router.get('/getCandidate', (req, res) => {
                                             gender: item?.gender,
                                             email: item?.email_basic,
                                             mobileNumber: item?.mobile_basic,
-
+                                            address: item?.address,
                                             fathersName: rows3[index]?.father_name,
                                             fathersOccupation: rows3[index]?.father_occupation,
 
@@ -624,7 +624,7 @@ router.get('/employeeCheckIds', (req, res) => {
 
 router.post('/', (req, res) => {
 
-    const { formData, reqType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
+    const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
 
     let basicInfoQuery;
     let data;
@@ -632,7 +632,7 @@ router.post('/', (req, res) => {
 
     if (activeStep === 0) {
 
-        if ((reqType === 1 || reqType === 2) && requestType === 1 && available === 0) {
+        if ((operationType === 1 || operationType === 2) && requestType === 1 && available === 0) {
 
             basicInfoQuery = ' INSERT INTO `employee_onboard` (`emp_id`, `first_name`, `last_name`, `dateofbirth`,' +
                 '`employee_number`, `gender`, `email`, `mobile_number`, `phone`, `blood_group`, `date_of_join`, `father_name`, `father_occupation`,' +
@@ -712,7 +712,7 @@ router.post('/', (req, res) => {
 
             const password = generateRandomPassword();
 
-            if (activeStep === 5 && (reqType === 1 || reqType === 2)) {
+            if (activeStep === 5 && (operationType === 1 || operationType === 2)) {
 
                 const loginQuery = 'INSERT INTO `user_login` (`id`, `user_name`, `user_pwd`, `user_role`, `login_time`, `emp_id`) VALUES (NULL, ?, ?, ?, current_timestamp(), ?);'
 
@@ -759,6 +759,514 @@ router.post('/', (req, res) => {
 
 
 })
+
+
+
+router.post('/basicInformation', (req, res) => {
+
+    const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
+
+    let basicInfoQuery;
+    let data;
+
+    if (activeStep === 0) {
+
+        if ((operationType === 1 || operationType === 2) && requestType === 1 && available === 0) {
+
+            basicInfoQuery = ' INSERT INTO `employee_onboard` (`emp_id`, `first_name`, `last_name`, `dateofbirth`,' +
+                '`employee_number`, `gender`, `email`, `mobile_number`, `phone`, `blood_group`, `date_of_join`, `father_name`, `father_occupation`,' +
+                '`country_of_origin`, `nationality`, `emergency_contact_name`, `emergency_contact_number`, `emergency_contact_relation`, `spouse_name`,' +
+                ' `physically_challenged`, `education`, `address_prof_type` , `profileUrl` ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)'
+
+            data = [referenceid, formData.firstname, formData.lastname, formData.dateOfBirth, formData.employeeNumber, formData.gender, formData.email]
+            data = [...data, formData.mobileNumber, formData.phone, formData.bloodGroup, formData.dateOfJoining, formData.fathersName, formData.fathersOccupation, formData.countryOfOrigin]
+            data = [...data, formData.nationality, formData.emergencyContactName, formData.emergencyContactNumber, formData.emergencyContactRelation]
+            data = [...data, formData.spouseName, formData.physicallyChallenged, formData.education, formData.addressprofType, profileUrl]
+
+
+        } else {
+
+            console.log(profileUrl, 'This is the profile url , type .... ')
+
+            basicInfoQuery = ' UPDATE `employee_onboard` SET `first_name` = ?, `last_name` = ?, `dateofbirth` = ?, `employee_number` = ?,' +
+                '`gender` = ?, `email` = ?, `mobile_number` = ?, `phone` = ?, `blood_group` = ?, `date_of_join` = ?, `father_name` = ?, `father_occupation` = ?,' +
+                '`country_of_origin` = ?, `nationality` = ?, `emergency_contact_name` = ?, `emergency_contact_number` = ?, `emergency_contact_relation` = ?, `spouse_name` = ?,' +
+                '`physically_challenged` = ?, `education` = ?, `address_prof_type` = ?, `profileUrl` = ? WHERE `employee_number` = ?';
+
+
+            data = [formData.firstname, formData.lastname, formData.dateOfBirth, formData.employeeNumber, formData.gender, formData.email]
+            data = [...data, formData.mobileNumber, formData.phone, formData.bloodGroup, formData.dateOfJoining, formData.fathersName, formData.fathersOccupation, formData.countryOfOrigin]
+            data = [...data, formData.nationality, formData.emergencyContactName, formData.emergencyContactNumber, formData.emergencyContactRelation]
+            data = [...data, formData.spouseName, formData.physicallyChallenged, formData.education, formData.addressprofType, profileUrl, formData.employeeNumber]
+
+        }
+
+    }
+
+    conn.query(basicInfoQuery, data, (err, rows) => {
+
+        // console.log(profileUrl)
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong updating the Basic Details .... ' + err;
+            res.send(response);
+
+        } else {
+
+            response.message = ' Successfully updated the basic details of the employee ';
+            response.status = 1;
+            res.send(response);
+
+        }
+
+    })
+
+})
+
+
+router.post('/employeePosition', (req, res) => {
+
+    const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
+
+    let employeeposition;
+    let data;
+
+    if (activeStep === 1) {
+
+        employeeposition = ' UPDATE `employee_onboard` SET `reporting_manager` = ?, `reporting_team_lead` = ?, `designation` = ?, `department` = ?, `team` = ?, `referred_by` = ?, `employment_status` = ?, `employee_status` = ?, `shift` = ?,' +
+            ' `grade` = ?, `probabtion_period` = ?, `salary_offered` = ?, `total_month_salary` = ?, `total_yearly_salary` = ?, `attendance_bonus` = ?, `billable_status` = ?, `addres_prof_path` = ? WHERE `employee_number` = ? '
+
+
+        data = [formData.reportingmanager, formData.reportingteamlead, formData.designation, formData.department, formData.team, formData.referrdby, formData.employmentstatus, formData.employeestatus, formData.shift, formData.grade,]
+        data = [...data, formData.probabationperiod, formData.salaryofferred, formData.totalmonthlyctc, formData.totalyearlyctc, formData.attendancebonus, formData.billablestatus, formData.addresprofpath, emp_id]
+
+    }
+
+    conn.query(employeeposition, data, (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong updating the Employee Position Details .... ' + err;
+            res.send(response);
+
+        } else {
+
+            response.message = ' Successfully updated the Position details of the employee ';
+            response.status = 1;
+            res.send(response);
+
+        }
+
+    })
+
+})
+
+
+router.post('/employeeAddress', (req, res) => {
+
+    const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
+
+    let employeeaddress;
+    let data;
+
+    if (activeStep === 2) {
+
+        employeeaddress = ' UPDATE `employee_onboard` SET  `current_address` = ? , `current_city` = ? , `current_pincode` = ?, `permanent_address` = ? ,`permanent_city` = ? , `permanent_pincode` = ? WHERE `employee_number` = ? ';
+
+        data = [formData.currentaddress, formData.currentCity, formData.currentPincode, formData.permanentAddress, formData.permanentcity, formData.permanentPincode, emp_id]
+
+    }
+
+    conn.query(employeeaddress, data, (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong updating the Employee Address Details .... ' + err;
+            res.send(response);
+
+        } else {
+
+            response.message = ' Successfully updated the Address details of the employee ';
+            response.status = 1;
+            res.send(response);
+
+        }
+
+    })
+
+})
+
+
+router.post('/employeeExperience', (req, res) => {
+
+    const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
+
+    let employeeexperience;
+    let data;
+
+    if (activeStep === 3) {
+
+
+        employeeexperience = ' UPDATE `employee_onboard` SET `organization_1` = ?, `designation_1` = ?, `start_date_1` = ? , `end_date_1` = ? , `totalExperience_1` = ?, `organization_2` = ?, `designation_2` = ?, `start_date_2` = ? , `end_date_2` = ? , `totalExperience_2` = ?,' +
+            ' `organization_3` = ?, `designation_3` = ?, `start_date_3` = ? , `end_date_3` = ? , `totalExperience_3` = ? WHERE `employee_number` = ? '
+
+        data = [formData.organization1, formData.designation1, formData.startdate1, formData.enddate1, formData.totalExperience1, formData.organization2, formData.designation2,]
+        data = [...data, formData.startdate2, formData.enddate2, formData.totalExperience2, formData.organization3, formData.designation3, formData.startdate3, formData.enddate3, formData.totalExperience3, emp_id]
+
+    }
+
+    conn.query(employeeexperience, data, (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong updating the Employee Experience Details .... ' + err;
+            res.send(response);
+
+        } else {
+
+            response.message = ' Successfully updated the Experience details of the employee ';
+            response.status = 1;
+            res.send(response);
+
+        }
+
+    })
+
+})
+
+
+
+router.post('/employeeStatutoryinfo', (req, res) => {
+
+    const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
+
+
+    let employeestatutoryinfo;
+    let data;
+
+    if (activeStep === 4) {
+        employeestatutoryinfo = ' UPDATE `employee_onboard` SET `aadhaar_number` = ? ,`pan_number` = ? ,`passport_number` = ? ,`uan_number` = ? ,`pf_number` = ? ,`pfjoin_date` = ?,`esi_number` = ? ,`lwf_number` = ? WHERE `employee_number` = ? ',
+
+            data = [formData.aadhaarnumber, formData.pannumber, formData.passportnumber, formData.uannumber, formData.pfnumber, formData.pfjoindate, formData.esinumber, formData.lwfnumber, emp_id]
+
+    }
+
+    console.log(data)
+
+    conn.query(employeestatutoryinfo, data, (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong updating the Employee Statutory Details .... ' + err;
+            res.send(response);
+
+        } else {
+
+            response.message = ' Successfully updated the Statutory details of the employee ';
+            response.status = 1;
+            res.send(response);
+
+        }
+
+    })
+
+})
+
+
+router.post('/employeePaymentmode', (req, res) => {
+
+    const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
+
+    let employeepaymentmode;
+    let data;
+
+    if (activeStep === 5) {
+
+        employeepaymentmode = ' UPDATE `employee_onboard` SET `mode_of_payment` = ? , `bank_name` = ? , `branch_name` = ? , `ifsc_code` = ? , `account_number` = ? , `beneficiary_code` = ? WHERE `employee_number` = ? ',
+
+            data = [formData.modeofpayment, formData.bankname, formData.branchname, formData.ifsccode, formData.accountNumber, formData.beneficiarycode, emp_id]
+    }
+
+    conn.query(employeepaymentmode, data, (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong updating the Employee Statutory Details .... ' + err;
+            res.send(response);
+
+
+        } else {
+
+            const userName = emp_id;
+
+            const password = generateRandomPassword();
+
+            if (activeStep === 5 && (operationType === 1 || operationType === 2)) {
+
+                console.log('This is working dude .....')
+
+                const loginQuery = 'INSERT INTO `user_login` (`id`, `user_name`, `user_pwd`, `user_role`, `login_time`, `emp_id`) VALUES (NULL, ?, ?, ?, current_timestamp(), ?);'
+
+                conn.query(loginQuery, [userName, password, '2', userName], async (err, rows) => {
+                    if (err) {
+                        response.message = "Sonething went wrong in creating the logins : " + err;
+                        res.send(response);
+
+                    } else {
+
+                        const mailOptions = {
+                            from: 'sathiskumar.r@megaaopes.com',
+                            to: 'sathiskumar.r@megaaopes.com',
+                            subject: 'Welcome to the Team!',
+                            html: `<h1>Welcome! Sathis Kumar</h1>
+                                   <p>We are excited to have you on board.</p>
+                                   <p>This is your username: ${userName}</p>
+                                   <p>This is your password: ${password}</p>
+                                   <p>Best regards,</p>
+                                   <p>MegaaOpes Solutions...</p>`,
+                        };
+
+                        try {
+                            await transporter.sendMail(mailOptions);
+                            response.message = "Success Created Employee and login Credentials....";
+                            response.status = 1;
+                            res.status(200).send(response);
+                        } catch (error) {
+                            response.message = 'Failed to send email' + err;
+                            res.send(response)
+
+                        }
+                    }
+                })
+
+            } else {
+                response.message = 'Successfully updated...';
+                response.status = 1;
+                res.send(response);
+
+            }
+        }
+
+    })
+
+})
+
+
+
+router.get('/getPageData', (req, res) => {
+
+    const { employee_id, pageNumber } = req.query;
+
+    // const employee_id = '44444';
+
+    const pageNumber2 = Number(pageNumber);
+
+    console.log(typeof (pageNumber2))
+
+    // const pageNumber = 0;
+
+    let getPageDataQuery;
+
+    // `first_name`,`last_name`,`dateofbirth`,`employee_number`,`gender`,`email`,`mobile_number`,`phone`,`blood_group`,`date_of_join`,`father_name`,`father_occupation`,`country_of_origin`,
+    // `nationality`,`emergency_contact_name`,`emergency_contact_number`,`emergency_contact_relation`,`spouse_name`,`physically_challenged`,`education`,`address_prof_type`,`profileUrl`,
+
+    // `reporting_manager`, `reporting_team_lead`, `designation`, `department`, `team`, `referred_by`, `employment_status`, `employee_status`, `shift`,
+    //     `grade`, `probabtion_period`, `salary_offered`, `total_month_salary`, `total_yearly_salary`, `attendance_bonus`, `billable_status`, `addres_prof_path`,
+
+    // `current_address`,`current_city`,`current_pincode`,`permanent_address`,`permanent_city`,`permanent_pincode`,
+
+
+    //     `organization_1`,`designation_1`,`start_date_1` ,`end_date_1` ,`totalExperience_1`,`organization_2`,`designation_2`,`start_date_2` ,
+    // `end_date_2` ,`totalExperience_2`,`organization_3`,`designation_3`,`start_date_3` ,`end_date_3` ,`totalExperience_3`,
+
+    // `aadhaar_number`,`pan_number`,`passport_number`,`uan_number`,`pf_number`,`pfjoin_date`,`esi_number`,`lwf_number`,
+
+    if (pageNumber2 === 0) {
+
+        getPageDataQuery = ' SELECT  `first_name`,`last_name`,`dateofbirth`,`employee_number`,`gender`,`email`,`mobile_number`,`phone`,`blood_group`,`date_of_join`,`father_name`,`father_occupation`,`country_of_origin`,'
+        getPageDataQuery += '`nationality`,`emergency_contact_name`,`emergency_contact_number`,`emergency_contact_relation`,`spouse_name`,`physically_challenged`,`education`,`address_prof_type`,`profileUrl` FROM '
+        getPageDataQuery += ' `employee_onboard` WHERE `employee_number` = ? AND `status` = 1 ';
+
+    } else if (pageNumber2 === 1) {
+
+        getPageDataQuery = ' SELECT `reporting_manager`,`reporting_team_lead`,`designation`,`department`,`team`,`referred_by`,`employment_status`,`employee_status`,`shift`,'
+        getPageDataQuery += '`grade`,`probabtion_period`,`salary_offered`,`total_month_salary`,`total_yearly_salary`,`attendance_bonus`,`billable_status`,`addres_prof_path` '
+        getPageDataQuery += 'FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1 ';
+
+    } else if (pageNumber2 === 2) {
+
+        getPageDataQuery = 'SELECT `current_address`,`current_city`,`current_pincode`,`permanent_address`,`permanent_city`,`permanent_pincode` '
+        getPageDataQuery += 'FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1';
+
+    } else if (pageNumber2 === 3) {
+
+        getPageDataQuery = ' SELECT `organization_1`,`designation_1`,`start_date_1` ,`end_date_1` ,`totalExperience_1`,`organization_2`,`designation_2`,`start_date_2` ,'
+        getPageDataQuery += ' `end_date_2` ,`totalExperience_2`,`organization_3`,`designation_3`,`start_date_3` ,`end_date_3` ,`totalExperience_3`'
+        getPageDataQuery += 'FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1 ';
+
+    } else if (pageNumber2 === 4) {
+
+        getPageDataQuery = 'SELECT `aadhaar_number`,`pan_number`,`passport_number`,`uan_number`,`pf_number`,`pfjoin_date`,`esi_number`,`lwf_number` '
+        getPageDataQuery += 'FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1  ';
+
+    }
+
+    conn.query(getPageDataQuery, [employee_id], (err, rows) => {
+
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong in getting page Details ' + err;
+            res.send(response);
+
+        } else {
+
+            const item = rows[0];
+
+            let mapppedData;
+
+            if (pageNumber2 === 0) {
+
+                mapppedData = {
+
+                    firstname: item.first_name,
+                    lastname: item.last_name,
+                    dateOfBirth: DateFormater(item.dateofbirth),
+                    employeeNumber: item.employee_number,
+                    gender: item.gender,
+                    email: item.email,
+                    mobileNumber: item.mobile_number,
+                    phone: item.phone,
+                    bloodGroup: item.blood_group,
+                    dateOfJoining: DateFormater(item.date_of_join),
+                    fathersName: item.father_name,
+                    fathersOccupation: item.father_occupation,
+                    countryOfOrigin: item.country_of_origin,
+                    nationality: item.nationality,
+                    emergencyContactName: item.emergency_contact_name,
+                    emergencyContactNumber: item.emergency_contact_number,
+                    emergencyContactRelation: item.emergency_contact_relation,
+                    spouseName: item.spouse_name,
+                    physicallyChallenged: item.physically_challenged,
+                    education: item.education,
+                    addressprofType: item.address_prof_type,
+                    profileUrl: item.profileUrl
+
+                }
+
+            } else if (pageNumber2 === 1) {
+
+                mapppedData = {
+
+                    reportingmanager: item.reporting_manager,
+                    reportingteamlead: item.reporting_team_lead,
+                    designation: item.designation,
+                    department: item.department,
+                    team: item.team,
+                    referrdby: item.referred_by,
+                    employmentstatus: item.employment_status,
+                    employeestatus: item.employee_status,
+                    shift: item.shift,
+                    grade: item.grade,
+                    probabationperiod: item.probabtion_period,
+                    salaryofferred: item.salary_offered,
+                    totalmonthlyctc: item.total_month_salary,
+                    attendancebonus: item.attendance_bonus,
+                    totalyearlyctc: item.total_yearly_salary,
+                    billablestatus: item.billable_status,
+                    addresprofpath: item.addres_prof_path,
+
+                }
+            } else if (pageNumber2 === 2) {
+
+                mapppedData = {
+                    currentaddress: item.current_address,
+                    permanentAddress: item.permanent_address,
+                    currentCity: item.current_city,
+                    currentPincode: item.current_pincode,
+                    permanentcity: item.permanent_city,
+                    permanentPincode: item.permanent_pincode,
+                }
+
+            } else if (pageNumber2 === 3) {
+
+                mapppedData = {
+                    organization1: item.organization_1,
+                    designation1: item.designation_1,
+                    startdate1: DateFormater(item.start_date_1),
+                    enddate1: DateFormater(item.end_date_1),
+                    totalExperience1: item.totalExperience_1,
+                    organization2: item.organization_2,
+                    designation2: item.designation_2,
+                    startdate2: DateFormater(item.start_date_2),
+                    enddate2: DateFormater(item.end_date_2),
+                    totalExperience2: item.totalExperience_2,
+                    organization3: item.organization_3,
+                    designation3: item.designation_3,
+                    startdate3: DateFormater(item.start_date_3),
+                    enddate3: DateFormater(item.end_date_3),
+                    totalExperience3: item.totalExperience_3,
+                }
+
+            } else if (pageNumber2 === 4) {
+
+                mapppedData = {
+                    aadhaarnumber: item.aadhaar_number,
+                    pannumber: item.pan_number,
+                    passportnumber: item.passport_number,
+                    uannumber: item.uan_number,
+                    pfnumber: item.pf_number,
+                    pfjoindate: DateFormater(item.pfjoin_date),
+                    esinumber: item.esi_number,
+                    lwfnumber: item.lwf_number,
+                }
+            }
+
+
+
+            response.message = 'Fetched the employee Data based on the page successfully...';
+            response.status = 1;
+            response.data = mapppedData;
+            res.send(response);
+
+        }
+
+    })
+
+
+
+})
+
+
+
+
+
+router.get('/demo', (req, res) => {
+    console.log('Success da ......')
+    res.send('Hi dude eh ...... ')
+})
+
+
+
+
+
+
+
 
 router.get('/dynamicDepartments', (req, res) => {
 
@@ -825,6 +1333,5 @@ router.get('/dynamicTeams', (req, res) => {
 
 })
 
+
 export default router;
-
-
