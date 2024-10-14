@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import conn from '../../sql.js';
 import nodemailer from 'nodemailer'
 import multer from 'multer';
@@ -247,112 +247,344 @@ router.get('/onboardedIDs', (req, res) => {
 
 router.get('/getEmployee', (req, res) => {
 
-    const { employee_id } = req.query;
+    // const { employee_id } = req.query;
+
+    const employee_id = '4444';
 
     const getEmployeeQuery = ' SELECT * FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1 ';
 
+    const allDepartmentQuery = ' SELECT * FROM `dept_master` WHERE `status` = 1 ';
+
+    const allTeamQuery = 'SELECT * FROM `team_master` WHERE `status` = 1 ';
+
+    const employeeQuery = 'SELECT `emp_id` , `f_name` , `l_name`  FROM `emp_master` WHERE `status` = 1';
+
+    const getAllgradeQuery = 'SELECT * FROM `grade_master`WHERE `status` = 1';
+
+    const getallshiftQuery = 'SELECT * FROM `shift_master`WHERE `status` = 1';
+
+    const getalladdressprof = 'SELECT * FROM `addressprof_master` WHERE `status` = 1';
+
+
+
     conn.query(getEmployeeQuery, [employee_id], (err, rows) => {
+
+        // console.log(rows, 'important .... ')
 
         let response = { status: 0, data: {}, message: '' };
 
+        const deparmentIdtoget = Number(rows[0].department);
+        const teamIdtoget = Number(rows[0].team);
+        const employeerefertoget = Number(rows[0].referred_by);
+        const gradeIdtoget = Number(rows[0].grade);
+        const shiftIdtoget = Number(rows[0].shift);
+        const addressproofIdtoget = Number(rows[0].address_prof_type);
+
         if (err) {
+
             response.message = "Something went wrong in getting the employee Details " + err;
             res.send(response);
+
         } else {
 
-            if (rows.length > 0) {
-                const item = rows[0];
+            conn.query(allDepartmentQuery, (err, departmentRows) => {
 
-                const PopulatedData = {
-                    firstname: item.first_name,
-                    lastname: item.last_name,
-                    dateOfBirth: DateFormater(item.dateofbirth),
-                    employeeNumber: item.employee_number,
-                    gender: item.gender,
-                    email: item.email,
-                    mobileNumber: item.mobile_number,
-                    phone: item.phone,
-                    bloodGroup: item.blood_group,
-                    dateOfJoining: DateFormater(item.date_of_join),
-                    fathersName: item.father_name,
-                    fathersOccupation: item.father_occupation,
-                    countryOfOrigin: item.country_of_origin,
-                    nationality: item.nationality,
-                    emergencyContactName: item.emergency_contact_name,
-                    emergencyContactNumber: item.emergency_contact_number,
-                    emergencyContactRelation: item.emergency_contact_relation,
-                    spouseName: item.spouse_name,
-                    physicallyChallenged: item.physically_challenged,
-                    education: item.education,
-                    addressprofType: item.address_prof_type,
-                    reportingmanager: item.reporting_manager,
-                    reportingteamlead: item.reporting_team_lead,
-                    designation: item.designation,
-                    department: item.department,
-                    team: item.team,
-                    referrdby: item.referred_by,
-                    employmentstatus: item.employment_status,
-                    employeestatus: item.employee_status,
-                    shift: item.shift,
-                    grade: item.grade,
-                    probabationperiod: item.probabtion_period,
-                    salaryofferred: item.salary_offered,
-                    totalmonthlyctc: item.total_month_salary,
-                    attendancebonus: item.attendance_bonus,
-                    totalyearlyctc: item.total_yearly_salary,
-                    billablestatus: item.billable_status,
-                    addresprofpath: item.addres_prof_path,
-                    currentaddress: item.current_address,
-                    permanentAddress: item.permanent_address,
-                    currentCity: item.current_city,
-                    currentPincode: item.current_pincode,
-                    permanentcity: item.permanent_city,
-                    permanentPincode: item.permanent_pincode,
-                    organization1: item.organization_1,
-                    designation1: item.designation_1,
-                    startdate1: DateFormater(item.start_date_1),
-                    enddate1: DateFormater(item.end_date_1),
-                    totalExperience1: item.totalExperience_1,
-                    organization2: item.organization_2,
-                    designation2: item.designation_2,
-                    startdate2: DateFormater(item.start_date_2),
-                    enddate2: DateFormater(item.end_date_2),
-                    totalExperience2: item.totalExperience_2,
-                    organization3: item.organization_3,
-                    designation3: item.designation_3,
-                    startdate3: DateFormater(item.start_date_3),
-                    enddate3: DateFormater(item.end_date_3),
-                    totalExperience3: item.totalExperience_3,
-                    aadhaarnumber: item.aadhaar_number,
-                    pannumber: item.pan_number,
-                    passportnumber: item.passport_number,
-                    uannumber: item.uan_number,
-                    pfnumber: item.pf_number,
-                    pfjoindate: DateFormater(item.pfjoin_date),
-                    esinumber: item.esi_number,
-                    lwfnumber: item.lwf_number,
-                    modeofpayment: item.mode_of_payment,
-                    bankname: item.bank_name,
-                    branchname: item.branch_name,
-                    ifsccode: item.ifsc_code,
-                    accountNumber: item.account_number,
-                    beneficiarycode: item.beneficiary_code,
-                    profileUrl: item.profileUrl
+                if (err) {
 
+                    response.message = 'Something wrong in getting the department data ... ' + err;
+                    res.send(response)
+
+                } else {
+
+                    const dummmy = Object.entries(departmentRows).find(([key, value]) => value.id === deparmentIdtoget)?.[1];
+
+                    const { name: departname } = Object.entries(departmentRows).find(([key, value]) => value.id === deparmentIdtoget)?.[1];
+
+                    conn.query(allTeamQuery, (err, teamRows) => {
+
+                        if (err) {
+
+                            response.message = 'Something went wrong in getting the Team data ...' + err;
+                            res.send(response);
+
+                        } else {
+
+                            const { name: teamName } = Object.entries(teamRows).find(([key, value]) => value.id === teamIdtoget)?.[1];
+
+                            conn.query(employeeQuery, (err, employeeRows) => {
+
+                                if (err) {
+
+                                    response.message = 'Something went wrong in getting the employee Details...' + err;
+                                    res(response);
+
+                                } else {
+
+                                    const { f_name: firstname, l_name: lastname } = Object.entries(employeeRows).find(([key, value]) => value.emp_id === employeerefertoget)?.[1];
+
+                                    const referred_by_fullname = `${firstname} ${lastname}`;
+
+                                    conn.query(getAllgradeQuery, (err, gradeRows) => {
+
+                                        if (err) {
+
+                                            response.message = 'Something went in getting the Grade details ' + err;
+                                            res.send(response);
+
+                                        } else {
+
+                                            const { name: gradeName } = Object.entries(gradeRows).find(([key, value]) => value.id === gradeIdtoget)?.[1];
+
+                                            console.log(gradeName, 'GradeName dude ...')
+
+
+                                            conn.query(getallshiftQuery, (err, shiftRows) => {
+
+                                                if (err) {
+
+                                                    response.message = 'Something went wrong in getting shift details ..' + err;
+                                                    res.send(response);
+
+                                                } else {
+
+                                                    const { name: shiftName } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+
+                                                    console.log(shiftName, 'GradeName dude ...')
+
+
+                                                    conn.query(getalladdressprof, (err, addressprofrows) => {
+
+                                                        if (err) {
+
+                                                            response.message = 'Somethig went wrong in getting the addressprof details....' + err;
+                                                            res.send(response);
+
+                                                        } else {
+
+                                                            const { name: addressProfname } = Object.entries(addressprofrows).find(([key, value]) => value.id === addressproofIdtoget)?.[1];
+
+                                                            // console.log(addressProfname ,'AddressProfname dude...')
+
+                                                            if (rows.length > 0) {
+
+                                                                const item = rows[0];
+
+                                                                const PopulatedData = {
+                                                                    firstname: item.first_name,
+                                                                    lastname: item.last_name,
+                                                                    dateOfBirth: DateFormater(item.dateofbirth),
+                                                                    employeeNumber: item.employee_number,
+                                                                    gender: item.gender,
+                                                                    email: item.email,
+                                                                    mobileNumber: item.mobile_number,
+                                                                    phone: item.phone,
+                                                                    bloodGroup: item.blood_group,
+                                                                    dateOfJoining: DateFormater(item.date_of_join),
+                                                                    fathersName: item.father_name,
+                                                                    fathersOccupation: item.father_occupation,
+                                                                    countryOfOrigin: item.country_of_origin,
+                                                                    nationality: item.nationality,
+                                                                    emergencyContactName: item.emergency_contact_name,
+                                                                    emergencyContactNumber: item.emergency_contact_number,
+                                                                    emergencyContactRelation: item.emergency_contact_relation,
+                                                                    spouseName: item.spouse_name,
+                                                                    physicallyChallenged: item.physically_challenged,
+                                                                    education: item.education,
+                                                                    // addressprofType: item.address_prof_type,
+                                                                    addressprofType: addressProfname,
+                                                                    reportingmanager: item.reporting_manager,
+                                                                    reportingteamlead: item.reporting_team_lead,
+                                                                    designation: item.designation,
+                                                                    // department: item.department,
+                                                                    department: departname,
+                                                                    // team: item.team,
+                                                                    team: teamName,
+                                                                    // referrdby: item.referred_by, 
+                                                                    referrdby: referred_by_fullname,
+                                                                    employmentstatus: item.employment_status,
+                                                                    employeestatus: item.employee_status,
+                                                                    // shift: item.shift,
+                                                                    shift: shiftName,
+                                                                    // grade: item.grade,
+                                                                    grade: gradeName,
+                                                                    probabationperiod: item.probabtion_period,
+                                                                    salaryofferred: item.salary_offered,
+                                                                    totalmonthlyctc: item.total_month_salary,
+                                                                    attendancebonus: item.attendance_bonus,
+                                                                    totalyearlyctc: item.total_yearly_salary,
+                                                                    billablestatus: item.billable_status,
+                                                                    addresprofpath: item.addres_prof_path,
+                                                                    currentaddress: item.current_address,
+                                                                    permanentAddress: item.permanent_address,
+                                                                    currentCity: item.current_city,
+                                                                    currentPincode: item.current_pincode,
+                                                                    permanentcity: item.permanent_city,
+                                                                    permanentPincode: item.permanent_pincode,
+                                                                    organization1: item.organization_1,
+                                                                    designation1: item.designation_1,
+                                                                    startdate1: DateFormater(item.start_date_1),
+                                                                    enddate1: DateFormater(item.end_date_1),
+                                                                    totalExperience1: item.totalExperience_1,
+                                                                    organization2: item.organization_2,
+                                                                    designation2: item.designation_2,
+                                                                    startdate2: DateFormater(item.start_date_2),
+                                                                    enddate2: DateFormater(item.end_date_2),
+                                                                    totalExperience2: item.totalExperience_2,
+                                                                    organization3: item.organization_3,
+                                                                    designation3: item.designation_3,
+                                                                    startdate3: DateFormater(item.start_date_3),
+                                                                    enddate3: DateFormater(item.end_date_3),
+                                                                    totalExperience3: item.totalExperience_3,
+                                                                    aadhaarnumber: item.aadhaar_number,
+                                                                    pannumber: item.pan_number,
+                                                                    passportnumber: item.passport_number,
+                                                                    uannumber: item.uan_number,
+                                                                    pfnumber: item.pf_number,
+                                                                    pfjoindate: DateFormater(item.pfjoin_date),
+                                                                    esinumber: item.esi_number,
+                                                                    lwfnumber: item.lwf_number,
+                                                                    modeofpayment: item.mode_of_payment,
+                                                                    bankname: item.bank_name,
+                                                                    branchname: item.branch_name,
+                                                                    ifsccode: item.ifsc_code,
+                                                                    accountNumber: item.account_number,
+                                                                    beneficiarycode: item.beneficiary_code,
+                                                                    profileUrl: item.profileUrl
+
+                                                                }
+
+                                                                response.message = "Data fetcched Successfully....";
+                                                                response.status = 1;
+                                                                response.data = PopulatedData;
+                                                                res.send(response);
+
+                                                            } else {
+
+                                                                response.message = `No data available on this particular Employee id 1 ${employee_id} ... ` + err;
+                                                                res.send(response);
+
+                                                            }
+
+                                                        }
+
+                                                    })
+
+                                                }
+                                            })
+
+                                        }
+
+                                    })
+
+                                }
+                            })
+
+                        }
+
+                    })
                 }
-
-                response.message = "Data fetcched Successfully....";
-                response.status = 1;
-                response.data = PopulatedData;
-                res.send(response);
-            }
-
+            })
         }
     })
-
-
 })
 
+
+// conn.query(getEmployeeQuery, [employee_id], (err, rows) => {
+
+//     if (err) {
+//         response.message = "Something went wrong in getting the employee Details " + err;
+//         res.send(response);
+//     } else {
+
+//         if (rows.length > 0) {
+//             const item = rows[0];
+
+//             const PopulatedData = {
+//                 firstname: item.first_name,
+//                 lastname: item.last_name,
+//                 dateOfBirth: DateFormater(item.dateofbirth),
+//                 employeeNumber: item.employee_number,
+//                 gender: item.gender,
+//                 email: item.email,
+//                 mobileNumber: item.mobile_number,
+//                 phone: item.phone,
+//                 bloodGroup: item.blood_group,
+//                 dateOfJoining: DateFormater(item.date_of_join),
+//                 fathersName: item.father_name,
+//                 fathersOccupation: item.father_occupation,
+//                 countryOfOrigin: item.country_of_origin,
+//                 nationality: item.nationality,
+//                 emergencyContactName: item.emergency_contact_name,
+//                 emergencyContactNumber: item.emergency_contact_number,
+//                 emergencyContactRelation: item.emergency_contact_relation,
+//                 spouseName: item.spouse_name,
+//                 physicallyChallenged: item.physically_challenged,
+//                 education: item.education,
+//                 addressprofType: item.address_prof_type,
+//                 reportingmanager: item.reporting_manager,
+//                 reportingteamlead: item.reporting_team_lead,
+//                 designation: item.designation,
+//                 department: item.department, //ithu onnu
+//                 team: item.team, //ithu onnu
+//                 referrdby: item.referred_by, //ithu onnu , motham moonu ok va.....
+//                 employmentstatus: item.employment_status,
+//                 employeestatus: item.employee_status,
+//                 shift: item.shift,
+//                 grade: item.grade,
+//                 probabationperiod: item.probabtion_period,
+//                 salaryofferred: item.salary_offered,
+//                 totalmonthlyctc: item.total_month_salary,
+//                 attendancebonus: item.attendance_bonus,
+//                 totalyearlyctc: item.total_yearly_salary,
+//                 billablestatus: item.billable_status,
+//                 addresprofpath: item.addres_prof_path,
+//                 currentaddress: item.current_address,
+//                 permanentAddress: item.permanent_address,
+//                 currentCity: item.current_city,
+//                 currentPincode: item.current_pincode,
+//                 permanentcity: item.permanent_city,
+//                 permanentPincode: item.permanent_pincode,
+//                 organization1: item.organization_1,
+//                 designation1: item.designation_1,
+//                 startdate1: DateFormater(item.start_date_1),
+//                 enddate1: DateFormater(item.end_date_1),
+//                 totalExperience1: item.totalExperience_1,
+//                 organization2: item.organization_2,
+//                 designation2: item.designation_2,
+//                 startdate2: DateFormater(item.start_date_2),
+//                 enddate2: DateFormater(item.end_date_2),
+//                 totalExperience2: item.totalExperience_2,
+//                 organization3: item.organization_3,
+//                 designation3: item.designation_3,
+//                 startdate3: DateFormater(item.start_date_3),
+//                 enddate3: DateFormater(item.end_date_3),
+//                 totalExperience3: item.totalExperience_3,
+//                 aadhaarnumber: item.aadhaar_number,
+//                 pannumber: item.pan_number,
+//                 passportnumber: item.passport_number,
+//                 uannumber: item.uan_number,
+//                 pfnumber: item.pf_number,
+//                 pfjoindate: DateFormater(item.pfjoin_date),
+//                 esinumber: item.esi_number,
+//                 lwfnumber: item.lwf_number,
+//                 modeofpayment: item.mode_of_payment,
+//                 bankname: item.bank_name,
+//                 branchname: item.branch_name,
+//                 ifsccode: item.ifsc_code,
+//                 accountNumber: item.account_number,
+//                 beneficiarycode: item.beneficiary_code,
+//                 profileUrl: item.profileUrl
+
+//             }
+
+//             response.message = "Data fetcched Successfully....";
+//             response.status = 1;
+//             response.data = PopulatedData;
+//             res.send(response);
+//         }
+
+//     }
+// })
 
 
 const uploadAddresdoc = (req, res, next) => {   //It is a Controller for Uploading the file to the backend Directory......
@@ -1070,29 +1302,34 @@ router.get('/getPageData', (req, res) => {
 
     const { employee_id, pageNumber } = req.query;
 
-    // const employee_id = '44444';
+    // const employee_id = '4444';
 
     const pageNumber2 = Number(pageNumber);
 
-    console.log(typeof (pageNumber2))
+    // const pageNumber2 = 5;
 
-    // const pageNumber = 0;
+
+    const allDepartmentQuery = ' SELECT * FROM `dept_master` WHERE `status` = 1 ';
+
+    const allTeamQuery = 'SELECT * FROM `team_master` WHERE `status` = 1 ';
+
+    const employeeQuery = 'SELECT `emp_id` , `f_name` , `l_name`  FROM `emp_master` WHERE `status` = 1';
+
+    const getAllgradeQuery = 'SELECT * FROM `grade_master`WHERE `status` = 1';
+
+    const getallshiftQuery = 'SELECT * FROM `shift_master`WHERE `status` = 1';
+
+    const getalladdressprof = 'SELECT * FROM `addressprof_master` WHERE `status` = 1';
+
+    let deparmentIdtoget;
+    let teamIdtoget;
+    let employeerefertoget;
+    let gradeIdtoget;
+    let shiftIdtoget;
+    let addressproofIdtoget;
 
     let getPageDataQuery;
 
-    // `first_name`,`last_name`,`dateofbirth`,`employee_number`,`gender`,`email`,`mobile_number`,`phone`,`blood_group`,`date_of_join`,`father_name`,`father_occupation`,`country_of_origin`,
-    // `nationality`,`emergency_contact_name`,`emergency_contact_number`,`emergency_contact_relation`,`spouse_name`,`physically_challenged`,`education`,`address_prof_type`,`profileUrl`,
-
-    // `reporting_manager`, `reporting_team_lead`, `designation`, `department`, `team`, `referred_by`, `employment_status`, `employee_status`, `shift`,
-    //     `grade`, `probabtion_period`, `salary_offered`, `total_month_salary`, `total_yearly_salary`, `attendance_bonus`, `billable_status`, `addres_prof_path`,
-
-    // `current_address`,`current_city`,`current_pincode`,`permanent_address`,`permanent_city`,`permanent_pincode`,
-
-
-    //     `organization_1`,`designation_1`,`start_date_1` ,`end_date_1` ,`totalExperience_1`,`organization_2`,`designation_2`,`start_date_2` ,
-    // `end_date_2` ,`totalExperience_2`,`organization_3`,`designation_3`,`start_date_3` ,`end_date_3` ,`totalExperience_3`,
-
-    // `aadhaar_number`,`pan_number`,`passport_number`,`uan_number`,`pf_number`,`pfjoin_date`,`esi_number`,`lwf_number`,
 
     if (pageNumber2 === 0) {
 
@@ -1126,6 +1363,25 @@ router.get('/getPageData', (req, res) => {
 
     conn.query(getPageDataQuery, [employee_id], (err, rows) => {
 
+        if (pageNumber2 === 0) {
+            addressproofIdtoget = Number(rows[0].address_prof_type);
+        }
+        if (pageNumber2 === 1) {
+
+            deparmentIdtoget = Number(rows[0].department);
+            teamIdtoget = Number(rows[0].team);
+            employeerefertoget = Number(rows[0].referred_by);
+            gradeIdtoget = Number(rows[0].grade);
+            shiftIdtoget = Number(rows[0].shift);
+
+            console.log(deparmentIdtoget)
+            console.log(teamIdtoget)
+            console.log(employeerefertoget)
+            console.log(gradeIdtoget)
+            console.log(shiftIdtoget)
+
+
+        }
 
         let response = { status: 0, data: {}, message: '' };
 
@@ -1136,113 +1392,293 @@ router.get('/getPageData', (req, res) => {
 
         } else {
 
-            const item = rows[0];
-
-            let mapppedData;
-
             if (pageNumber2 === 0) {
 
-                mapppedData = {
+                conn.query(getalladdressprof, (err, addressprofrows) => {
 
-                    firstname: item.first_name,
-                    lastname: item.last_name,
-                    dateOfBirth: DateFormater(item.dateofbirth),
-                    employeeNumber: item.employee_number,
-                    gender: item.gender,
-                    email: item.email,
-                    mobileNumber: item.mobile_number,
-                    phone: item.phone,
-                    bloodGroup: item.blood_group,
-                    dateOfJoining: DateFormater(item.date_of_join),
-                    fathersName: item.father_name,
-                    fathersOccupation: item.father_occupation,
-                    countryOfOrigin: item.country_of_origin,
-                    nationality: item.nationality,
-                    emergencyContactName: item.emergency_contact_name,
-                    emergencyContactNumber: item.emergency_contact_number,
-                    emergencyContactRelation: item.emergency_contact_relation,
-                    spouseName: item.spouse_name,
-                    physicallyChallenged: item.physically_challenged,
-                    education: item.education,
-                    addressprofType: item.address_prof_type,
-                    profileUrl: item.profileUrl
+                    if (err) {
 
-                }
+                        response.message = 'Somethig went wrong in getting the addressprof details....' + err;
+                        res.send(response);
+
+                    } else {
+
+                        const { name: addressprofname } = Object.entries(addressprofrows).find(([key, value]) => value.id === addressproofIdtoget)?.[1];
+
+                        if (rows.length > 0) {
+
+                            if (pageNumber2 === 0) {
+                                const item = rows[0];
+                                let mapppedData;
+
+                                mapppedData = {
+                                    firstname: item.first_name,
+                                    lastname: item.last_name,
+                                    dateOfBirth: DateFormater(item.dateofbirth),
+                                    employeeNumber: item.employee_number,
+                                    gender: item.gender,
+                                    email: item.email,
+                                    mobileNumber: item.mobile_number,
+                                    phone: item.phone,
+                                    bloodGroup: item.blood_group,
+                                    dateOfJoining: DateFormater(item.date_of_join),
+                                    fathersName: item.father_name,
+                                    fathersOccupation: item.father_occupation,
+                                    countryOfOrigin: item.country_of_origin,
+                                    nationality: item.nationality,
+                                    emergencyContactName: item.emergency_contact_name,
+                                    emergencyContactNumber: item.emergency_contact_number,
+                                    emergencyContactRelation: item.emergency_contact_relation,
+                                    spouseName: item.spouse_name,
+                                    physicallyChallenged: item.physically_challenged,
+                                    education: item.education,
+                                    // addressprofType: item.address_prof_type,
+                                    addressprofType: addressprofname,
+                                    profileUrl: item.profileUrl
+                                }
+
+                                response.message = `Fetched the employee Data based on the page successfully... PageNumber ::: ${pageNumber2} `;
+                                response.status = 1;
+                                response.data = mapppedData;
+                                res.send(response);
+
+                            } else {
+
+                                response.message = ' PageNumber is incorrect , please check.... ';
+                                res.send(response);
+
+                            }
+
+                        } else {
+
+                            response.message = ` There is no record available in the database in this id ${employee_id} `;
+                            res.send(response);
+                        }
+
+                    }
+                })
 
             } else if (pageNumber2 === 1) {
 
-                mapppedData = {
+                conn.query(allDepartmentQuery, (err, departmetrows) => {
 
-                    reportingmanager: item.reporting_manager,
-                    reportingteamlead: item.reporting_team_lead,
-                    designation: item.designation,
-                    department: item.department,
-                    team: item.team,
-                    referrdby: item.referred_by,
-                    employmentstatus: item.employment_status,
-                    employeestatus: item.employee_status,
-                    shift: item.shift,
-                    grade: item.grade,
-                    probabationperiod: item.probabtion_period,
-                    salaryofferred: item.salary_offered,
-                    totalmonthlyctc: item.total_month_salary,
-                    attendancebonus: item.attendance_bonus,
-                    totalyearlyctc: item.total_yearly_salary,
-                    billablestatus: item.billable_status,
-                    addresprofpath: item.addres_prof_path,
+                    if (err) {
 
-                }
+                        response.message = 'Somethig went wrong in getting the Department details....' + err;
+                        res.send(response);
+
+                    } else {
+
+                        const { name: departname } = Object.entries(departmetrows).find(([key, value]) => value.id === deparmentIdtoget)?.[1];
+
+                        conn.query(allTeamQuery, (err, allTeamRows) => {
+
+                            if (err) {
+
+                                response.message = 'Somethig went wrong in getting the Teams details....' + err;
+                                res.send(response);
+
+                            } else {
+
+                                const { name: teamname } = Object.entries(allTeamRows).find(([key, value]) => value.id === teamIdtoget)?.[1];
+
+                                conn.query(employeeQuery, (err, allemployeeRows) => {
+
+                                    if (err) {
+
+                                        response.message = 'Somethig went wrong in getting the Employee details....' + err;
+                                        res.send(response);
+
+                                    } else {
+
+                                        const { f_name: firstname, l_name: lastname } = Object.entries(allemployeeRows).find(([key, value]) => value.emp_id === employeerefertoget)?.[1];
+
+                                        const referred_by_fullname = `${firstname} ${lastname}`;
+
+                                        conn.query(getAllgradeQuery, (err, allgradeRows) => {
+
+                                            if (err) {
+
+                                                response.message = 'Somethig went wrong in getting the Grade details....' + err;
+                                                res.send(response);
+
+                                            } else {
+
+                                                const { name: gradeName } = Object.entries(allgradeRows).find(([key, value]) => value.id === gradeIdtoget)?.[1];
+
+                                                conn.query(getallshiftQuery, (err, allshiftRows) => {
+
+                                                    if (err) {
+
+                                                        response.message = 'Somethig went wrong in getting the Shift details....' + err;
+                                                        res.send(response);
+
+                                                    } else {
+
+                                                        const { name: shiftName } = Object.entries(allshiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+
+                                                        if (rows.length > 0) {
+
+                                                            const item = rows[0];
+                                                            let mapppedData;
+                                                            mapppedData = {
+                                                                reportingmanager: item.reporting_manager,
+                                                                reportingteamlead: item.reporting_team_lead,
+                                                                designation: item.designation,
+                                                                department: departname,
+                                                                team: teamname,
+                                                                referrdby: referred_by_fullname,
+                                                                employmentstatus: item.employment_status,
+                                                                employeestatus: item.employee_status,
+                                                                shift: shiftName,
+                                                                grade: gradeName,
+                                                                probabationperiod: item.probabtion_period,
+                                                                salaryofferred: item.salary_offered,
+                                                                totalmonthlyctc: item.total_month_salary,
+                                                                attendancebonus: item.attendance_bonus,
+                                                                totalyearlyctc: item.total_yearly_salary,
+                                                                billablestatus: item.billable_status,
+                                                                addresprofpath: item.addres_prof_path,
+                                                            }
+
+
+                                                            response.message = `Fetched the employee Data based on the page successfully... PageNumber ::: ${pageNumber2} `;
+                                                            response.status = 1;
+                                                            response.data = mapppedData;
+                                                            res.send(response);
+
+
+                                                        } else {
+
+                                                            response.message = ` There is no record available in the database in this id ${employee_id} `;
+                                                            res.send(response);
+
+                                                        }
+
+
+                                                    }
+
+                                                })
+
+                                            }
+
+                                        })
+
+
+                                    }
+
+                                })
+
+
+                            }
+
+
+                        })
+
+                    }
+
+                })
+
+
             } else if (pageNumber2 === 2) {
 
-                mapppedData = {
-                    currentaddress: item.current_address,
-                    permanentAddress: item.permanent_address,
-                    currentCity: item.current_city,
-                    currentPincode: item.current_pincode,
-                    permanentcity: item.permanent_city,
-                    permanentPincode: item.permanent_pincode,
+                if (rows.length > 0) {
+
+                    const item = rows[0];
+                    let mapppedData;
+                    mapppedData = {
+                        currentaddress: item.current_address,
+                        permanentAddress: item.permanent_address,
+                        currentCity: item.current_city,
+                        currentPincode: item.current_pincode,
+                        permanentcity: item.permanent_city,
+                        permanentPincode: item.permanent_pincode,
+                    }
+
+                    response.message = `Fetched the employee Data based on the page successfully... PageNumber ::: ${pageNumber2} `;
+                    response.status = 1;
+                    response.data = mapppedData;
+                    res.send(response);
+
+
+                } else {
+
+                    response.message = ` There is no record available in the database in this id ${employee_id} `;
+                    res.send(response);
+
                 }
 
             } else if (pageNumber2 === 3) {
 
-                mapppedData = {
-                    organization1: item.organization_1,
-                    designation1: item.designation_1,
-                    startdate1: DateFormater(item.start_date_1),
-                    enddate1: DateFormater(item.end_date_1),
-                    totalExperience1: item.totalExperience_1,
-                    organization2: item.organization_2,
-                    designation2: item.designation_2,
-                    startdate2: DateFormater(item.start_date_2),
-                    enddate2: DateFormater(item.end_date_2),
-                    totalExperience2: item.totalExperience_2,
-                    organization3: item.organization_3,
-                    designation3: item.designation_3,
-                    startdate3: DateFormater(item.start_date_3),
-                    enddate3: DateFormater(item.end_date_3),
-                    totalExperience3: item.totalExperience_3,
+                if (rows.length > 0) {
+
+                    const item = rows[0];
+                    let mapppedData;
+                    mapppedData = {
+                        organization1: item.organization_1,
+                        designation1: item.designation_1,
+                        startdate1: DateFormater(item.start_date_1),
+                        enddate1: DateFormater(item.end_date_1),
+                        totalExperience1: item.totalExperience_1,
+                        organization2: item.organization_2,
+                        designation2: item.designation_2,
+                        startdate2: DateFormater(item.start_date_2),
+                        enddate2: DateFormater(item.end_date_2),
+                        totalExperience2: item.totalExperience_2,
+                        organization3: item.organization_3,
+                        designation3: item.designation_3,
+                        startdate3: DateFormater(item.start_date_3),
+                        enddate3: DateFormater(item.end_date_3),
+                        totalExperience3: item.totalExperience_3,
+                    }
+
+                    response.message = `Fetched the employee Data based on the page successfully... PageNumber ::: ${pageNumber2} `;
+                    response.status = 1;
+                    response.data = mapppedData;
+                    res.send(response);
+
+
+                } else {
+
+                    response.message = ` There is no record available in the database in this id ${employee_id} `;
+                    res.send(response);
+
                 }
 
             } else if (pageNumber2 === 4) {
 
-                mapppedData = {
-                    aadhaarnumber: item.aadhaar_number,
-                    pannumber: item.pan_number,
-                    passportnumber: item.passport_number,
-                    uannumber: item.uan_number,
-                    pfnumber: item.pf_number,
-                    pfjoindate: DateFormater(item.pfjoin_date),
-                    esinumber: item.esi_number,
-                    lwfnumber: item.lwf_number,
+                if (rows.length > 0) {
+
+                    const item = rows[0];
+                    let mapppedData;
+                    mapppedData = {
+                        aadhaarnumber: item.aadhaar_number,
+                        pannumber: item.pan_number,
+                        passportnumber: item.passport_number,
+                        uannumber: item.uan_number,
+                        pfnumber: item.pf_number,
+                        pfjoindate: DateFormater(item.pfjoin_date),
+                        esinumber: item.esi_number,
+                        lwfnumber: item.lwf_number,
+                    }
+
+                    response.message = `Fetched the employee Data based on the page successfully... PageNumber ::: ${pageNumber2} `;
+                    response.status = 1;
+                    response.data = mapppedData;
+                    res.send(response);
+
+
+                } else {
+
+                    response.message = ` There is no record available in the database in this id ${employee_id} `;
+                    res.send(response);
+
                 }
+
+            } else {
+                response.message = `Something got error in the page , This is the page Number ::: ${pageNumber2}`;
+                res.send(response);
             }
-
-
-
-            response.message = 'Fetched the employee Data based on the page successfully...';
-            response.status = 1;
-            response.data = mapppedData;
-            res.send(response);
 
         }
 
@@ -1251,18 +1687,6 @@ router.get('/getPageData', (req, res) => {
 
 
 })
-
-
-
-
-
-router.get('/demo', (req, res) => {
-    console.log('Success da ......')
-    res.send('Hi dude eh ...... ')
-})
-
-
-
 
 
 
@@ -1335,3 +1759,136 @@ router.get('/dynamicTeams', (req, res) => {
 
 
 export default router;
+
+
+
+
+// const item = rows[0];
+// let mapppedData;
+// if (pageNumber2 === 0) {
+//     mapppedData = {
+//         firstname: item.first_name,
+//         lastname: item.last_name,
+//         dateOfBirth: DateFormater(item.dateofbirth),
+//         employeeNumber: item.employee_number,
+//         gender: item.gender,
+//         email: item.email,
+//         mobileNumber: item.mobile_number,
+//         phone: item.phone,
+//         bloodGroup: item.blood_group,
+//         dateOfJoining: DateFormater(item.date_of_join),
+//         fathersName: item.father_name,
+//         fathersOccupation: item.father_occupation,
+//         countryOfOrigin: item.country_of_origin,
+//         nationality: item.nationality,
+//         emergencyContactName: item.emergency_contact_name,
+//         emergencyContactNumber: item.emergency_contact_number,
+//         emergencyContactRelation: item.emergency_contact_relation,
+//         spouseName: item.spouse_name,
+//         physicallyChallenged: item.physically_challenged,
+//         education: item.education,
+//         addressprofType: item.address_prof_type,
+//         profileUrl: item.profileUrl
+//     }
+
+// } else if (pageNumber2 === 1) {
+//     mapppedData = {
+//         reportingmanager: item.reporting_manager,
+//         reportingteamlead: item.reporting_team_lead,
+//         designation: item.designation,
+//         department: item.department,
+//         team: item.team,
+//         referrdby: item.referred_by,
+//         employmentstatus: item.employment_status,
+//         employeestatus: item.employee_status,
+//         shift: item.shift,
+//         grade: item.grade,
+//         probabationperiod: item.probabtion_period,
+//         salaryofferred: item.salary_offered,
+//         totalmonthlyctc: item.total_month_salary,
+//         attendancebonus: item.attendance_bonus,
+//         totalyearlyctc: item.total_yearly_salary,
+//         billablestatus: item.billable_status,
+//         addresprofpath: item.addres_prof_path,
+//     }
+// } else if (pageNumber2 === 2) {
+//     mapppedData = {
+//         currentaddress: item.current_address,
+//         permanentAddress: item.permanent_address,
+//         currentCity: item.current_city,
+//         currentPincode: item.current_pincode,
+//         permanentcity: item.permanent_city,
+//         permanentPincode: item.permanent_pincode,
+//     }
+// } else if (pageNumber2 === 3) {
+//     mapppedData = {
+//         organization1: item.organization_1,
+//         designation1: item.designation_1,
+//         startdate1: DateFormater(item.start_date_1),
+//         enddate1: DateFormater(item.end_date_1),
+//         totalExperience1: item.totalExperience_1,
+//         organization2: item.organization_2,
+//         designation2: item.designation_2,
+//         startdate2: DateFormater(item.start_date_2),
+//         enddate2: DateFormater(item.end_date_2),
+//         totalExperience2: item.totalExperience_2,
+//         organization3: item.organization_3,
+//         designation3: item.designation_3,
+//         startdate3: DateFormater(item.start_date_3),
+//         enddate3: DateFormater(item.end_date_3),
+//         totalExperience3: item.totalExperience_3,
+//     }
+
+// } else if (pageNumber2 === 4) {
+//     mapppedData = {
+//         aadhaarnumber: item.aadhaar_number,
+//         pannumber: item.pan_number,
+//         passportnumber: item.passport_number,
+//         uannumber: item.uan_number,
+//         pfnumber: item.pf_number,
+//         pfjoindate: DateFormater(item.pfjoin_date),
+//         esinumber: item.esi_number,
+//         lwfnumber: item.lwf_number,
+//     }
+// }
+
+// response.message = 'Fetched the employee Data based on the page successfully...';
+// response.status = 1;
+// response.data = mapppedData;
+// res.send(response);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// `first_name`,`last_name`,`dateofbirth`,`employee_number`,`gender`,`email`,`mobile_number`,`phone`,`blood_group`,`date_of_join`,`father_name`,`father_occupation`,`country_of_origin`,
+// `nationality`,`emergency_contact_name`,`emergency_contact_number`,`emergency_contact_relation`,`spouse_name`,`physically_challenged`,`education`,`address_prof_type`,`profileUrl`,
+
+// `reporting_manager`, `reporting_team_lead`, `designation`, `department`, `team`, `referred_by`, `employment_status`, `employee_status`, `shift`,
+//     `grade`, `probabtion_period`, `salary_offered`, `total_month_salary`, `total_yearly_salary`, `attendance_bonus`, `billable_status`, `addres_prof_path`,
+
+// `current_address`,`current_city`,`current_pincode`,`permanent_address`,`permanent_city`,`permanent_pincode`,
+
+
+//     `organization_1`,`designation_1`,`start_date_1` ,`end_date_1` ,`totalExperience_1`,`organization_2`,`designation_2`,`start_date_2` ,
+// `end_date_2` ,`totalExperience_2`,`organization_3`,`designation_3`,`start_date_3` ,`end_date_3` ,`totalExperience_3`,
+
+// `aadhaar_number`,`pan_number`,`passport_number`,`uan_number`,`pf_number`,`pfjoin_date`,`esi_number`,`lwf_number`,
