@@ -88,7 +88,7 @@ router.get('/', (req, res) => {
 
 router.get('/department', (req, res) => {
 
-    const query1 = "SELECT * FROM `dept_master`";
+    const query1 = "SELECT * FROM `dept_master` WHERE `status` = 1 ";
 
     conn.query(query1, (err, rows) => {
 

@@ -156,11 +156,13 @@ router.get('/', (req, res) => {
 router.put('/', (req, res) => {
 
 
-    const { id, username, password, userrole } = req.body;
+    const { id, username, password, userrole, empid } = req.body;
 
-    const sqlQuery = " UPDATE `user_login` SET `user_name`= ? , `user_pwd`= ?  WHERE `id` = ? "
+    console.log(empid, 'id da macha ithana nu konjam paru da dei babu eh.....')
 
-    conn.query(sqlQuery, [username, password, id], (err, rows) => {
+    const sqlQuery = " UPDATE `user_login` SET `user_name`= ? , `user_pwd`= ?  WHERE `emp_id` = ? "
+
+    conn.query(sqlQuery, [username, password, empid], (err, rows) => {
         let response = { status: 0, data: {}, message: '' };
 
         if (err) {

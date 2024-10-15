@@ -22,8 +22,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-
-
 router.get('/shift', (req, res) => {
 
     const query = 'SELECT * FROM `shift_master`WHERE status = 1;'
@@ -44,7 +42,6 @@ router.get('/shift', (req, res) => {
     })
 
 })
-
 
 router.get('/grade', (req, res) => {
 
@@ -67,7 +64,6 @@ router.get('/grade', (req, res) => {
 
 })
 
-
 router.get('/addressprof', (req, res) => {
 
     const query = 'SELECT * FROM `addressprof_master` WHERE status = 1;'
@@ -88,7 +84,6 @@ router.get('/addressprof', (req, res) => {
     })
 
 })
-
 
 router.get('/designations', (req, res) => {
 
@@ -117,7 +112,6 @@ router.get('/designations', (req, res) => {
     })
 
 })
-
 
 router.get('/getCandidate', (req, res) => {
 
@@ -269,8 +263,6 @@ router.get('/getEmployee', (req, res) => {
 
     conn.query(getEmployeeQuery, [employee_id], (err, rows) => {
 
-        // console.log(rows, 'important .... ')
-
         let response = { status: 0, data: {}, message: '' };
 
         const deparmentIdtoget = Number(rows[0].department);
@@ -335,9 +327,6 @@ router.get('/getEmployee', (req, res) => {
 
                                             const { name: gradeName } = Object.entries(gradeRows).find(([key, value]) => value.id === gradeIdtoget)?.[1];
 
-                                            console.log(gradeName, 'GradeName dude ...')
-
-
                                             conn.query(getallshiftQuery, (err, shiftRows) => {
 
                                                 if (err) {
@@ -349,9 +338,6 @@ router.get('/getEmployee', (req, res) => {
 
                                                     const { name: shiftName } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
 
-                                                    console.log(shiftName, 'GradeName dude ...')
-
-
                                                     conn.query(getalladdressprof, (err, addressprofrows) => {
 
                                                         if (err) {
@@ -362,8 +348,6 @@ router.get('/getEmployee', (req, res) => {
                                                         } else {
 
                                                             const { name: addressProfname } = Object.entries(addressprofrows).find(([key, value]) => value.id === addressproofIdtoget)?.[1];
-
-                                                            // console.log(addressProfname ,'AddressProfname dude...')
 
                                                             if (rows.length > 0) {
 
@@ -487,104 +471,6 @@ router.get('/getEmployee', (req, res) => {
         }
     })
 })
-
-
-// conn.query(getEmployeeQuery, [employee_id], (err, rows) => {
-
-//     if (err) {
-//         response.message = "Something went wrong in getting the employee Details " + err;
-//         res.send(response);
-//     } else {
-
-//         if (rows.length > 0) {
-//             const item = rows[0];
-
-//             const PopulatedData = {
-//                 firstname: item.first_name,
-//                 lastname: item.last_name,
-//                 dateOfBirth: DateFormater(item.dateofbirth),
-//                 employeeNumber: item.employee_number,
-//                 gender: item.gender,
-//                 email: item.email,
-//                 mobileNumber: item.mobile_number,
-//                 phone: item.phone,
-//                 bloodGroup: item.blood_group,
-//                 dateOfJoining: DateFormater(item.date_of_join),
-//                 fathersName: item.father_name,
-//                 fathersOccupation: item.father_occupation,
-//                 countryOfOrigin: item.country_of_origin,
-//                 nationality: item.nationality,
-//                 emergencyContactName: item.emergency_contact_name,
-//                 emergencyContactNumber: item.emergency_contact_number,
-//                 emergencyContactRelation: item.emergency_contact_relation,
-//                 spouseName: item.spouse_name,
-//                 physicallyChallenged: item.physically_challenged,
-//                 education: item.education,
-//                 addressprofType: item.address_prof_type,
-//                 reportingmanager: item.reporting_manager,
-//                 reportingteamlead: item.reporting_team_lead,
-//                 designation: item.designation,
-//                 department: item.department, //ithu onnu
-//                 team: item.team, //ithu onnu
-//                 referrdby: item.referred_by, //ithu onnu , motham moonu ok va.....
-//                 employmentstatus: item.employment_status,
-//                 employeestatus: item.employee_status,
-//                 shift: item.shift,
-//                 grade: item.grade,
-//                 probabationperiod: item.probabtion_period,
-//                 salaryofferred: item.salary_offered,
-//                 totalmonthlyctc: item.total_month_salary,
-//                 attendancebonus: item.attendance_bonus,
-//                 totalyearlyctc: item.total_yearly_salary,
-//                 billablestatus: item.billable_status,
-//                 addresprofpath: item.addres_prof_path,
-//                 currentaddress: item.current_address,
-//                 permanentAddress: item.permanent_address,
-//                 currentCity: item.current_city,
-//                 currentPincode: item.current_pincode,
-//                 permanentcity: item.permanent_city,
-//                 permanentPincode: item.permanent_pincode,
-//                 organization1: item.organization_1,
-//                 designation1: item.designation_1,
-//                 startdate1: DateFormater(item.start_date_1),
-//                 enddate1: DateFormater(item.end_date_1),
-//                 totalExperience1: item.totalExperience_1,
-//                 organization2: item.organization_2,
-//                 designation2: item.designation_2,
-//                 startdate2: DateFormater(item.start_date_2),
-//                 enddate2: DateFormater(item.end_date_2),
-//                 totalExperience2: item.totalExperience_2,
-//                 organization3: item.organization_3,
-//                 designation3: item.designation_3,
-//                 startdate3: DateFormater(item.start_date_3),
-//                 enddate3: DateFormater(item.end_date_3),
-//                 totalExperience3: item.totalExperience_3,
-//                 aadhaarnumber: item.aadhaar_number,
-//                 pannumber: item.pan_number,
-//                 passportnumber: item.passport_number,
-//                 uannumber: item.uan_number,
-//                 pfnumber: item.pf_number,
-//                 pfjoindate: DateFormater(item.pfjoin_date),
-//                 esinumber: item.esi_number,
-//                 lwfnumber: item.lwf_number,
-//                 modeofpayment: item.mode_of_payment,
-//                 bankname: item.bank_name,
-//                 branchname: item.branch_name,
-//                 ifsccode: item.ifsc_code,
-//                 accountNumber: item.account_number,
-//                 beneficiarycode: item.beneficiary_code,
-//                 profileUrl: item.profileUrl
-
-//             }
-
-//             response.message = "Data fetcched Successfully....";
-//             response.status = 1;
-//             response.data = PopulatedData;
-//             res.send(response);
-//         }
-
-//     }
-// })
 
 
 const uploadAddresdoc = (req, res, next) => {   //It is a Controller for Uploading the file to the backend Directory......
@@ -825,7 +711,6 @@ function generateRandomPassword() {
     return password.split('').sort(() => 0.5 - Math.random()).join('');
 }
 
-
 router.get('/employeeCheckIds', (req, res) => {
 
     const gettingIdsQuery = 'SELECT `employee_number` FROM `employee_onboard` WHERE `status` = 1';
@@ -852,7 +737,6 @@ router.get('/employeeCheckIds', (req, res) => {
     })
 
 })
-
 
 router.post('/', (req, res) => {
 
@@ -992,8 +876,6 @@ router.post('/', (req, res) => {
 
 })
 
-
-
 router.post('/basicInformation', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
@@ -1018,8 +900,6 @@ router.post('/basicInformation', (req, res) => {
 
         } else {
 
-            console.log(profileUrl, 'This is the profile url , type .... ')
-
             basicInfoQuery = ' UPDATE `employee_onboard` SET `first_name` = ?, `last_name` = ?, `dateofbirth` = ?, `employee_number` = ?,' +
                 '`gender` = ?, `email` = ?, `mobile_number` = ?, `phone` = ?, `blood_group` = ?, `date_of_join` = ?, `father_name` = ?, `father_occupation` = ?,' +
                 '`country_of_origin` = ?, `nationality` = ?, `emergency_contact_name` = ?, `emergency_contact_number` = ?, `emergency_contact_relation` = ?, `spouse_name` = ?,' +
@@ -1036,8 +916,6 @@ router.post('/basicInformation', (req, res) => {
     }
 
     conn.query(basicInfoQuery, data, (err, rows) => {
-
-        // console.log(profileUrl)
 
         let response = { status: 0, data: {}, message: '' };
 
@@ -1057,7 +935,6 @@ router.post('/basicInformation', (req, res) => {
     })
 
 })
-
 
 router.post('/employeePosition', (req, res) => {
 
@@ -1098,7 +975,6 @@ router.post('/employeePosition', (req, res) => {
 
 })
 
-
 router.post('/employeeAddress', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
@@ -1134,7 +1010,6 @@ router.post('/employeeAddress', (req, res) => {
     })
 
 })
-
 
 router.post('/employeeExperience', (req, res) => {
 
@@ -1175,8 +1050,6 @@ router.post('/employeeExperience', (req, res) => {
 
 })
 
-
-
 router.post('/employeeStatutoryinfo', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
@@ -1191,8 +1064,6 @@ router.post('/employeeStatutoryinfo', (req, res) => {
             data = [formData.aadhaarnumber, formData.pannumber, formData.passportnumber, formData.uannumber, formData.pfnumber, formData.pfjoindate, formData.esinumber, formData.lwfnumber, emp_id]
 
     }
-
-    console.log(data)
 
     conn.query(employeestatutoryinfo, data, (err, rows) => {
 
@@ -1214,7 +1085,6 @@ router.post('/employeeStatutoryinfo', (req, res) => {
     })
 
 })
-
 
 router.post('/employeePaymentmode', (req, res) => {
 
@@ -1247,8 +1117,6 @@ router.post('/employeePaymentmode', (req, res) => {
             const password = generateRandomPassword();
 
             if (activeStep === 5 && (operationType === 1 || operationType === 2)) {
-
-                console.log('This is working dude .....')
 
                 const loginQuery = 'INSERT INTO `user_login` (`id`, `user_name`, `user_pwd`, `user_role`, `login_time`, `emp_id`) VALUES (NULL, ?, ?, ?, current_timestamp(), ?);'
 
@@ -1295,8 +1163,6 @@ router.post('/employeePaymentmode', (req, res) => {
     })
 
 })
-
-
 
 router.get('/getPageData', (req, res) => {
 
@@ -1373,13 +1239,6 @@ router.get('/getPageData', (req, res) => {
             employeerefertoget = Number(rows[0].referred_by);
             gradeIdtoget = Number(rows[0].grade);
             shiftIdtoget = Number(rows[0].shift);
-
-            console.log(deparmentIdtoget)
-            console.log(teamIdtoget)
-            console.log(employeerefertoget)
-            console.log(gradeIdtoget)
-            console.log(shiftIdtoget)
-
 
         }
 
@@ -1684,13 +1543,7 @@ router.get('/getPageData', (req, res) => {
 
     })
 
-
-
 })
-
-
-
-
 
 router.get('/dynamicDepartments', (req, res) => {
 
@@ -1721,7 +1574,6 @@ router.get('/dynamicDepartments', (req, res) => {
     })
 
 })
-
 
 router.get('/dynamicTeams', (req, res) => {
 
@@ -1759,136 +1611,3 @@ router.get('/dynamicTeams', (req, res) => {
 
 
 export default router;
-
-
-
-
-// const item = rows[0];
-// let mapppedData;
-// if (pageNumber2 === 0) {
-//     mapppedData = {
-//         firstname: item.first_name,
-//         lastname: item.last_name,
-//         dateOfBirth: DateFormater(item.dateofbirth),
-//         employeeNumber: item.employee_number,
-//         gender: item.gender,
-//         email: item.email,
-//         mobileNumber: item.mobile_number,
-//         phone: item.phone,
-//         bloodGroup: item.blood_group,
-//         dateOfJoining: DateFormater(item.date_of_join),
-//         fathersName: item.father_name,
-//         fathersOccupation: item.father_occupation,
-//         countryOfOrigin: item.country_of_origin,
-//         nationality: item.nationality,
-//         emergencyContactName: item.emergency_contact_name,
-//         emergencyContactNumber: item.emergency_contact_number,
-//         emergencyContactRelation: item.emergency_contact_relation,
-//         spouseName: item.spouse_name,
-//         physicallyChallenged: item.physically_challenged,
-//         education: item.education,
-//         addressprofType: item.address_prof_type,
-//         profileUrl: item.profileUrl
-//     }
-
-// } else if (pageNumber2 === 1) {
-//     mapppedData = {
-//         reportingmanager: item.reporting_manager,
-//         reportingteamlead: item.reporting_team_lead,
-//         designation: item.designation,
-//         department: item.department,
-//         team: item.team,
-//         referrdby: item.referred_by,
-//         employmentstatus: item.employment_status,
-//         employeestatus: item.employee_status,
-//         shift: item.shift,
-//         grade: item.grade,
-//         probabationperiod: item.probabtion_period,
-//         salaryofferred: item.salary_offered,
-//         totalmonthlyctc: item.total_month_salary,
-//         attendancebonus: item.attendance_bonus,
-//         totalyearlyctc: item.total_yearly_salary,
-//         billablestatus: item.billable_status,
-//         addresprofpath: item.addres_prof_path,
-//     }
-// } else if (pageNumber2 === 2) {
-//     mapppedData = {
-//         currentaddress: item.current_address,
-//         permanentAddress: item.permanent_address,
-//         currentCity: item.current_city,
-//         currentPincode: item.current_pincode,
-//         permanentcity: item.permanent_city,
-//         permanentPincode: item.permanent_pincode,
-//     }
-// } else if (pageNumber2 === 3) {
-//     mapppedData = {
-//         organization1: item.organization_1,
-//         designation1: item.designation_1,
-//         startdate1: DateFormater(item.start_date_1),
-//         enddate1: DateFormater(item.end_date_1),
-//         totalExperience1: item.totalExperience_1,
-//         organization2: item.organization_2,
-//         designation2: item.designation_2,
-//         startdate2: DateFormater(item.start_date_2),
-//         enddate2: DateFormater(item.end_date_2),
-//         totalExperience2: item.totalExperience_2,
-//         organization3: item.organization_3,
-//         designation3: item.designation_3,
-//         startdate3: DateFormater(item.start_date_3),
-//         enddate3: DateFormater(item.end_date_3),
-//         totalExperience3: item.totalExperience_3,
-//     }
-
-// } else if (pageNumber2 === 4) {
-//     mapppedData = {
-//         aadhaarnumber: item.aadhaar_number,
-//         pannumber: item.pan_number,
-//         passportnumber: item.passport_number,
-//         uannumber: item.uan_number,
-//         pfnumber: item.pf_number,
-//         pfjoindate: DateFormater(item.pfjoin_date),
-//         esinumber: item.esi_number,
-//         lwfnumber: item.lwf_number,
-//     }
-// }
-
-// response.message = 'Fetched the employee Data based on the page successfully...';
-// response.status = 1;
-// response.data = mapppedData;
-// res.send(response);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// `first_name`,`last_name`,`dateofbirth`,`employee_number`,`gender`,`email`,`mobile_number`,`phone`,`blood_group`,`date_of_join`,`father_name`,`father_occupation`,`country_of_origin`,
-// `nationality`,`emergency_contact_name`,`emergency_contact_number`,`emergency_contact_relation`,`spouse_name`,`physically_challenged`,`education`,`address_prof_type`,`profileUrl`,
-
-// `reporting_manager`, `reporting_team_lead`, `designation`, `department`, `team`, `referred_by`, `employment_status`, `employee_status`, `shift`,
-//     `grade`, `probabtion_period`, `salary_offered`, `total_month_salary`, `total_yearly_salary`, `attendance_bonus`, `billable_status`, `addres_prof_path`,
-
-// `current_address`,`current_city`,`current_pincode`,`permanent_address`,`permanent_city`,`permanent_pincode`,
-
-
-//     `organization_1`,`designation_1`,`start_date_1` ,`end_date_1` ,`totalExperience_1`,`organization_2`,`designation_2`,`start_date_2` ,
-// `end_date_2` ,`totalExperience_2`,`organization_3`,`designation_3`,`start_date_3` ,`end_date_3` ,`totalExperience_3`,
-
-// `aadhaar_number`,`pan_number`,`passport_number`,`uan_number`,`pf_number`,`pfjoin_date`,`esi_number`,`lwf_number`,
