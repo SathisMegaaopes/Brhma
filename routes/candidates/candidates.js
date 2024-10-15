@@ -26,11 +26,7 @@ router.get('/', (req, res) => {
 
     query += " ORDER BY id DESC";
 
-    console.log(query)
-
     conn.query(query, params, (err, rows) => {
-
-        console.log(query)
 
         let response = { status: 0, data: [], message: "" };
         if (!err) {
@@ -63,8 +59,6 @@ router.get('/', (req, res) => {
 
 
 router.get('/searchByDate/:from/:to', (req, res) => {
-
-    // console.log('This data being hitted.....')
 
     const sql = "SELECT * FROM candidate_master WHERE created_at BETWEEN ? AND ? ORDER BY created_at DESC";
     const sql_data = [req.params.from, req.params.to];

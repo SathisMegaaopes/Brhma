@@ -1583,10 +1583,7 @@ router.get('/dynamicTeams', (req, res) => {
 
     const fullData = value + '%';
 
-    // const query = ' SELECT * FROM `team_master` WHERE `name` LIKE ? AND `status` = 1 ';
-
     const query = 'SELECT * FROM `team_master` WHERE `name` LIKE ? AND `status` = 1';
-
 
     conn.query(query, [fullData], (err, rows) => {
 

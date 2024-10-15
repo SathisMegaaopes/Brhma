@@ -5,8 +5,6 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
 
-    // const sqlQuery = "SELECT * FROM `user_login`";
-
     const allDepartmentQuery = ' SELECT * FROM `dept_master` WHERE `status` = 1 ';
 
     const allTeamQuery = 'SELECT * FROM `team_master` WHERE `status` = 1 ';
@@ -16,13 +14,6 @@ router.get('/', (req, res) => {
 
     const { department, team, employeeName } = req.query;
 
-    console.log(req.query)
-
-
-
-    // const department = null;
-    // const team = null;
-    // const employeeName = 'sathi%';
     const employeeName2 = `${employeeName}%`;
 
     if (department) {
@@ -35,9 +26,6 @@ router.get('/', (req, res) => {
     } else {
         sqlQuery = 'SELECT c.first_name , c.last_name , c.employee_number , c.email , c.mobile_number , c.date_of_join , d.user_name , d.user_pwd , d.user_role FROM `employee_onboard` c INNER JOIN  `user_login` d ON d.user_name = c.employee_number WHERE c.status = 1;'
     }
-
-
-    // console.log(sqlQuery)
 
 
     conn.query(allDepartmentQuery, (err, departmentRows) => {
@@ -66,9 +54,6 @@ router.get('/', (req, res) => {
                         data = departid;
 
                         conn.query(sqlQuery, data, (err, rows) => {
-
-                            // console.log(sqlQuery)
-                            // console.log(data)
 
                             let response = { status: 0, data: {}, message: '' };
 
@@ -157,8 +142,6 @@ router.put('/', (req, res) => {
 
 
     const { id, username, password, userrole, empid } = req.body;
-
-    console.log(empid, 'id da macha ithana nu konjam paru da dei babu eh.....')
 
     const sqlQuery = " UPDATE `user_login` SET `user_name`= ? , `user_pwd`= ?  WHERE `emp_id` = ? "
 

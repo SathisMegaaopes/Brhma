@@ -177,7 +177,6 @@ export function updateNametoId() {
             if (err) {
               return reject(err)
             }
-            console.log(results)
           })
         }
         conn.end()

@@ -31,8 +31,6 @@ async function gettinghrMonthDetails() {
                 return reject(err);
             } else {
 
-                console.log(results.map((item) => item.created_by));
-
                 const workbook = new ExcelJS.Workbook();
                 const worksheet = workbook.addWorksheet('HR Month Details');
 

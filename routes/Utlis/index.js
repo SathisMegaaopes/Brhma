@@ -14,7 +14,6 @@ const fnGetCandidatedetails = (id) => {
             data = JSON.stringify(err1);
         }
     });
-    console.log("FROM FUNC : ", data);
     return data
 }
 
