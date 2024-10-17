@@ -241,9 +241,9 @@ router.get('/onboardedIDs', (req, res) => {
 
 router.get('/getEmployee', (req, res) => {
 
-    // const { employee_id } = req.query;
+    const { employee_id } = req.query;
 
-    const employee_id = '4444';
+    // const employee_id = '4444';
 
     const getEmployeeQuery = ' SELECT * FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1 ';
 

@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
 
     const { department, team, employeeName } = req.query;
 
-    const employeeName2 = `${employeeName}%`;
+    const employeeName2 = `%${employeeName}%`;
 
     if (department) {
         sqlQuery = 'SELECT c.first_name , c.last_name , c.employee_number , c.email , c.mobile_number , c.date_of_join , d.user_name , d.user_pwd , d.user_role FROM `employee_onboard` c INNER JOIN  `user_login` d ON d.user_name = c.employee_number WHERE c.department = ? AND c.status = 1;'
