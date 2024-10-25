@@ -940,6 +940,8 @@ router.post('/employeePosition', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
 
+    console.log(req.body)
+
     let employeeposition;
     let data;
 
@@ -953,6 +955,8 @@ router.post('/employeePosition', (req, res) => {
         data = [...data, formData.probabationperiod, formData.salaryofferred, formData.totalmonthlyctc, formData.totalyearlyctc, formData.attendancebonus, formData.billablestatus, formData.addresprofpath, emp_id]
 
     }
+
+    console.log(employeeposition)
 
     conn.query(employeeposition, data, (err, rows) => {
 
