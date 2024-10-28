@@ -423,3 +423,663 @@
     //         window.removeEventListener('beforeunload', handleUnload);
     //     };
     // }, []);
+
+
+
+
+
+                                    {/* <Accordion variant='outlined' expanded={accordianExpand === 0}
+                                    onChange={() => {
+                                        setAccordianExpand(0);
+                                        setActiveStep(0)
+                                    }}
+                                >
+
+                                    <AccordionSummary
+                                        expandIcon={<ArrowDownwardIcon />}
+                                        aria-controls="panel1-content"
+                                        id="panel1-header"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography>
+
+                                        </Typography>
+
+                                        <Typography sx={{ flexGrow: 1, fontSize: '1.25rem' }}>
+                                            Basic Information
+                                        </Typography>
+
+                                        {accordianExpand === 0 && (
+
+                                            <>
+                                                {openEdit ? (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEdit(false)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <EditIcon />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEdit(true)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
+                                    </AccordionSummary>
+
+                                    <AccordionDetails>
+                                        <EmployeeBasicInformation
+                                            handleProfileUpload={handleProfileUpload}
+                                            profileImageUrl={profileImageUrl}
+                                            control={control}
+                                            formData1={formData1}
+                                            StyledInput={StyledInput}
+                                            errors={errors}
+                                            openEdit={openEdit}
+                                            addressprof={addressprof}
+                                            setFormData1={setFormData1}
+                                            interRequest={interRequest}
+                                        />
+
+                                        <Grid display='flex' justifyContent='flex-end' sx={{ paddingRight: 6 }} >
+                                            {(!openEdit) &&
+                                                <Grid >
+                                                    <Button variant="contained" color="primary" type="submit" onClick={() => hanldeUpdate(0)} disabled={!isValid}>
+                                                        Update
+                                                    </Button>
+                                                </Grid>
+                                            }
+                                        </Grid >
+
+                                    </AccordionDetails>
+                                </Accordion>
+
+                                <Accordion variant='outlined' expanded={accordianExpand === 1}
+
+                                    onChange={() => {
+                                        setAccordianExpand(1);
+                                        setActiveStep(1)
+
+                                    }}>
+
+                                    <AccordionSummary
+                                        expandIcon={<ArrowDownwardIcon />}
+                                        aria-controls="panel2-content"
+                                        id="panel2-header"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography sx={{ flexGrow: 1, fontSize: '1.25rem' }}>
+                                            Employee Position
+                                        </Typography>
+
+                                        {accordianExpand === 1 && (
+
+                                            <>
+                                                {openEdittwo ? (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEdittwo(false)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <EditIcon />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEdittwo(true)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
+                                    </AccordionSummary>
+
+                                    <AccordionDetails>
+
+                                        <EmployeePosition
+                                            designation={designation}
+                                            departments={departments}
+                                            handleProofUpload={handleProofUpload}
+                                            uploadFileName={uploadFileName}
+                                            shifts={shifts}
+                                            grade={grade}
+                                            uploadStatus={uploadStatus}
+                                            teams={teams}
+                                            employees={employees}
+                                            employeeMap={employeeMap}
+                                            StyledLabel={StyledLabel}
+                                            mapOptions={mapOptions}
+                                            control={control}
+                                            formData2={formData2}
+                                            StyledInput={StyledInput}
+                                            errors={errors}
+                                            openEdit={openEdittwo}
+                                            addressprof={addressprof}
+                                            setFormData2={setFormData2}
+                                        />
+
+
+                                        <Grid display='flex' justifyContent='flex-end' sx={{ paddingRight: 6 }} >
+                                            {(!openEdittwo) &&
+                                                <Grid >
+                                                    <Button variant="contained" color="primary" type="submit" onClick={() => hanldeUpdate(1)} disabled={!isValid}>
+                                                        Update
+                                                    </Button>
+                                                </Grid>
+                                            }
+                                        </Grid >
+
+                                    </AccordionDetails>
+
+                                </Accordion>
+
+                                <Accordion variant='outlined' expanded={accordianExpand === 2}
+                                    onChange={() => {
+                                        setAccordianExpand(2);
+                                        setActiveStep(2)
+                                    }}
+                                >
+
+                                    <AccordionSummary
+                                        expandIcon={<ArrowDownwardIcon />}
+                                        aria-controls="panel3-content"
+                                        id="panel3-header"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography sx={{ flexGrow: 1, fontSize: '1.25rem' }}>
+                                            Employee Address
+                                        </Typography>
+
+                                        {accordianExpand === 2 && (
+
+                                            <>
+                                                {openEditthree ? (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditthree(false)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <EditIcon />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditthree(true)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
+                                    </AccordionSummary>
+
+                                    <AccordionDetails>
+
+                                        <EmployeeAddress
+                                            copyToPermanent={copyToPermanent}
+                                            handleCheckboxChange2={handleCheckboxChange2}
+                                            MultilineTextField={MultilineTextField}
+                                            StyledLabel={StyledLabel}
+                                            mapOptions={mapOptions}
+                                            control={control}
+                                            formData3={formData3}
+                                            StyledInput={StyledInput}
+                                            errors={errors}
+                                            openEdit={openEditthree}
+                                            addressprof={addressprof}
+                                            setFormData3={setFormData3}
+                                        />
+
+                                        <Grid display='flex' justifyContent='flex-end' sx={{ paddingRight: 6 }} >
+                                            {(!openEditthree) &&
+                                                <Grid >
+                                                    <Button variant="contained" color="primary" type="submit" onClick={() => hanldeUpdate(2)} disabled={!isValid}>
+                                                        Update
+                                                    </Button>
+                                                </Grid>
+                                            }
+                                        </Grid >
+
+                                    </AccordionDetails>
+                                </Accordion>
+
+                                <Accordion variant='outlined' expanded={accordianExpand === 3}
+                                    onChange={() => {
+                                        setAccordianExpand(3);
+                                        setActiveStep(3);
+                                    }}
+                                >
+                                    <AccordionSummary
+                                        expandIcon={<ArrowDownwardIcon />}
+                                        aria-controls="panel4-content"
+                                        id="panel4-header"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography sx={{ flexGrow: 1, fontSize: '1.25rem' }}>
+                                            Employee Experience
+                                        </Typography>
+
+                                        {accordianExpand === 3 && (
+
+                                            <>
+                                                {openEditfour ? (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditfour(false)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <EditIcon />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditfour(true)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
+                                    </AccordionSummary>
+
+                                    <AccordionDetails>
+
+                                        <EmployeeExperience
+                                            StyledLabel={StyledLabel}
+                                            control={control}
+                                            formData4={formData4}
+                                            StyledInput={StyledInput}
+                                            errors={errors}
+                                            openEdit={openEditfour}
+                                            addressprof={addressprof}
+                                            setFormData4={setFormData4}
+                                        />
+
+                                        <Grid display='flex' justifyContent='flex-end' sx={{ paddingRight: 6 }} >
+                                            {(!openEditfour) &&
+                                                <Grid >
+                                                    <Button variant="contained" color="primary" type="submit" onClick={() => hanldeUpdate(3)} disabled={!isValid}>
+                                                        Update
+                                                    </Button>
+                                                </Grid>
+                                            }
+                                        </Grid >
+
+                                    </AccordionDetails>
+                                </Accordion>
+
+                                <Accordion variant='outlined' expanded={accordianExpand === 4}
+                                    onChange={() => {
+                                        setAccordianExpand(4)
+                                        setActiveStep(4)
+                                    }}
+                                >
+
+                                    <AccordionSummary
+                                        expandIcon={<ArrowDownwardIcon />}
+                                        aria-controls="panel5-content"
+                                        id="panel5-header"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography sx={{ flexGrow: 1, fontSize: '1.25rem' }}>
+                                            Employee Statuory Info
+                                        </Typography>
+
+                                        {accordianExpand === 4 && (
+
+                                            <>
+                                                {openEditfive ? (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditfive(false)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <EditIcon />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditfive(true)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
+                                    </AccordionSummary>
+
+
+                                    <AccordionDetails>
+
+                                        <EmployeeStatuoryinfo
+                                            isPFChecked={isPFChecked}
+                                            handleCheckboxChange={handleCheckboxChange}
+                                            isESIChecked={isESIChecked}
+                                            handleCheckboxESIChange={handleCheckboxESIChange}
+                                            isLWFChecked={isLWFChecked}
+                                            handleCheckboxLWFChange={handleCheckboxLWFChange}
+                                            StyledLabel={StyledLabel}
+                                            control={control}
+                                            formData5={formData5}
+                                            StyledInput={StyledInput}
+                                            errors={errors}
+                                            openEdit={openEditfive}
+                                            setFormData5={setFormData5}
+                                        />
+
+                                        <Grid display='flex' justifyContent='flex-end' sx={{ paddingRight: 6 }} >
+                                            {(!openEditfive) &&
+                                                <Grid >
+                                                    <Button variant="contained" color="primary" type="submit" onClick={() => hanldeUpdate(4)} disabled={!isValid}>
+                                                        Update
+                                                    </Button>
+                                                </Grid>
+                                            }
+                                        </Grid >
+
+                                    </AccordionDetails>
+                                </Accordion>
+
+                                <Accordion variant='outlined' expanded={accordianExpand === 5}
+                                    onChange={() => {
+                                        setAccordianExpand(5);
+                                        setActiveStep(5);
+                                    }}
+                                >
+
+
+                                    <AccordionSummary
+                                        expandIcon={<ArrowDownwardIcon />}
+                                        aria-controls="panel6-content"
+                                        id="panel6-header"
+                                        sx={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            width: '100%',
+                                        }}
+                                    >
+                                        <Typography sx={{ flexGrow: 1, fontSize: '1.25rem' }}>
+                                            Employee Payment Mode
+                                        </Typography>
+
+                                        {accordianExpand === 5 && (
+
+                                            <>
+                                                {openEditsix ? (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditsix(false)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <EditIcon />
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() => setOpenEditsix(true)}
+                                                        sx={{
+                                                            zIndex: 5,
+                                                            backgroundColor: '#1976d2',
+                                                            borderRadius: '50%',
+                                                            width: 50,
+                                                            height: 50,
+                                                            minWidth: 0,
+                                                            padding: 0,
+                                                            display: 'flex',
+                                                            left: -20,
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            '&:hover': {
+                                                                backgroundColor: '#1565c0',
+                                                            },
+                                                        }}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                )}
+                                            </>
+                                        )}
+                                    </AccordionSummary>
+
+                                    <AccordionDetails>
+
+                                        <EmployeePaymentMode
+                                            formData1={formData1}
+                                            selectedPaymentType={selectedPaymentType}
+                                            handlePaymentTypeChange={handlePaymentTypeChange}
+                                            StyledLabel={StyledLabel}
+                                            control={control}
+                                            formData6={formData6}
+                                            StyledInput={StyledInput}
+                                            errors={errors}
+                                            openEdit={openEditsix}
+                                            setFormData6={setFormData6}
+                                        />
+
+                                        <Grid display='flex' justifyContent='flex-end' sx={{ paddingRight: 6 }} >
+                                            {(!openEditsix) &&
+                                                <Grid >
+                                                    <Button variant="contained" color="primary" type="submit" onClick={() => hanldeUpdate(5)} disabled={!isValid}>
+                                                        Update
+                                                    </Button>
+                                                </Grid>
+                                            }
+                                        </Grid >
+
+                                    </AccordionDetails>
+
+                                </Accordion> */}

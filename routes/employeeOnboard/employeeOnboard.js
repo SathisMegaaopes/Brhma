@@ -260,7 +260,6 @@ router.get('/getEmployee', (req, res) => {
     const getalladdressprof = 'SELECT * FROM `addressprof_master` WHERE `status` = 1';
 
 
-
     conn.query(getEmployeeQuery, [employee_id], (err, rows) => {
 
         let response = { status: 0, data: {}, message: '' };
@@ -880,6 +879,8 @@ router.post('/basicInformation', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
 
+    console.log(req.body)
+
     let basicInfoQuery;
     let data;
 
@@ -914,6 +915,8 @@ router.post('/basicInformation', (req, res) => {
         }
 
     }
+
+    console.log(basicInfoQuery)
 
     conn.query(basicInfoQuery, data, (err, rows) => {
 
