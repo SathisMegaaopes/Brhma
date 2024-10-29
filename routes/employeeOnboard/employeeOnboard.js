@@ -3,7 +3,7 @@ import conn from '../../sql.js';
 import nodemailer from 'nodemailer'
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
+import fs, { stat } from 'fs';
 import { fileURLToPath } from 'url';
 import { DateFormater } from '../Utlis/index.js';
 
@@ -243,8 +243,6 @@ router.get('/getEmployee', (req, res) => {
 
     const { employee_id } = req.query;
 
-    // const employee_id = '4444';
-
     const getEmployeeQuery = ' SELECT * FROM `employee_onboard` WHERE `employee_number` = ? AND `status` = 1 ';
 
     const allDepartmentQuery = ' SELECT * FROM `dept_master` WHERE `status` = 1 ';
@@ -335,7 +333,11 @@ router.get('/getEmployee', (req, res) => {
 
                                                 } else {
 
-                                                    const { name: shiftName } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+                                                    // const { name: shiftName } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+
+                                                    const { start: name1, end: name2 } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+
+                                                    const shiftName = `${name1}-${name2}`;
 
                                                     conn.query(getalladdressprof, (err, addressprofrows) => {
 
@@ -1381,7 +1383,11 @@ router.get('/getPageData', (req, res) => {
 
                                                     } else {
 
-                                                        const { name: shiftName } = Object.entries(allshiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+                                                        // const { name: shiftName } = Object.entries(allshiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+
+                                                        const { start: name1, end: name2 } = Object.entries(allshiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+
+                                                        const shiftName = `${name1}-${name2}`;
 
                                                         if (rows.length > 0) {
 
