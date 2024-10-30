@@ -18,6 +18,7 @@ import breaks from "./routes/breaks/breaks.js"
 import employActivity from "./routes/empActivity/empactivity.js"
 import employeeonBoard from "./routes/employeeOnboard/employeeOnboard.js"
 import department from "./routes/department/department.js"
+import team from "./routes/team/team.js"
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -60,6 +61,7 @@ app.use('/breaks', breaks)
 app.use('/empactivity', employActivity)
 app.use('/employeeonboard', employeeonBoard)
 app.use('/department', department)
+app.use('/team', team)
 
 
 app.get('/', (req, res) => {
