@@ -52,6 +52,7 @@ router.get('/', (req, res) => {
                             name: Deptvalue?.name,
                             parent_department: Deptvalue?.parent_department,
                             lead_name: gettingId(Deptvalue.lead_name),
+                            description: Deptvalue?.description,
                             status: Deptvalue.status
                         }
                     })
@@ -110,6 +111,7 @@ router.get('/:id', (req, res) => {
                             name: Deptvalue?.name,
                             parent_department: Deptvalue?.parent_department,
                             lead_name: gettingId(Deptvalue.lead_name),
+                            description: Deptvalue?.description,
                             status: Deptvalue.status
                         }
                     })
@@ -133,19 +135,20 @@ router.get('/:id', (req, res) => {
 
 router.post('/', (req, res) => {
 
-    const { departmentName, parentDepartment, leadeName, mode, editmodeID } = req.body;
+    const { departmentName, parentDepartment, leadeName, mode, editmodeID, description } = req.body;
 
-    console.log(req.body)
+
+    // console.log(req.body)
 
     let sql_add_query;
 
     if (mode === 1) {
 
-        sql_add_query = " UPDATE `dept_master` SET `name` = ?, `parent_department` = ? , `lead_name` = ? WHERE `id` = ? ";
+        sql_add_query = " UPDATE `dept_master` SET `name` = ?, `parent_department` = ? , `lead_name` = ? ,`description` = ? WHERE `id` = ? ";
 
     } else if (mode === 0) {
 
-        sql_add_query = 'INSERT INTO `dept_master` (`id`, `name`, `parent_department`, `lead_name`, `status`) VALUES (NULL, ?, ?, ?, 1);';
+        sql_add_query = 'INSERT INTO `dept_master` (`id`, `name`, `parent_department`, `lead_name`,`description`, `status`) VALUES (NULL, ?, ?, ?, ?, 1);';
     }
 
 
@@ -168,7 +171,7 @@ router.post('/', (req, res) => {
 
             const employeeId = gettingEmployeeID?.emp_id;
 
-            conn.query(sql_add_query, mode === 1 ? [departmentName, parentDepartment, employeeId, editmodeID] : [departmentName, parentDepartment, employeeId], (err, insertRows) => {
+            conn.query(sql_add_query, mode === 1 ? [departmentName, parentDepartment, employeeId, description, editmodeID] : [departmentName, parentDepartment, employeeId, description], (err, insertRows) => {
 
                 if (err) {
 
