@@ -104,24 +104,12 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
 
-    // const { id } = req.params;
-    const id = 1;
+    const { id } = req.params;
 
     let team_query;
     let data = [id]
 
     team_query = "SELECT * FROM `team_master` WHERE `id` = ? AND `status` = 1  "
-
-    // if (searchData) {
-
-    //     data = `%${searchData}%`
-    //     team_query = "SELECT * FROM `team_master` WHERE `status` = 1 AND `name` LIKE ? "
-
-    // } else {
-
-    //     team_query = "SELECT * FROM `team_master` WHERE `status` = 1 ";
-    // }
-
 
     const employeeQuery = 'SELECT `emp_id` , `f_name` , `l_name`  FROM `emp_master` WHERE `status` = 1';
 
@@ -169,25 +157,50 @@ router.get('/:id', (req, res) => {
                                 return gettingName?.name;
                             }
 
-                            const responseData = teamRows.map((value, index) => {
 
-                                return {
-                                    id: value?.id,
-                                    department: gettingDepartnameWithId(value?.dept_id),
-                                    name: value?.name,
-                                    manager: gettingNameWithId(value?.manager),
-                                    teamLead: gettingNameWithId(value?.team_lead),
-                                    description: value?.description,
-                                    status: value?.status
+                            const get_employee_team_based_Query = 'SELECT `emp_id` , `f_name` , `l_name`  FROM `emp_master` WHERE `team`= ? AND `status` = 1';
+
+                            conn.query(get_employee_team_based_Query, id, (err, EmployeeTeamRows) => {
+
+                                if (err) {
+
+                                    response.message = "Something went wrong in getting the Employees based on Team Details..... " + err;
+                                    res.send(response)
+
+                                } else {
+
+                                    const FinalValues = EmployeeTeamRows.map((item) => {
+
+                                        return {
+                                            "label": `${item?.f_name} ${item?.l_name}`,
+                                            "value": `${item?.f_name} ${item?.l_name}`,
+                                        }
+                                    })
+
+                                    const responseData = teamRows.map((value, index) => {
+
+                                        return {
+                                            id: value?.id,
+                                            department: gettingDepartnameWithId(value?.dept_id),
+                                            name: value?.name,
+                                            manager: gettingNameWithId(value?.manager),
+                                            teamLead: gettingNameWithId(value?.team_lead),
+                                            members: FinalValues,
+                                            description: value?.description,
+                                            status: value?.status
+                                        }
+
+                                    })
+
+                                    response.status = 1;
+                                    response.message = "Teams data getted Successfully.......";
+                                    response.data = responseData;
+
+                                    res.send(response);
+
                                 }
-
                             })
 
-                            response.status = 1;
-                            response.message = "Teams data getted Successfully.......";
-                            response.data = responseData;
-
-                            res.send(response);
 
                         }
                     })
@@ -200,42 +213,10 @@ router.get('/:id', (req, res) => {
     })
 })
 
-// {
-//     teamName: 'First demo',
-//     department: 'Human Resource',
-//     manager: 'Seema ',
-//     teamLead: 'Seema ',
-//     members: [
-//       { label: 'Adarsh B M', value: 'Adarsh B M' },
-//       { label: 'Puja Chetry', value: 'Puja Chetry' },
-//       { label: 'Shamala Nagaveni S', value: 'Shamala Nagaveni S' },
-//       { label: 'Shamala Nagaveni S', value: 'Shamala Nagaveni S' }
-//     ],
-//     teamDescription: 'askjdgfsad',
-//     mode: 0
-//   }
-
 
 router.post('/', (req, res) => {
 
-    //data to be inserted 
-
-    // [teamName , department , manager , teamLead , teamDescription  ]
-
-    // miss agurathu vandhu ======>>>>> members , mode ====>>>>  ok va 
-
-    // "teamName": teamName,
-    //         "department": department,
-    //         "manager": manager,
-    //         "teamLead": teamLead,
-    //         "members": members,
-    //         "teamDescription": teamDescription,
-    //         "mode": mode,
-
-
     const { teamName, department, manager, teamLead, members, teamDescription, mode, editmodeID } = req.body;
-
-    /// id illa da update panna , ena nu konjam paru seriya , ne patuku irukatha da dei....
 
     let sql_add_query;
 
@@ -248,8 +229,6 @@ router.post('/', (req, res) => {
         sql_add_query = 'INSERT INTO `team_master` (`id`, `dept_id`, `name`, `manager`, `team_lead`, `description`, `status`) VALUES (NULL, ?, ?, ?, ?, ? ,1);';
     }
 
-
-    console.log(sql_add_query)
 
     const employeeQuery = 'SELECT `emp_id` , `f_name` , `l_name`  FROM `emp_master` WHERE `status` = 1';
 
@@ -289,34 +268,111 @@ router.post('/', (req, res) => {
 
                     const teamLeadID = gettingIdwithName(teamLead);
 
-                    // `dept_id`, `name`, `manager`, `team_lead `, `description`
+                    const allMembers = members.map((item) => {
 
-                    conn.query(sql_add_query, mode === 1 ? [finalDepartmentID, teamName, managerID, teamLeadID, teamDescription, editmodeID] : [finalDepartmentID, teamName, managerID, teamLeadID, teamDescription ], (err, rows) => {
+                        const name = gettingIdwithName(item?.value);
 
-                        if (err) {
+                        return name;
 
-                            response.message = " Something went wrong in Updating the Team Details ... " + err;
-                            res.send(response)
-
-                        } else {
-
-                            response.status = 1;
-                            response.message = "Successfully added to the Team List ....";
-                            res.send(response);
-
-                        }
                     })
 
-                    // const willtrydaDude = members.map((item) => {
 
-                    //     const name = gettingIdwithName(item?.value);
+                    if (allMembers.length > 0) {
 
-                    //     return name;
+                        conn.query(sql_add_query, mode === 1 ? [finalDepartmentID, teamName, managerID, teamLeadID, teamDescription, editmodeID] : [finalDepartmentID, teamName, managerID, teamLeadID, teamDescription], (err, rows) => {
 
-                    // })
-                    // console.log(willtrydaDude)
+                            if (err) {
 
-                    // res.send(departmentRows)
+                                response.message = " Something went wrong in Updating the Team Details ... " + err;
+                                res.send(response)
+
+                            } else {
+
+                                const total_Team_Available_Query = "SELECT * FROM `team_master` WHERE `status` = 1";
+
+                                conn.query(total_Team_Available_Query, (err, totalTeamsRows) => {
+
+                                    if (err) {
+
+                                        response.message = " Something went wrong in Getting the Total Team Details ... " + err;
+                                        res.send(response)
+
+                                    } else {
+
+
+
+                                        const gettingTeamDetails = Object.entries(totalTeamsRows).find(([key, value]) => value.name === teamName)?.[1];
+
+                                        const teamId = gettingTeamDetails?.id;
+                                        const departmentId = gettingTeamDetails?.dept_id;
+
+
+                                        const totalPastMembers = " SELECT `emp_id` FROM `emp_master` WHERE `team` = ? AND `status` = 1 "
+
+                                        conn.query(totalPastMembers, teamId, (err, totalPastMembersRows) => {
+                                            if (err) {
+                                                response.message = "Something went wrong in Getting the Details of Past Team Members: " + err;
+                                                return res.send(response);
+                                            }
+
+                                            const totalPastMembersIds = totalPastMembersRows.map((item) => item?.emp_id);
+
+                                            const missingNumbers = totalPastMembersIds.filter(num => !allMembers.includes(num));
+                                            let updateCount = 0;
+                                            const totalUpdates = missingNumbers.length + allMembers.length;
+
+                                            const checkAndSendResponse = () => {
+                                                updateCount++;
+                                                if (updateCount === totalUpdates) {
+                                                    response.status = 1;
+                                                    response.message = "Successfully updated the Team List.";
+                                                    res.send(response);
+                                                }
+                                            };
+
+                                            for (let i = 0; i < missingNumbers.length; i++) {
+                                                const update_Employees_Query = "UPDATE `emp_master` SET `department` = NULL, `team` = NULL WHERE `emp_id` = ? AND `status` = 1";
+                                                let data = [missingNumbers[i]];
+
+                                                conn.query(update_Employees_Query, data, (err, updatedRows) => {
+                                                    if (err) {
+                                                        response.message = "Something went wrong in updating the Employee Master data: " + err;
+                                                        return res.send(response);
+                                                    }
+                                                    checkAndSendResponse();
+                                                });
+                                            }
+
+                                            for (let i = 0; i < allMembers.length; i++) {
+                                                const update_Employees_Query = "UPDATE `emp_master` SET `department` = ?, `team` = ? WHERE `emp_id` = ? AND `status` = 1";
+                                                let data = [departmentId, teamId, allMembers[i]];
+
+                                                conn.query(update_Employees_Query, data, (err, updatedRows) => {
+                                                    if (err) {
+                                                        response.message = "Something went wrong in updating the Employee Master data: " + err;
+                                                        return res.send(response);
+                                                    }
+                                                    checkAndSendResponse();
+                                                });
+                                            }
+                                        });
+
+
+                                    }
+                                })
+
+
+                            }
+                        })
+
+
+                    } else {
+
+                        response.message = " You have to select the Candidates ... " + err;
+                        res.send(response)
+
+                    }
+
                 }
             })
 

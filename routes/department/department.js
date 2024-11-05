@@ -138,8 +138,6 @@ router.post('/', (req, res) => {
     const { departmentName, parentDepartment, leadeName, mode, editmodeID, description } = req.body;
 
 
-    // console.log(req.body)
-
     let sql_add_query;
 
     if (mode === 1) {

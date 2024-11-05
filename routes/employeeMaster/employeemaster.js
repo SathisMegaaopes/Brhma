@@ -21,9 +21,8 @@ router.get('/', (req, res) => {
     } else if (team) {
         sqlQuery = 'SELECT c.first_name , c.last_name , c.employee_number , c.email , c.mobile_number , c.date_of_join , d.user_name , d.user_pwd , d.user_role FROM `employee_onboard` c INNER JOIN  `user_login` d ON d.user_name = c.employee_number WHERE c.team = ? AND c.status = 1;'
     } else if (employeeName) {
-        // sqlQuery = 'SELECT c.first_name , c.last_name , c.employee_number , c.email , c.mobile_number , c.date_of_join , d.user_name , d.user_pwd , d.user_role FROM `employee_onboard` c INNER JOIN  `user_login` d ON d.user_name = c.employee_number WHERE c.first_name LIKE ? AND c.status = 1;'
         sqlQuery = 'SELECT c.first_name, c.last_name, c.employee_number, c.email, c.mobile_number, c.date_of_join, d.user_name, d.user_pwd, d.user_role FROM `employee_onboard` c INNER JOIN `user_login` d ON d.user_name = c.employee_number WHERE (c.first_name LIKE ? OR c.employee_number LIKE ?) AND c.status = 1;'
-        data = [employeeName2,employeeName2]
+        data = [employeeName2, employeeName2]
     } else {
         sqlQuery = 'SELECT c.first_name , c.last_name , c.employee_number , c.email , c.mobile_number , c.date_of_join , d.user_name , d.user_pwd , d.user_role FROM `employee_onboard` c INNER JOIN  `user_login` d ON d.user_name = c.employee_number WHERE c.status = 1;'
     }
@@ -141,7 +140,6 @@ router.get('/', (req, res) => {
 
 router.put('/', (req, res) => {
 
-
     const { id, username, password, userrole, empid } = req.body;
 
     const sqlQuery = " UPDATE `user_login` SET `user_name`= ? , `user_pwd`= ?  WHERE `emp_id` = ? "
@@ -183,6 +181,33 @@ router.post('/', (req, res) => {
     })
 })
 
+
+router.post('/deActivate', (req, res) => {
+
+    const { id } = req.body;
+
+    const Deactivate_query = "UPDATE `employee_onboard` SET `status` = 0 WHERE `employee_number` = ? "
+
+    conn.query(Deactivate_query, id, (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = "Something went wrong in Deactivting the User" + err;
+            res.send(response)
+
+        } else {
+
+            response.message = "Successfully Completed";
+            response.status = 1;
+            res.send(response)
+
+        }
+
+    })
+
+})
 
 
 

@@ -118,8 +118,6 @@ router.get('/getCandidate', (req, res) => {
 
     const { id } = req.query;
 
-    // const id = 'MOS20241007427';
-
     const query1 = 'SELECT * FROM `candidate_master` WHERE `candidate_id` = ? ;'
 
     const query2 = 'SELECT * FROM `candidate_edu_master` WHERE `candidate_id` = ? '
@@ -333,8 +331,6 @@ router.get('/getEmployee', (req, res) => {
 
                                                 } else {
 
-                                                    // const { name: shiftName } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
-
                                                     const { start: name1, end: name2 } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
 
                                                     const shiftName = `${name1}-${name2}`;
@@ -375,22 +371,16 @@ router.get('/getEmployee', (req, res) => {
                                                                     spouseName: item.spouse_name,
                                                                     physicallyChallenged: item.physically_challenged,
                                                                     education: item.education,
-                                                                    // addressprofType: item.address_prof_type,
                                                                     addressprofType: addressProfname,
                                                                     reportingmanager: item.reporting_manager,
                                                                     reportingteamlead: item.reporting_team_lead,
                                                                     designation: item.designation,
-                                                                    // department: item.department,
                                                                     department: departname,
-                                                                    // team: item.team,
                                                                     team: teamName,
-                                                                    // referrdby: item.referred_by, 
                                                                     referrdby: referred_by_fullname,
                                                                     employmentstatus: item.employment_status,
                                                                     employeestatus: item.employee_status,
-                                                                    // shift: item.shift,
                                                                     shift: shiftName,
-                                                                    // grade: item.grade,
                                                                     grade: gradeName,
                                                                     probabationperiod: item.probabtion_period,
                                                                     salaryofferred: item.salary_offered,
@@ -881,8 +871,6 @@ router.post('/basicInformation', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
 
-    console.log(req.body)
-
     let basicInfoQuery;
     let data;
 
@@ -918,8 +906,6 @@ router.post('/basicInformation', (req, res) => {
 
     }
 
-    console.log(basicInfoQuery)
-
     conn.query(basicInfoQuery, data, (err, rows) => {
 
         let response = { status: 0, data: {}, message: '' };
@@ -945,8 +931,6 @@ router.post('/employeePosition', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
 
-    console.log(req.body)
-
     let employeeposition;
     let data;
 
@@ -960,8 +944,6 @@ router.post('/employeePosition', (req, res) => {
         data = [...data, formData.probabationperiod, formData.salaryofferred, formData.totalmonthlyctc, formData.totalyearlyctc, formData.attendancebonus, formData.billablestatus, formData.addresprofpath, emp_id]
 
     }
-
-    console.log(employeeposition)
 
     conn.query(employeeposition, data, (err, rows) => {
 
@@ -1177,12 +1159,7 @@ router.get('/getPageData', (req, res) => {
 
     const { employee_id, pageNumber } = req.query;
 
-    // const employee_id = '4444';
-
     const pageNumber2 = Number(pageNumber);
-
-    // const pageNumber2 = 5;
-
 
     const allDepartmentQuery = ' SELECT * FROM `dept_master` WHERE `status` = 1 ';
 
@@ -1300,7 +1277,6 @@ router.get('/getPageData', (req, res) => {
                                     spouseName: item.spouse_name,
                                     physicallyChallenged: item.physically_challenged,
                                     education: item.education,
-                                    // addressprofType: item.address_prof_type,
                                     addressprofType: addressprofname,
                                     profileUrl: item.profileUrl
                                 }
@@ -1382,8 +1358,6 @@ router.get('/getPageData', (req, res) => {
                                                         res.send(response);
 
                                                     } else {
-
-                                                        // const { name: shiftName } = Object.entries(allshiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
 
                                                         const { start: name1, end: name2 } = Object.entries(allshiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
 
@@ -1589,8 +1563,6 @@ router.get('/dynamicDepartments', (req, res) => {
 })
 
 router.get('/dynamicTeams', (req, res) => {
-
-    // const { value } = req.query;
 
     const value = 's';
 
