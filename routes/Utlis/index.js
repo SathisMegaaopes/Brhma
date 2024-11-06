@@ -61,10 +61,20 @@ const DateFormater = (val) => {
     let month = ("0" + (new_date.getMonth() + 1)).slice(-2);
     let date = ("0" + new_date.getDate()).slice(-2);
 
-    return year + "-" + month + "-" + date ;
-  
+    return year + "-" + month + "-" + date;
+
+}
+
+const DateFormaterNewww = (val) => {
+    let new_date = new Date(val);
+    let year = new_date.getFullYear();
+    let month = ("0" + (new_date.getMonth() + 1)).slice(-2);
+    let date = ("0" + new_date.getDate()).slice(-2);
+
+    return date + "/" + month + "/" + year;
+
 }
 
 
 
-export { fnGetCandidatedetails, generateEmployeeObject, getTodayDate, getCurrentMonthYear, DateFormater }
+export { fnGetCandidatedetails, generateEmployeeObject, getTodayDate, getCurrentMonthYear, DateFormater, DateFormaterNewww }

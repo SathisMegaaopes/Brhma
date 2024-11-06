@@ -20,6 +20,7 @@ import employeeonBoard from "./routes/employeeOnboard/employeeOnboard.js"
 import department from "./routes/department/department.js"
 import team from "./routes/team/team.js"
 import designations from "./routes/designations/designations.js"
+import company from "./routes/company/company.js"
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -64,6 +65,7 @@ app.use('/employeeonboard', employeeonBoard)
 app.use('/department', department)
 app.use('/team', team)
 app.use('/designations', designations)
+app.use('/company', company)
 
 
 

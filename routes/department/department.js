@@ -41,27 +41,50 @@ router.get('/', (req, res) => {
                     res.send(response)
                 } else {
 
-                    function gettingId(id) {
-                        const gettingEmployeeID = Object.entries(employeeRows).find(([key, value]) => value.emp_id === Number(id))?.[1];
-                        return `${gettingEmployeeID.f_name} ${gettingEmployeeID.l_name}`
-                    }
 
-                    const data = deptRows.map((Deptvalue, index) => {
-                        return {
-                            id: Deptvalue?.id,
-                            name: Deptvalue?.name,
-                            parent_department: Deptvalue?.parent_department,
-                            lead_name: gettingId(Deptvalue.lead_name),
-                            description: Deptvalue?.description,
-                            status: Deptvalue.status
+                    const company_Query = "SELECT * FROM `company_master` WHERE `status` = 1";
+
+                    conn.query(company_Query, (err, companyRows) => {
+
+                        let response = { status: 0, data: {}, message: '' };
+
+                        if (err) {
+
+                            response.message = "Something went wrong in getting the company Details " + err;
+                            res.send(response);
+
+                        } else {
+
+
+                            function gettingId(id) {
+                                const gettingEmployeeID = Object.entries(employeeRows).find(([key, value]) => value.emp_id === Number(id))?.[1];
+                                return `${gettingEmployeeID.f_name} ${gettingEmployeeID.l_name}`
+                            }
+
+                            function gettingCompanyID(id) {
+                                const gettingCompanyID = Object.entries(companyRows).find(([key, value]) => value.id === Number(id))?.[1];
+                                return gettingCompanyID?.name;
+
+                            }
+
+                            const data = deptRows.map((Deptvalue, index) => {
+                                return {
+                                    id: Deptvalue?.id,
+                                    name: Deptvalue?.name,
+                                    parent_department: gettingCompanyID(Deptvalue?.parent_department),
+                                    lead_name: gettingId(Deptvalue.lead_name),
+                                    description: Deptvalue?.description,
+                                    status: Deptvalue.status
+                                }
+                            })
+
+                            response.message = " Department data fetched Successfully...";
+                            response.status = 1;
+                            response.data = data;
+
+                            res.send(response)
                         }
                     })
-
-                    response.message = " Department data fetched Successfully...";
-                    response.status = 1;
-                    response.data = data;
-
-                    res.send(response)
 
                 }
             })
@@ -73,6 +96,8 @@ router.get('/', (req, res) => {
 
 
 })
+
+
 
 
 router.get('/:id', (req, res) => {
@@ -94,38 +119,60 @@ router.get('/:id', (req, res) => {
 
         } else {
 
-            conn.query(sql_query, id, (err, deptRows) => {
+            const company_Query = "SELECT * FROM `company_master` WHERE `status` = 1";
+
+            conn.query(company_Query, (err, companyRows) => {
+
+                let response = { status: 0, data: {}, message: '' };
 
                 if (err) {
-                    response.message = "Cannot able get the Departmet data" + err;
-                    res.send(response)
+
+                    response.message = "Something went wrong in getting the company Details " + err;
+                    res.send(response);
+
                 } else {
 
-                    function gettingId(id) {
-                        const gettingEmployeeID = Object.entries(employeeRows).find(([key, value]) => value.emp_id === Number(id))?.[1];
-                        return `${gettingEmployeeID.f_name} ${gettingEmployeeID.l_name}`
-                    }
+                    conn.query(sql_query, id, (err, deptRows) => {
 
-                    const data = deptRows.map((Deptvalue, index) => {
-                        return {
-                            name: Deptvalue?.name,
-                            parent_department: Deptvalue?.parent_department,
-                            lead_name: gettingId(Deptvalue.lead_name),
-                            description: Deptvalue?.description,
-                            status: Deptvalue.status
+                        if (err) {
+                            response.message = "Cannot able get the Departmet data" + err;
+                            res.send(response)
+                        } else {
+
+                            function gettingId(id) {
+                                const gettingEmployeeID = Object.entries(employeeRows).find(([key, value]) => value.emp_id === Number(id))?.[1];
+                                return `${gettingEmployeeID.f_name} ${gettingEmployeeID.l_name}`
+                            }
+
+
+                            function gettingCompanyID(id) {
+                                const gettingCompanyID = Object.entries(companyRows).find(([key, value]) => value.id === Number(id))?.[1];
+                                return gettingCompanyID?.name;
+
+                            }
+
+                            const data = deptRows.map((Deptvalue, index) => {
+                                return {
+                                    name: Deptvalue?.name,
+                                    // parent_department: Deptvalue?.parent_department,
+                                    parent_department: gettingCompanyID(Deptvalue?.parent_department),
+                                    lead_name: gettingId(Deptvalue.lead_name),
+                                    description: Deptvalue?.description,
+                                    status: Deptvalue.status
+                                }
+                            })
+
+                            response.message = " Department data fetched Successfully...";
+                            response.status = 1;
+                            response.data = data;
+
+                            res.send(response)
+
                         }
                     })
 
-                    response.message = " Department data fetched Successfully...";
-                    response.status = 1;
-                    response.data = data;
-
-                    res.send(response)
-
                 }
             })
-
-
         }
 
     })
@@ -169,20 +216,39 @@ router.post('/', (req, res) => {
 
             const employeeId = gettingEmployeeID?.emp_id;
 
-            conn.query(sql_add_query, mode === 1 ? [departmentName, parentDepartment, employeeId, description, editmodeID] : [departmentName, parentDepartment, employeeId, description], (err, insertRows) => {
+            const companyQuery = "SELECT * FROM `company_master` WHERE `status` = 1";
+
+            conn.query(companyQuery, (err, companyRows) => {
 
                 if (err) {
 
-                    response.message = " Something went wrong in Inserting the department ... " + err;
-                    res.send(response)
+                    response.message = "Something went wrong in getting the company Details " + err;
+                    res.send(response);
 
                 } else {
 
-                    response.status = 1;
-                    response.message = "Department inserted successfully..."
-                    res.send(response)
+                    const gettingCompanyID = Object.entries(companyRows).find(([key, value]) => value?.name === parentDepartment)?.[1];
+
+                    const CompanyId = gettingCompanyID?.id
+
+                    conn.query(sql_add_query, mode === 1 ? [departmentName, CompanyId, employeeId, description, editmodeID] : [departmentName, CompanyId, employeeId, description], (err, insertRows) => {
+
+                        if (err) {
+
+                            response.message = " Something went wrong in Inserting the department ... " + err;
+                            res.send(response)
+
+                        } else {
+
+                            response.status = 1;
+                            response.message = "Department inserted successfully..."
+                            res.send(response)
+
+                        }
+                    })
 
                 }
+
             })
 
         }

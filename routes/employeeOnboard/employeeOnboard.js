@@ -5,7 +5,7 @@ import multer from 'multer';
 import path from 'path';
 import fs, { stat } from 'fs';
 import { fileURLToPath } from 'url';
-import { DateFormater } from '../Utlis/index.js';
+import { DateFormater, DateFormaterNewww } from '../Utlis/index.js';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
@@ -87,7 +87,7 @@ router.get('/addressprof', (req, res) => {
 
 router.get('/designations', (req, res) => {
 
-    const query = 'SELECT DISTINCT `designation` FROM `emp_master` WHERE `status`=1'
+    const query = 'SELECT * FROM `designations_master` WHERE status = 1'
 
     conn.query(query, (err, rows) => {
 
@@ -100,7 +100,8 @@ router.get('/designations', (req, res) => {
 
             const mappedValue = rows.map((item) => {
                 return {
-                    name: item.designation
+                    // name: item.designation
+                    name: item.name
                 }
             })
 
@@ -311,144 +312,175 @@ router.get('/getEmployee', (req, res) => {
 
                                     const referred_by_fullname = `${firstname} ${lastname}`;
 
-                                    conn.query(getAllgradeQuery, (err, gradeRows) => {
+                                    function gettingNameWithId(id) {
+
+                                        const gettingEmployeeID = Object.entries(employeeRows).find(([key, value]) => value.emp_id === Number(id))?.[1];
+
+                                        return `${gettingEmployeeID?.f_name} ${gettingEmployeeID?.l_name}`
+
+                                    }
+
+
+                                    const desginationQuery = "SELECT * FROM `designations_master` WHERE status = 1";
+
+                                    conn.query(desginationQuery, (err, designationRows) => {
 
                                         if (err) {
 
-                                            response.message = 'Something went in getting the Grade details ' + err;
-                                            res.send(response);
+                                            response.message = 'Something went wrong in getting the Designation Details...' + err;
+                                            res(response);
 
                                         } else {
 
-                                            const { name: gradeName } = Object.entries(gradeRows).find(([key, value]) => value.id === gradeIdtoget)?.[1];
+                                            function gettingNamewithID(id) {
 
-                                            conn.query(getallshiftQuery, (err, shiftRows) => {
+                                                const gettingEmployeeID = Object.entries(designationRows).find(([key, value]) => value.id === Number(id))?.[1];
+
+                                                return gettingEmployeeID?.name;
+
+                                            }
+
+                                            conn.query(getAllgradeQuery, (err, gradeRows) => {
 
                                                 if (err) {
 
-                                                    response.message = 'Something went wrong in getting shift details ..' + err;
+                                                    response.message = 'Something went in getting the Grade details ' + err;
                                                     res.send(response);
 
                                                 } else {
 
-                                                    const { start: name1, end: name2 } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
+                                                    const { name: gradeName } = Object.entries(gradeRows).find(([key, value]) => value.id === gradeIdtoget)?.[1];
 
-                                                    const shiftName = `${name1}-${name2}`;
-
-                                                    conn.query(getalladdressprof, (err, addressprofrows) => {
+                                                    conn.query(getallshiftQuery, (err, shiftRows) => {
 
                                                         if (err) {
 
-                                                            response.message = 'Somethig went wrong in getting the addressprof details....' + err;
+                                                            response.message = 'Something went wrong in getting shift details ..' + err;
                                                             res.send(response);
 
                                                         } else {
 
-                                                            const { name: addressProfname } = Object.entries(addressprofrows).find(([key, value]) => value.id === addressproofIdtoget)?.[1];
+                                                            const { start: name1, end: name2 } = Object.entries(shiftRows).find(([key, value]) => value.id === shiftIdtoget)?.[1];
 
-                                                            if (rows.length > 0) {
+                                                            const shiftName = `${name1}-${name2}`;
 
-                                                                const item = rows[0];
+                                                            conn.query(getalladdressprof, (err, addressprofrows) => {
 
-                                                                const PopulatedData = {
-                                                                    firstname: item.first_name,
-                                                                    lastname: item.last_name,
-                                                                    dateOfBirth: DateFormater(item.dateofbirth),
-                                                                    employeeNumber: item.employee_number,
-                                                                    gender: item.gender,
-                                                                    email: item.email,
-                                                                    mobileNumber: item.mobile_number,
-                                                                    phone: item.phone,
-                                                                    bloodGroup: item.blood_group,
-                                                                    dateOfJoining: DateFormater(item.date_of_join),
-                                                                    fathersName: item.father_name,
-                                                                    fathersOccupation: item.father_occupation,
-                                                                    countryOfOrigin: item.country_of_origin,
-                                                                    nationality: item.nationality,
-                                                                    emergencyContactName: item.emergency_contact_name,
-                                                                    emergencyContactNumber: item.emergency_contact_number,
-                                                                    emergencyContactRelation: item.emergency_contact_relation,
-                                                                    spouseName: item.spouse_name,
-                                                                    physicallyChallenged: item.physically_challenged,
-                                                                    education: item.education,
-                                                                    addressprofType: addressProfname,
-                                                                    reportingmanager: item.reporting_manager,
-                                                                    reportingteamlead: item.reporting_team_lead,
-                                                                    designation: item.designation,
-                                                                    department: departname,
-                                                                    team: teamName,
-                                                                    referrdby: referred_by_fullname,
-                                                                    employmentstatus: item.employment_status,
-                                                                    employeestatus: item.employee_status,
-                                                                    shift: shiftName,
-                                                                    grade: gradeName,
-                                                                    probabationperiod: item.probabtion_period,
-                                                                    salaryofferred: item.salary_offered,
-                                                                    totalmonthlyctc: item.total_month_salary,
-                                                                    attendancebonus: item.attendance_bonus,
-                                                                    totalyearlyctc: item.total_yearly_salary,
-                                                                    billablestatus: item.billable_status,
-                                                                    addresprofpath: item.addres_prof_path,
-                                                                    currentaddress: item.current_address,
-                                                                    permanentAddress: item.permanent_address,
-                                                                    currentCity: item.current_city,
-                                                                    currentPincode: item.current_pincode,
-                                                                    permanentcity: item.permanent_city,
-                                                                    permanentPincode: item.permanent_pincode,
-                                                                    organization1: item.organization_1,
-                                                                    designation1: item.designation_1,
-                                                                    startdate1: DateFormater(item.start_date_1),
-                                                                    enddate1: DateFormater(item.end_date_1),
-                                                                    totalExperience1: item.totalExperience_1,
-                                                                    organization2: item.organization_2,
-                                                                    designation2: item.designation_2,
-                                                                    startdate2: DateFormater(item.start_date_2),
-                                                                    enddate2: DateFormater(item.end_date_2),
-                                                                    totalExperience2: item.totalExperience_2,
-                                                                    organization3: item.organization_3,
-                                                                    designation3: item.designation_3,
-                                                                    startdate3: DateFormater(item.start_date_3),
-                                                                    enddate3: DateFormater(item.end_date_3),
-                                                                    totalExperience3: item.totalExperience_3,
-                                                                    aadhaarnumber: item.aadhaar_number,
-                                                                    pannumber: item.pan_number,
-                                                                    passportnumber: item.passport_number,
-                                                                    uannumber: item.uan_number,
-                                                                    pfnumber: item.pf_number,
-                                                                    pfjoindate: DateFormater(item.pfjoin_date),
-                                                                    esinumber: item.esi_number,
-                                                                    lwfnumber: item.lwf_number,
-                                                                    modeofpayment: item.mode_of_payment,
-                                                                    bankname: item.bank_name,
-                                                                    branchname: item.branch_name,
-                                                                    ifsccode: item.ifsc_code,
-                                                                    accountNumber: item.account_number,
-                                                                    beneficiarycode: item.beneficiary_code,
-                                                                    profileUrl: item.profileUrl
+                                                                if (err) {
+
+                                                                    response.message = 'Somethig went wrong in getting the addressprof details....' + err;
+                                                                    res.send(response);
+
+                                                                } else {
+
+                                                                    const { name: addressProfname } = Object.entries(addressprofrows).find(([key, value]) => value.id === addressproofIdtoget)?.[1];
+
+                                                                    if (rows.length > 0) {
+
+                                                                        const item = rows[0];
+
+                                                                        const PopulatedData = {
+                                                                            firstname: item.first_name,
+                                                                            lastname: item.last_name,
+                                                                            dateOfBirth: DateFormater(item.dateofbirth),
+                                                                            employeeNumber: item.employee_number,
+                                                                            gender: item.gender,
+                                                                            email: item.email,
+                                                                            mobileNumber: item.mobile_number,
+                                                                            phone: item.phone,
+                                                                            bloodGroup: item.blood_group,
+                                                                            dateOfJoining: DateFormater(item.date_of_join),
+                                                                            fathersName: item.father_name,
+                                                                            fathersOccupation: item.father_occupation,
+                                                                            countryOfOrigin: item.country_of_origin,
+                                                                            nationality: item.nationality,
+                                                                            emergencyContactName: item.emergency_contact_name,
+                                                                            emergencyContactNumber: item.emergency_contact_number,
+                                                                            emergencyContactRelation: item.emergency_contact_relation,
+                                                                            spouseName: item.spouse_name,
+                                                                            physicallyChallenged: item.physically_challenged,
+                                                                            education: item.education,
+                                                                            addressprofType: addressProfname,
+                                                                            reportingmanager: gettingNameWithId(item.reporting_manager),
+                                                                            reportingteamlead: gettingNameWithId(item.reporting_team_lead),
+                                                                            designation: gettingNamewithID(item.designation),
+                                                                            department: departname,
+                                                                            team: teamName,
+                                                                            referrdby: referred_by_fullname,
+                                                                            employmentstatus: item.employment_status,
+                                                                            employeestatus: item.employee_status,
+                                                                            shift: shiftName,
+                                                                            grade: gradeName,
+                                                                            probabationperiod: item.probabtion_period,
+                                                                            salaryofferred: item.salary_offered,
+                                                                            totalmonthlyctc: item.total_month_salary,
+                                                                            attendancebonus: item.attendance_bonus,
+                                                                            totalyearlyctc: item.total_yearly_salary,
+                                                                            billablestatus: item.billable_status,
+                                                                            addresprofpath: item.addres_prof_path,
+                                                                            currentaddress: item.current_address,
+                                                                            permanentAddress: item.permanent_address,
+                                                                            currentCity: item.current_city,
+                                                                            currentPincode: item.current_pincode,
+                                                                            permanentcity: item.permanent_city,
+                                                                            permanentPincode: item.permanent_pincode,
+                                                                            organization1: item.organization_1,
+                                                                            designation1: item.designation_1,
+                                                                            startdate1: DateFormater(item.start_date_1),
+                                                                            enddate1: DateFormater(item.end_date_1),
+                                                                            totalExperience1: item.totalExperience_1,
+                                                                            organization2: item.organization_2,
+                                                                            designation2: item.designation_2,
+                                                                            startdate2: DateFormater(item.start_date_2),
+                                                                            enddate2: DateFormater(item.end_date_2),
+                                                                            totalExperience2: item.totalExperience_2,
+                                                                            organization3: item.organization_3,
+                                                                            designation3: item.designation_3,
+                                                                            startdate3: DateFormater(item.start_date_3),
+                                                                            enddate3: DateFormater(item.end_date_3),
+                                                                            totalExperience3: item.totalExperience_3,
+                                                                            aadhaarnumber: item.aadhaar_number,
+                                                                            pannumber: item.pan_number,
+                                                                            passportnumber: item.passport_number,
+                                                                            uannumber: item.uan_number,
+                                                                            pfnumber: item.pf_number,
+                                                                            pfjoindate: DateFormater(item.pfjoin_date),
+                                                                            esinumber: item.esi_number,
+                                                                            lwfnumber: item.lwf_number,
+                                                                            modeofpayment: item.mode_of_payment,
+                                                                            bankname: item.bank_name,
+                                                                            branchname: item.branch_name,
+                                                                            ifsccode: item.ifsc_code,
+                                                                            accountNumber: item.account_number,
+                                                                            beneficiarycode: item.beneficiary_code,
+                                                                            profileUrl: item.profileUrl
+
+                                                                        }
+
+                                                                        response.message = "Data fetcched Successfully....";
+                                                                        response.status = 1;
+                                                                        response.data = PopulatedData;
+                                                                        res.send(response);
+
+                                                                    } else {
+
+                                                                        response.message = `No data available on this particular Employee id 1 ${employee_id} ... ` + err;
+                                                                        res.send(response);
+
+                                                                    }
 
                                                                 }
 
-                                                                response.message = "Data fetcched Successfully....";
-                                                                response.status = 1;
-                                                                response.data = PopulatedData;
-                                                                res.send(response);
-
-                                                            } else {
-
-                                                                response.message = `No data available on this particular Employee id 1 ${employee_id} ... ` + err;
-                                                                res.send(response);
-
-                                                            }
+                                                            })
 
                                                         }
-
                                                     })
 
                                                 }
+
                                             })
 
                                         }
-
                                     })
 
                                 }
@@ -729,6 +761,7 @@ router.get('/employeeCheckIds', (req, res) => {
 
 })
 
+
 router.post('/', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
@@ -867,6 +900,8 @@ router.post('/', (req, res) => {
 
 })
 
+
+
 router.post('/basicInformation', (req, res) => {
 
     const { formData, operationType, requestType, emp_id, referenceid, activeStep, profileUrl, available } = req.body;
@@ -939,30 +974,79 @@ router.post('/employeePosition', (req, res) => {
         employeeposition = ' UPDATE `employee_onboard` SET `reporting_manager` = ?, `reporting_team_lead` = ?, `designation` = ?, `department` = ?, `team` = ?, `referred_by` = ?, `employment_status` = ?, `employee_status` = ?, `shift` = ?,' +
             ' `grade` = ?, `probabtion_period` = ?, `salary_offered` = ?, `total_month_salary` = ?, `total_yearly_salary` = ?, `attendance_bonus` = ?, `billable_status` = ?, `addres_prof_path` = ? WHERE `employee_number` = ? '
 
-
-        data = [formData.reportingmanager, formData.reportingteamlead, formData.designation, formData.department, formData.team, formData.referrdby, formData.employmentstatus, formData.employeestatus, formData.shift, formData.grade,]
-        data = [...data, formData.probabationperiod, formData.salaryofferred, formData.totalmonthlyctc, formData.totalyearlyctc, formData.attendancebonus, formData.billablestatus, formData.addresprofpath, emp_id]
-
     }
 
-    conn.query(employeeposition, data, (err, rows) => {
+    const employeeQuery = 'SELECT `emp_id` , `f_name` , `l_name`  FROM `emp_master` WHERE `status` = 1';
 
-        let response = { status: 0, data: {}, message: '' };
+    conn.query(employeeQuery, (err, employeeRows) => {
 
         if (err) {
 
-            response.message = 'Something went wrong updating the Employee Position Details .... ' + err;
-            res.send(response);
+            response.message = 'Something went wrong in getting the employee Details...' + err;
+            res(response);
 
         } else {
 
-            response.message = ' Successfully updated the Position details of the employee ';
-            response.status = 1;
-            res.send(response);
+            function gettingNameWithId(id) {
+
+                const gettingEmployeeID = Object.entries(employeeRows).find(([key, value]) => `${value?.f_name} ${value?.l_name}` === id)?.[1];
+                console.log(gettingEmployeeID?.emp_id, 'Check panniko da Sathis uh marakama ok va ..... ')
+                return gettingEmployeeID?.emp_id
+
+            }
+
+            const desginationQuery = "SELECT * FROM `designations_master` WHERE status = 1";
+
+            conn.query(desginationQuery, (err, designationRows) => {
+
+                if (err) {
+
+                    response.message = 'Something went wrong in getting the Designation Details...' + err;
+                    res(response);
+
+                } else {
+
+                    function gettingNamewithID(id) {
+
+                        const gettingEmployeeID = Object.entries(designationRows).find(([key, value]) => value.name === id)?.[1];
+
+                        return gettingEmployeeID?.id;
+
+                    }
+
+
+                    data = [gettingNameWithId(formData.reportingmanager), gettingNameWithId(formData.reportingteamlead), gettingNamewithID(formData.designation), formData.department, formData.team, formData.referrdby, formData.employmentstatus, formData.employeestatus, formData.shift, formData.grade,]
+                    data = [...data, formData.probabationperiod, formData.salaryofferred, formData.totalmonthlyctc, formData.totalyearlyctc, formData.attendancebonus, formData.billablestatus, formData.addresprofpath, emp_id]
+
+
+                    conn.query(employeeposition, data, (err, rows) => {
+
+                        let response = { status: 0, data: {}, message: '' };
+
+                        if (err) {
+
+                            response.message = 'Something went wrong updating the Employee Position Details .... ' + err;
+                            res.send(response);
+
+                        } else {
+
+                            response.message = ' Successfully updated the Position details of the employee ';
+                            response.status = 1;
+                            res.send(response);
+
+                        }
+
+                    })
+
+                }
+
+            })
+
 
         }
-
     })
+
+
 
 })
 
@@ -1107,41 +1191,86 @@ router.post('/employeePaymentmode', (req, res) => {
 
             const password = generateRandomPassword();
 
+            console.log(userName, 'This was the Employee ID....')
+
             if (activeStep === 5 && (operationType === 1 || operationType === 2)) {
 
-                const loginQuery = 'INSERT INTO `user_login` (`id`, `user_name`, `user_pwd`, `user_role`, `login_time`, `emp_id`) VALUES (NULL, ?, ?, ?, current_timestamp(), ?);'
+                const onBoardQuery = "SELECT `employee_number`,`first_name`,`last_name`,`date_of_join`,`designation`,`department`,`team`,`reporting_manager`,`reporting_team_lead` FROM `employee_onboard` WHERE `employee_number` = ? ";
 
-                conn.query(loginQuery, [userName, password, '2', userName], async (err, rows) => {
+                conn.query(onBoardQuery, userName, (err, onBoardRows) => {
+
                     if (err) {
-                        response.message = "Sonething went wrong in creating the logins : " + err;
+
+                        response.message = 'Something went wrong Getting  the Employee Details for Creation of Onboard .... ' + err;
                         res.send(response);
 
                     } else {
 
-                        const mailOptions = {
-                            from: 'sathiskumar.r@megaaopes.com',
-                            to: 'sathiskumar.r@megaaopes.com',
-                            subject: 'Welcome to the Team!',
-                            html: `<h1>Welcome! Sathis Kumar</h1>
-                                   <p>We are excited to have you on board.</p>
-                                   <p>This is your username: ${userName}</p>
-                                   <p>This is your password: ${password}</p>
-                                   <p>Best regards,</p>
-                                   <p>MegaaOpes Solutions...</p>`,
-                        };
+                        // console.log(onBoardRows, 'Data of the person based on the employee ID from the Employee OnBoard Table ')
 
-                        try {
-                            await transporter.sendMail(mailOptions);
-                            response.message = "Success Created Employee and login Credentials....";
-                            response.status = 1;
-                            res.status(200).send(response);
-                        } catch (error) {
-                            response.message = 'Failed to send email' + err;
-                            res.send(response)
+                        // console.log(onBoardRows[0]?.employee_number, 'This is the Data Im looking ')
+                        // console.log(onBoardRows[0].employee_number, 'This is the Data Im looking ')
+                        // console.log(onBoardRows.employee_number, 'This is the Data Im looking ')
 
-                        }
+                        // 2024-11-06T18:30:00.000Z
+
+                        const formattedDate = DateFormaterNewww(onBoardRows[0]?.date_of_join)
+
+                        const creatingEmployeeQuery = "INSERT INTO `emp_master` (`id`, `emp_id`, `f_name`, `l_name`, `DOJ`, `designation`, `department`, `team`, `reporting_team_lead`, `reporting_manager`, `status`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?,?, '1')";
+
+                        const data = [onBoardRows[0]?.employee_number, onBoardRows[0]?.first_name, onBoardRows[0]?.last_name, formattedDate, onBoardRows[0]?.designation, onBoardRows[0]?.department, onBoardRows[0]?.team, onBoardRows[0]?.reporting_team_lead, onBoardRows[0]?.reporting_manager]
+
+                        conn.query(creatingEmployeeQuery, data, (err, createdRows) => {
+
+                            if (err) {
+
+                                response.message = 'Something went wrong in Updating the OnBoarded Candidate to the Employee Master .... ' + err;
+                                res.send(response);
+
+                            } else {
+
+                                const loginQuery = 'INSERT INTO `user_login` (`id`, `user_name`, `user_pwd`, `user_role`, `login_time`, `emp_id`) VALUES (NULL, ?, ?, ?, current_timestamp(), ?);'
+
+                                conn.query(loginQuery, [userName, password, '2', userName], async (err, rows) => {
+                                    if (err) {
+                                        response.message = "Sonething went wrong in creating the logins : " + err;
+                                        res.send(response);
+
+                                    } else {
+
+                                        const mailOptions = {
+                                            from: 'sathiskumar.r@megaaopes.com',
+                                            to: 'sathiskumar.r@megaaopes.com',
+                                            subject: 'Welcome to the Team!',
+                                            html: `<h1>Welcome to MegaaOpes Solutions</h1>
+                                                   <p>We are excited to have you on board.</p>
+                                                   <p>This is your username: ${userName}</p>
+                                                   <p>This is your password: ${password}</p>
+                                                   <p>Best regards,</p>
+                                                   <p>MegaaOpes Solutions...</p>`,
+                                        };
+
+                                        try {
+                                            await transporter.sendMail(mailOptions);
+                                            response.message = "Success Created Employee and login Credentials....";
+                                            response.status = 1;
+                                            res.status(200).send(response);
+                                        } catch (error) {
+                                            response.message = 'Failed to send email' + err;
+                                            res.send(response)
+
+                                        }
+                                    }
+                                })
+
+                            }
+                        })
+
+
                     }
+
                 })
+
 
             } else {
                 response.message = 'Successfully updated...';
@@ -1154,6 +1283,9 @@ router.post('/employeePaymentmode', (req, res) => {
     })
 
 })
+
+
+
 
 router.get('/getPageData', (req, res) => {
 

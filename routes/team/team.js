@@ -55,38 +55,80 @@ router.get('/', (req, res) => {
 
                         } else {
 
-                            function gettingNameWithId(id) {
 
-                                const gettingEmployeeID = Object.entries(employeeData).find(([key, value]) => value.emp_id === Number(id))?.[1];
-                                return `${gettingEmployeeID.f_name} ${gettingEmployeeID.l_name}`
+                            const company_Query = "SELECT * FROM `company_master` WHERE `status` = 1";
 
-                            }
+                            conn.query(company_Query, (err, companyRows) => {
 
-                            function gettingDepartnameWithId(id) {
+                                let response = { status: 0, data: {}, message: '' };
 
-                                const gettingName = Object.entries(departmentRows).find(([key, value]) => value.id === Number(id))?.[1];
-                                return gettingName?.name;
-                            }
+                                if (err) {
 
-                            const responseData = teamRows.map((value, index) => {
+                                    response.message = "Something went wrong in getting the company Details " + err;
+                                    res.send(response);
 
-                                return {
-                                    id: value?.id,
-                                    department: gettingDepartnameWithId(value?.dept_id),
-                                    name: value?.name,
-                                    manager: gettingNameWithId(value?.manager),
-                                    teamLead: gettingNameWithId(value?.team_lead),
-                                    description: value?.description,
-                                    status: value?.status
+                                } else {
+
+
+                                    function gettingCompanyName(id) {
+
+                                        const gettingEmployeeID = Object.entries(companyRows).find(([key, value]) => value.id === Number(id))?.[1];
+                                        return gettingEmployeeID?.name;
+
+                                    }
+
+                                    function gettingNameWithId(id) {
+
+                                        const gettingEmployeeID = Object.entries(employeeData).find(([key, value]) => value.emp_id === Number(id))?.[1];
+                                        return `${gettingEmployeeID.f_name} ${gettingEmployeeID.l_name}`
+
+                                    }
+
+                                    function gettingDepartnameWithId(id) {
+
+                                        const gettingName = Object.entries(departmentRows).find(([key, value]) => value.id === Number(id))?.[1];
+                                        return gettingName?.name;
+                                    }
+
+                                    function gettingParentDepartment(id) {
+
+                                        const gettingName = Object.entries(departmentRows).find(([key, value]) => value.id === Number(id))?.[1];
+
+                                        const parentDepartmentID = gettingName?.parent_department;
+
+                                        const finalName = gettingCompanyName(parentDepartmentID);
+
+                                        return finalName;
+
+
+                                    }
+
+                                    const responseData = teamRows.map((value, index) => {
+
+                                        return {
+                                            id: value?.id,
+                                            department: gettingDepartnameWithId(value?.dept_id),
+                                            name: value?.name,
+                                            manager: gettingNameWithId(value?.manager),
+                                            teamLead: gettingNameWithId(value?.team_lead),
+                                            description: value?.description,
+                                            parentCompany: gettingParentDepartment(value?.dept_id),
+                                            status: value?.status
+                                        }
+
+                                    })
+
+
+                                    response.status = 1;
+                                    response.message = "Teams data getted Successfully.......";
+                                    response.data = responseData;
+
+                                    res.send(response);
+
+
                                 }
-
                             })
 
-                            response.status = 1;
-                            response.message = "Teams data getted Successfully.......";
-                            response.data = responseData;
-
-                            res.send(response);
 
                         }
                     })
