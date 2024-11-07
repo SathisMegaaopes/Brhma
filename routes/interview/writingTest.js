@@ -65,8 +65,7 @@ router.post('/',(req,res)=>{
                             }
 
                     });
-                    //response.message = "Success";
-                    //res.send(response);
+
                 }
                 else{
                     response.status = 1;

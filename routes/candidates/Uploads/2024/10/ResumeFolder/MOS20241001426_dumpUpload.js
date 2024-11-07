@@ -1,8 +1,6 @@
 import mysql from "mysql"
 
 
-
-
 const conn = mysql.createConnection({
   host: "localhost",
   port: "3306",
@@ -137,7 +135,6 @@ export function updateNametoId() {
 
       const alldump = results;
 
-      // const query2 = 'SELECT `emp_id`,`emp_name` FROM `emp_master`';
       const query2 = 'SELECT * FROM `emp_master`';
 
       conn.query(query2, (err, results) => {
@@ -145,7 +142,6 @@ export function updateNametoId() {
           return reject(err);
         }
 
-        // const employeemaster = results;
         const result = generateEmployeeObject(results)
 
         function getEmpIdByName(name) {

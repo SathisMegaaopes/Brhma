@@ -154,7 +154,6 @@ router.get('/:id', (req, res) => {
                             const data = deptRows.map((Deptvalue, index) => {
                                 return {
                                     name: Deptvalue?.name,
-                                    // parent_department: Deptvalue?.parent_department,
                                     parent_department: gettingCompanyID(Deptvalue?.parent_department),
                                     lead_name: gettingId(Deptvalue.lead_name),
                                     description: Deptvalue?.description,

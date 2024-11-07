@@ -21,8 +21,6 @@ router.get('/', (req, res) => {
         sql_query = "SELECT * FROM `designations_master` WHERE `status` = 1";
     }
 
-    console.log(searchData, 'This isthe search data Dude eh .....')
-
     const employeeQuery = 'SELECT `emp_id` , `f_name` , `l_name`  FROM `emp_master` WHERE `status` = 1';
 
     conn.query(employeeQuery, (err, employeeRows) => {
@@ -82,8 +80,6 @@ router.post('/', (req, res) => {
     const { designationName, leadeName, billable } = req.body;
 
     let response = { status: 0, data: {}, message: '' };
-
-    // { designationName: 'one ', leadeName: 'Sathis Kumar R', billable: 0 }
 
     const add_designation_query = "INSERT INTO `designations_master` (`id`, `name`, `manager`, `billable`, `status`) VALUES(NULL, ? , ?, ?, '1')";
 

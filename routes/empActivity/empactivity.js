@@ -161,20 +161,3 @@ router.get('/', (req, res) => {
 
 
 export default router
-
-
-
-                    // else if (login_time && !logout_time) {
-
-                    //     const startDate = new Date(login_time);
-                    //     const endDate = new Date();
-                    //     const difference = endDate - startDate
-                    //     const differenceInSeconds = Math.floor(difference / 1000)
-                    //     const lasthours = Math.floor(differenceInSeconds / 3600)
-                    //     const lastMinutes = Math.floor((differenceInSeconds % 3600) / 60)
-                    //     const lastSeconds = differenceInSeconds % 60;
-
-                    //     formattedTime = `${String(lasthours).padStart(2, '0')}:${String(lastMinutes).padStart(2, '0')}:${String(lastSeconds).padStart(2, '0')}`
-
-                    //     // color = '#00b0ff'
-                    // }

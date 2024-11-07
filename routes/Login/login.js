@@ -1,7 +1,10 @@
 import express from "express";
 import conn from "../../sql.js";
 import { getTodayDate } from "../Utlis/index.js";
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration.js';
 
+dayjs.extend(duration)
 
 const router = express.Router();
 
@@ -44,23 +47,139 @@ router.post('/validateUser', (req, res) => {
                             conn.query(calenderDataQuery, [user_name], (err, results) => {
 
                                 if (!err) {
+
                                     const date = getTodayDate()
+
 
                                     const login_query = " SELECT * FROM `emp_activity` WHERE emp_id= ? and login_time LIKE ? "
 
                                     conn.query(login_query, [user_name, date], (err, rowww) => {
 
+
+                                        function parseTimeString(timeString) {
+                                            const [hours, minutes, seconds] = timeString.split(':').map(Number);
+                                            return dayjs.duration({ hours, minutes, seconds });
+                                        }
+
+
                                         if (!err) {
 
                                             if (type === 'login') {
+
                                                 if (rowww.length > 0) {
 
-                                                    const result = generateEmployeeObject(rows2[0])
-                                                    response.calenderData = results
-                                                    rows[0].user_details = result;
-                                                    response.data = rows;
-                                                    response.message = "Success";
-                                                    res.send(response);
+                                                    if (rowww[0]?.login_time && !rowww[0]?.logout_time) {
+
+                                                        const currentTime = dayjs();
+
+                                                        const givenTime = dayjs(rowww[0]?.login_time);
+
+                                                        const non_productivehrs = parseTimeString(rowww[0]?.non_productive_hrs);
+
+                                                        const difference = currentTime.diff(givenTime);
+
+                                                        const finalWastedTime = dayjs.duration(difference).format('HH:mm:ss');
+
+                                                        const addWasteTime = parseTimeString(finalWastedTime);
+
+                                                        const totalWastedTime = non_productivehrs.add(addWasteTime);
+
+                                                        const formattedTotal = dayjs
+                                                            .duration(totalWastedTime.asMilliseconds())
+                                                            .format("HH:mm:ss");
+
+                                                        const formattedLoginTime = givenTime.format('YYYY-MM-DD HH:mm:ss');
+
+                                                        const loginTimeLike = `%${formattedLoginTime}`
+
+                                                        const employee_id = rowww[0]?.emp_id;
+
+
+                                                        const updateNonProductiveHoursQuery = "UPDATE `emp_activity` SET `non_productive_hrs` = ? , `logout_time` = CURRENT_TIMESTAMP  WHERE `login_time` LIKE ? AND `emp_id` = ?";
+
+                                                        conn.query(updateNonProductiveHoursQuery, [formattedTotal, loginTimeLike, employee_id], (err, updatedProductiveRows) => {
+
+                                                            if (err) {
+
+                                                                response.message = "Something went wrong in update the non productive hours ( Having only Login Time ) " + err;
+                                                                res.send(response)
+
+                                                            } else {
+
+                                                                const result = generateEmployeeObject(rows2[0])
+                                                                response.calenderData = results
+                                                                rows[0].user_details = result;
+                                                                response.data = rows;
+                                                                response.message = "Success";
+                                                                res.send(response);
+
+                                                            }
+
+                                                        })
+
+
+
+
+                                                    } else if (rowww[0]?.login_time && rowww[0]?.logout_time) {
+
+                                                        const currentTime = dayjs();
+
+                                                        const logoutTime = dayjs(rowww[0]?.logout_time);
+
+                                                        const givenTime = dayjs(rowww[0]?.login_time);
+
+                                                        const non_productivehrs = parseTimeString(rowww[0]?.non_productive_hrs);
+
+                                                        const difference = currentTime.diff(logoutTime);
+
+                                                        const totalWastedTime = dayjs.duration(difference).format('HH:mm:ss');
+
+                                                        const totalFormattedWastedTime = parseTimeString(totalWastedTime);
+
+                                                        const inserting_time = non_productivehrs.add(totalFormattedWastedTime);
+
+                                                        const formattedInsert = dayjs
+                                                            .duration(inserting_time.asMilliseconds())
+                                                            .format("HH:mm:ss");
+
+                                                        const formattedLoginTime = givenTime.format('YYYY-MM-DD HH:mm:ss');
+
+                                                        const loginTimeLike = `%${formattedLoginTime}`
+
+                                                        const employee_id = rowww[0]?.emp_id;
+
+
+                                                        const updateNonProductiveHoursQuery = "UPDATE `emp_activity` SET `non_productive_hrs` = ? WHERE `login_time` LIKE ? AND `emp_id` = ?";
+
+                                                        conn.query(updateNonProductiveHoursQuery, [formattedInsert, loginTimeLike, employee_id], (err, updatedProductiveRows) => {
+
+                                                            if (err) {
+
+                                                                response.message = "Something went wrong in update the non productive hours ( Having Both Login and Logout Time) " + err;
+                                                                res.send(response)
+
+                                                            } else {
+
+                                                                const result = generateEmployeeObject(rows2[0])
+                                                                response.calenderData = results
+                                                                rows[0].user_details = result;
+                                                                response.data = rows;
+                                                                response.message = "Success";
+                                                                res.send(response);
+
+                                                            }
+
+                                                        })
+
+                                                    }
+
+                                                    // const result = generateEmployeeObject(rows2[0])
+                                                    // response.calenderData = results
+                                                    // rows[0].user_details = result;
+                                                    // response.data = rows;
+                                                    // response.message = "Success";
+                                                    // res.send(response);
+
                                                 } else {
 
                                                     const query = " INSERT INTO `emp_activity` (emp_id, login_time) VALUES (?, CURRENT_TIMESTAMP)"
@@ -84,6 +203,7 @@ router.post('/validateUser', (req, res) => {
 
                                                 }
                                             } else if (type === 'logout') {
+
                                                 const date = getTodayDate()
 
                                                 const query = " UPDATE `emp_activity` SET `logout_time` = CURRENT_TIMESTAMP WHERE `emp_id`= ?  AND `login_time` LIKE  ? "
@@ -111,7 +231,6 @@ router.post('/validateUser', (req, res) => {
                                             res.send(response);
                                         }
                                     })
-
 
                                 } else {
 

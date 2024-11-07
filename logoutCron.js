@@ -88,7 +88,7 @@ function LogoutAutomatically() {
 
 cron.schedule('* * * * *', async () => {
     try {
-        console.log('Running LogoutAutomatically function every hour...');
+        console.log('Running LogoutAutomatically function every minute now...');
         LogoutAutomatically();
     } catch (error) {
         console.log('Error running LogoutAutomatically: ' + error);

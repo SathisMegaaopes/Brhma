@@ -282,10 +282,6 @@ router.get('/', (req, res) => {
 
                 const finalBreak = HoursIntoValue(totalBreakTime)
 
-                // const finalLoginTime = HoursIntoValue(totalLogin)
-
-                // const finalLoginTime2 = HoursintoFormat(finalBreak)
-
                 const nonproductive = totalLogin - totalBreakTime
 
                 const finalNonProductive = HoursIntoValue(nonproductive)

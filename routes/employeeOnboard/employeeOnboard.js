@@ -100,7 +100,6 @@ router.get('/designations', (req, res) => {
 
             const mappedValue = rows.map((item) => {
                 return {
-                    // name: item.designation
                     name: item.name
                 }
             })
@@ -990,7 +989,6 @@ router.post('/employeePosition', (req, res) => {
             function gettingNameWithId(id) {
 
                 const gettingEmployeeID = Object.entries(employeeRows).find(([key, value]) => `${value?.f_name} ${value?.l_name}` === id)?.[1];
-                console.log(gettingEmployeeID?.emp_id, 'Check panniko da Sathis uh marakama ok va ..... ')
                 return gettingEmployeeID?.emp_id
 
             }
@@ -1191,8 +1189,6 @@ router.post('/employeePaymentmode', (req, res) => {
 
             const password = generateRandomPassword();
 
-            console.log(userName, 'This was the Employee ID....')
-
             if (activeStep === 5 && (operationType === 1 || operationType === 2)) {
 
                 const onBoardQuery = "SELECT `employee_number`,`first_name`,`last_name`,`date_of_join`,`designation`,`department`,`team`,`reporting_manager`,`reporting_team_lead` FROM `employee_onboard` WHERE `employee_number` = ? ";
@@ -1205,14 +1201,6 @@ router.post('/employeePaymentmode', (req, res) => {
                         res.send(response);
 
                     } else {
-
-                        // console.log(onBoardRows, 'Data of the person based on the employee ID from the Employee OnBoard Table ')
-
-                        // console.log(onBoardRows[0]?.employee_number, 'This is the Data Im looking ')
-                        // console.log(onBoardRows[0].employee_number, 'This is the Data Im looking ')
-                        // console.log(onBoardRows.employee_number, 'This is the Data Im looking ')
-
-                        // 2024-11-06T18:30:00.000Z
 
                         const formattedDate = DateFormaterNewww(onBoardRows[0]?.date_of_join)
 
