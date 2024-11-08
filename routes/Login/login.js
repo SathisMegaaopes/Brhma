@@ -94,7 +94,6 @@ router.post('/validateUser', (req, res) => {
 
                                                         const employee_id = rowww[0]?.emp_id;
 
-
                                                         const updateNonProductiveHoursQuery = "UPDATE `emp_activity` SET `non_productive_hrs` = ? , `logout_time` = CURRENT_TIMESTAMP  WHERE `login_time` LIKE ? AND `emp_id` = ?";
 
                                                         conn.query(updateNonProductiveHoursQuery, [formattedTotal, loginTimeLike, employee_id], (err, updatedProductiveRows) => {

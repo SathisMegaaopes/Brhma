@@ -54,28 +54,34 @@ function LogoutAutomatically() {
 
                 const login_Time = allData[i]?.login_time;
 
+                const ids = allData[i]?.id
+
                 const automattedLoggoutTime = adjustTime(login_Time);
 
-                const updateLogoutQuery = "UPDATE `emp_activity` SET `logout_time` = ? WHERE `login_time` LIKE ? "
+                if (automattedLoggoutTime !== null) {
 
-                const firstOne = dayjs(login_Time)
+                    const updateLogoutQuery = "UPDATE `emp_activity` SET `logout_time` = ? WHERE `id` = ? "
 
-                const SecondOne = firstOne.format('YYYY-MM-DD HH:mm:ss');
+                    const firstOne = dayjs(login_Time)
 
-                const dataofLoginTime = `%${SecondOne}`
+                    const SecondOne = firstOne.format('YYYY-MM-DD HH:mm:ss');
 
-                conn.query(updateLogoutQuery, [automattedLoggoutTime, dataofLoginTime], (err, rows) => {
+                    const dataofLoginTime = `%${SecondOne}`
 
-                    if (err) {
+                    conn.query(updateLogoutQuery, [automattedLoggoutTime, ids], (err, rows) => {
 
-                        console.log('Error in Updating the Employee Activity ... ' + err)
+                        if (err) {
 
-                    } else {
+                            console.log('Error in Updating the Employee Activity ... ' + err)
 
-                        console.log('Data Updated......')
+                        } else {
 
-                    }
-                })
+                            console.log('Data Updated......')
+
+                        }
+                    })
+                }
+
 
             }
         }
@@ -86,21 +92,21 @@ function LogoutAutomatically() {
 
 
 
-cron.schedule('* * * * *', async () => {
-    try {
-        console.log('Running LogoutAutomatically function every minute now...');
-        LogoutAutomatically();
-    } catch (error) {
-        console.log('Error running LogoutAutomatically: ' + error);
-    }
-});
-
-
-
-// (async () => {
+// cron.schedule('* * * * *', async () => {
 //     try {
+//         console.log('Running LogoutAutomatically function every minute now...');
 //         LogoutAutomatically();
 //     } catch (error) {
-//         console.log(error)
+//         console.log('Error running LogoutAutomatically: ' + error);
 //     }
-// })()
+// });
+
+
+
+(async () => {
+    try {
+        LogoutAutomatically();
+    } catch (error) {
+        console.log(error)
+    }
+})()

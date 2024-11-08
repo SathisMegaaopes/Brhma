@@ -129,4 +129,32 @@ router.post('/', (req, res) => {
 
 })
 
+
+router.post('/delete', (req, res) => {
+
+    const { id } = req.body;
+
+    const delete_query = "UPDATE `designations_master` SET `status` = 0 WHERE `designations_master`.`id`= ?";
+
+    conn.query(delete_query, [id], (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong in soft updating the Designation...' + err;
+            res.send(response)
+
+        } else {
+
+            response.message = " Successfully softly updated the Designation .... ";
+            response.status = 1;
+            res.send(response)
+
+        }
+
+    })
+
+})
+
 export default router;

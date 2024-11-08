@@ -98,8 +98,6 @@ router.get('/', (req, res) => {
 })
 
 
-
-
 router.get('/:id', (req, res) => {
 
     const { id } = req.params;
@@ -258,5 +256,33 @@ router.post('/', (req, res) => {
 
 })
 
+
+router.post('/delete', (req, res) => {
+
+    const { id } = req.body;
+
+
+    const delete_query = "UPDATE `dept_master` SET `status` = 0 WHERE `dept_master`.`id`= ?";
+
+    conn.query(delete_query, [id], (err, rows) => {
+
+        let response = { status: 0, data: {}, message: '' };
+
+        if (err) {
+
+            response.message = 'Something went wrong in soft updating the Departments...' + err;
+            res.send(response)
+
+        } else {
+
+            response.message = " Successfully softly updated the Department .... ";
+            response.status = 1;
+            res.send(response)
+
+        }
+
+    })
+
+})
 
 export default router;
