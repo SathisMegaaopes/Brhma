@@ -1191,7 +1191,7 @@ router.post('/employeePaymentmode', (req, res) => {
 
             if (activeStep === 5 && (operationType === 1 || operationType === 2)) {
 
-                const onBoardQuery = "SELECT `employee_number`,`first_name`,`last_name`,`date_of_join`,`designation`,`department`,`team`,`reporting_manager`,`reporting_team_lead` FROM `employee_onboard` WHERE `employee_number` = ? ";
+                const onBoardQuery = "SELECT `employee_number`,`first_name`,`last_name`,`date_of_join`,`email`,`designation`,`department`,`team`,`reporting_manager`,`reporting_team_lead` FROM `employee_onboard` WHERE `employee_number` = ? ";
 
                 conn.query(onBoardQuery, userName, (err, onBoardRows) => {
 
@@ -1202,7 +1202,9 @@ router.post('/employeePaymentmode', (req, res) => {
 
                     } else {
 
-                        const formattedDate = DateFormaterNewww(onBoardRows[0]?.date_of_join)
+                        const formattedDate = DateFormaterNewww(onBoardRows[0]?.date_of_join);
+
+                        // const 
 
                         const creatingEmployeeQuery = "INSERT INTO `emp_master` (`id`, `emp_id`, `f_name`, `l_name`, `DOJ`, `designation`, `department`, `team`, `reporting_team_lead`, `reporting_manager`, `status`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?,?, '1')";
 
@@ -1227,9 +1229,9 @@ router.post('/employeePaymentmode', (req, res) => {
                                     } else {
 
                                         const mailOptions = {
-                                            from: 'sathiskumar.r@megaaopes.com',
-                                            to: 'sathiskumar.r@megaaopes.com',
-                                            subject: 'Welcome to the Team!',
+                                            from: 'hr@megaaopes.com',
+                                            to: onBoardRows[0]?.email,
+                                            subject: `Welcome to the Team! ${onBoardRows[0]?.first_name} ${onBoardRows[0]?.last_name}`,
                                             html: `<h1>Welcome to MegaaOpes Solutions</h1>
                                                    <p>We are excited to have you on board.</p>
                                                    <p>This is your username: ${userName}</p>
@@ -1238,11 +1240,22 @@ router.post('/employeePaymentmode', (req, res) => {
                                                    <p>MegaaOpes Solutions...</p>`,
                                         };
 
+
                                         try {
-                                            await transporter.sendMail(mailOptions);
-                                            response.message = "Success Created Employee and login Credentials....";
-                                            response.status = 1;
-                                            res.status(200).send(response);
+                                            await transporter.sendMail(mailOptions, (err, info) => {
+                                                if (err) {
+
+                                                    response.message = 'Something went wrong in Sending the mail to the Candidate.... ' + err;
+                                                    res.send(response);
+
+                                                } else {
+
+                                                    response.message = "Success Created Employee and login Credentials....";
+                                                    response.status = 1;
+                                                    res.status(200).send(response);
+                                                }
+
+                                            });
                                         } catch (error) {
                                             response.message = 'Failed to send email' + err;
                                             res.send(response)
